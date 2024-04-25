@@ -1,0 +1,18 @@
+# Run the upstream test suite, which runs crun to spawn containers, and thus
+# needs an isolated machine rather than a container, to avoid
+# container-in-container limitations.
+#
+# A build is needed, for tests/init, which requires config.h to be built.
+#
+# The suite, like crun, can run both with and without root, with different
+# codepaths being exercised in each (and with some tests skipped). Thus we run
+# the suite twice, once with sudo.
+
+Tests: upstream-test-suite
+Depends:
+ @,
+ python-is-python3,
+Restrictions:
+ isolation-machine,
+ build-needed,
+ needs-sudo,

@@ -1,22 +1,420 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: template-repository
-Source: https://github.com/deepin-community/template-repository
+Upstream-Name: crun
+Source: https://github.com/containers/crun
 
 Files: *
-Copyright: 2023 Tsic404 <liuheng@deepin.org>
+Copyright:
+ 2017-2021 Giuseppe Scrivano <giuseppe@scrivano.org>
 License: GPL-2+
- This package is free software; you can redistribute it and/or modify
+
+Files:
+ python/*
+ src/libcrun/*
+ tests/tests_libcrun_errors.c
+ tests/tests_libcrun_fuzzer.c
+ tests/tests_libcrun_utils.c
+Copyright:
+ 2017-2019 Giuseppe Scrivano <giuseppe@scrivano.org>
+License: LGPL-2.1+
+
+Files:
+ src/checkpoint.h
+ src/restore.h
+ src/checkpoint.c
+ src/restore.c
+ tests/test_checkpoint_restore.py
+Copyright:
+ 2020 Adrian Reber <areber@redhat.com>
+License: GPL-2+
+
+Files:
+ src/libcrun/criu.h
+ src/libcrun/criu.c
+Copyright:
+ 2020 Adrian Reber <areber@redhat.com>
+License: LGPL-2.1+
+
+Files:
+ src/libcrun/chroot_realpath.c
+Copyright:
+ 1993 Rick Sladkey <jrs@world.std.com>
+License: LGPL-2.1+
+
+Files:
+ src/libcrun/cloned_binary.c
+Copyright:
+ 2019 Aleksa Sarai <cyphar@cyphar.com>
+ 2019 SUSE LLC
+License: Apache-2.0 or LGPL-2.1+
+
+Files:
+ libocispec/*
+Copyright:
+ 2017, 2019 Giuseppe Scrivano <giuseppe@scrivano.org>
+License: GPL-3+ with libocispec exception
+
+Files:
+ libocispec/src/ocispec/generate.py
+ libocispec/src/ocispec/headers.py
+ libocispec/src/ocispec/helpers.py
+ libocispec/src/ocispec/sources.py
+Copyright:
+ 2017, 2019 Giuseppe Scrivano <giuseppe@scrivano.org>
+ 2018-2020 Huawei Technologies., Ltd. 2018-2020
+License: GPL-3+ with libocispec exception
+
+Files:
+ libocispec/src/ocispec/read-file.c
+ libocispec/src/ocispec/read-file.h
+Copyright:
+ 2017, 2019 Giuseppe Scrivano <giuseppe@scrivano.org>
+License: Apache-2.0
+
+Files:
+ libocispec/tests/test-3.c
+ libocispec/tests/test-4.c
+ libocispec/tests/test-5.c
+ libocispec/tests/test-7.c
+Copyright:
+ 2017 Wang Long <w@laoqinren.net>
+License: GPL-3+
+
+Files:
+ libocispec/tests/test-6.c
+ libocispec/tests/test-8.c
+Copyright:
+ 2017 YiFeng Tan <tanyifeng1@huawei.com>
+License: GPL-3+
+
+Files:
+ libocispec/tests/test-9.c
+ libocispec/tests/test-10.c
+ libocispec/tests/test-11.c
+Copyright:
+ 2020-2021 duguhaotian <knowledgehao@163.com>
+License: GPL-3+
+
+Files:
+ libocispec/image-spec/*
+Copyright:
+ 2016-2022 The Linux Foundation
+License: Apache-2.0
+Comment:
+ This is an embedded copy that is not used to generate the binaries, in favor
+ of a version of this library provided by Debian in a different package
+ (golang-github-opencontainers-image-spec-dev).
+
+Files:
+ libocispec/runtime-spec/*
+Copyright:
+ 2015 The Linux Foundation
+License: Apache-2.0
+Comment:
+ This is an embedded copy that is not used to generate the binaries, in favor
+ of a version of this library provided by Debian in a different package
+ (golang-github-opencontainers-specs-dev).
+
+Files:
+ libocispec/yajl/*
+Copyright:
+ 2007-2014 Lloyd Hilaiel <me@lloyd.io>
+License: ISC
+Comment:
+ This is an embedded copy that is not used to generate the binaries, in favor
+ of a version of this library provided by Debian in a different package
+ (libyajl).
+
+Files:
+ libocispec/yajl/src/yajl_tree.c
+ libocispec/yajl/src/api/yajl_tree.h
+ libocispec/yajl/src/headers/yajl/yajl_tree.h
+Copyright:
+ 2010-2011 Florian Forster <ff@octo.it>
+License: ISC
+Comment:
+ This is an embedded copy that is not used to generate the binaries, in favor
+ of a version of this library provided by Debian in a different package
+ (libyajl).
+
+Files:
+ aclocal.m4
+ m4/libtool.m4
+ m4/lt~obsolete.m4
+ m4/ltoptions.m4
+ m4/ltsugar.m4
+ m4/ltversion.m4
+ libocispec/m4/libtool.m4
+ libocispec/m4/lt~obsolete.m4
+ libocispec/m4/ltoptions.m4
+ libocispec/m4/ltsugar.m4
+ libocispec/m4/ltversion.m4
+ libocispec/yajl/aclocal.m4
+Copyright:
+ 1996-2018 Free Software Foundation, Inc.
+License: FSFULLR
+
+Files:
+ build-aux/compile
+ build-aux/depcomp
+ build-aux/missing
+ build-aux/tap-driver.sh
+ libocispec/build-aux/compile
+ libocispec/build-aux/depcomp
+ libocispec/build-aux/missing
+ libocispec/build-aux/test-driver
+ libocispec/yajl/compile
+ libocispec/yajl/depcomp
+ libocispec/yajl/missing
+Copyright:
+ 1996-2018 Free Software Foundation, Inc
+License: GPL-2+ with Autoconf exception
+
+Files:
+ build-aux/ltmain.sh
+ libocispec/build-aux/ltmain.sh
+ libocispec/yajl/ltmain.sh
+Copyright:
+ 1996-2015 Free Software Foundation, Inc
+License: GPL-2+ with Libtool exception
+
+Files:
+ build-aux/config.guess
+ build-aux/config.sub
+ libocispec/build-aux/config.guess
+ libocispec/build-aux/config.sub
+ libocispec/yajl/config.guess
+ libocispec/yajl/config.sub
+Copyright:
+ 1992-2018 Free Software Foundation, Inc
+License: GPL-3+ with Autoconf exception
+
+Files:
+ build-aux/install-sh
+ libocispec/build-aux/install-sh
+ libocispec/yajl/install-sh
+Copyright:
+ 1994 X Consortium
+License: MIT-X11
+
+Files: debian/*
+Copyright:
+ 2019-2021 Dmitry Smirnov <onlyjob@debian.org>
+ 2022-2023 Faidon Liambotis <paravoid@debian.org>
+License: Expat or GPL-3+
+
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included
+ in all copies or substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+ USE OR OTHER DEALINGS IN THE SOFTWARE.
+Comment:
+ This license also known as "MIT" however FSF consider "MIT" labelling
+ ambiguous and copyright-format specification recommends to mark such
+ license as "Expat".
+
+License: Apache-2.0
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ ․
+    http://www.apache.org/licenses/LICENSE-2.0
+ ․
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+Comment:
+ On Debian systems, the complete text of the Apache License,
+ Version 2.0 can be found in "/usr/share/common-licenses/Apache-2.0".
+
+License: FSFULLR
+ This file is free software; the Free Software Foundation
+ gives unlimited permission to copy and/or distribute it,
+ with or without modifications, as long as this notice is preserved.
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
+ ․
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+Comment:
+ On Debian systems, the complete text of the GNU General Public
+ License Version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: GPL-2+ with Autoconf exception
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
  .
- This package is distributed in the hope that it will be useful,
+ This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
  .
  You should have received a copy of the GNU General Public License
- along with this program. If not, see <https://www.gnu.org/licenses/>
+ along with this program.  If not, see <https://www.gnu.org/licenses/>.
  .
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
+ As a special exception to the GNU General Public License, if you
+ distribute this file as part of a program that contains a
+ configuration script generated by Autoconf, you may include it under
+ the same distribution terms that you use for the rest of that program.
+Comment:
+ On Debian systems, the complete text of the GNU General Public
+ License Version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: GPL-2+ with Libtool exception
+ GNU Libtool is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ As a special exception to the GNU General Public License,
+ if you distribute this file as part of a program or library that
+ is built using GNU Libtool, you may include this file under the
+ same distribution terms that you use for the rest of that program.
+ .
+ GNU Libtool is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+Comment:
+ On Debian systems, the complete text of the GNU General Public
+ License Version 2 can be found in "/usr/share/common-licenses/GPL-2".
+
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ ․
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+Comment:
+ On Debian systems, the complete text of the GNU General Public
+ License Version 3 can be found in "/usr/share/common-licenses/GPL-3".
+
+License: GPL-3+ with Autoconf exception
+ This file is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, see <https://www.gnu.org/licenses/>.
+ .
+ As a special exception to the GNU General Public License, if you
+ distribute this file as part of a program that contains a
+ configuration script generated by Autoconf, you may include it under
+ the same distribution terms that you use for the rest of that
+ program.  This Exception is an additional permission under section 7
+ of the GNU General Public License, version 3 ("GPLv3").
+Comment:
+ On Debian systems, the complete text of the GNU General Public
+ License Version 3 can be found in "/usr/share/common-licenses/GPL-3".
+
+License: GPL-3+ with libocispec exception
+ libocispec is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+ .
+ libocispec is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with libocispec.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ As a special exception, you may create a larger work that contains
+ part or all of the libocispec parser skeleton and distribute that work
+ under terms of your choice, so long as that work isn't itself a
+ parser generator using the skeleton or a modified version thereof
+ as a parser skeleton.  Alternatively, if you modify or redistribute
+ the parser skeleton itself, you may (at your option) remove this
+ special exception, which will cause the skeleton and the resulting
+ libocispec output files to be licensed under the GNU General Public
+ License without this special exception.
+Comment:
+ On Debian systems, the full text of the GNU General Public License
+ version 3 can be found in the file '/usr/share/common-licenses/GPL-3'.
+
+License: LGPL-2.1+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ ․
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+Comment:
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License Version 2.1 can be found in "/usr/share/common-licenses/LGPL-2.1".
+
+License: MIT-X11
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+ to deal in the Software without restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software, and to permit persons to whom the
+ Software is furnished to do so, subject to the following conditions:
+ ․
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ ․
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ DEALINGS IN THE SOFTWARE.
+ ․
+ Except as contained in this notice, the name(s) of the above copyright
+ holders shall not be used in advertising or otherwise to promote the sale,
+ use or other dealings in this Software without prior written authorization.
+
+License: ISC
+ Permission to use, copy, modify, and/or distribute this software for any
+ purpose with or without fee is hereby granted, provided that the above
+ copyright notice and this permission notice appear in all copies.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.

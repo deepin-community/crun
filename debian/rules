@@ -1,4 +1,70 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/architecture.mk
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+ifneq (,$(findstring $(DEB_HOST_ARCH),amd64 arm64))
+  DEB_CONFIGOPTS += --with-wasmedge
+endif
+
 %:
 	dh $@
+
+override_dh_auto_clean:
+	-dh_auto_clean
+
+# Use the Debian-provided libocispec image and runtime specs, from the
+# golang-github-opencontainers-{image-spec,specs}-dev packages.
+#
+# Copy them here for autoconf to run, and restore the embedded copy in clean to
+# avoid a dirty diff.
+execute_after_dh_clean:
+	for spec in image-spec runtime-spec; do \
+		if [ -d libocispec/$$spec.saved ]; then \
+			rm -r libocispec/$$spec; \
+			mv libocispec/$$spec.saved libocispec/$$spec; \
+		fi; \
+	done
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(DEB_CONFIGOPTS)
+	for spec in image-spec runtime-spec; do \
+		if [ ! -d libocispec/$$spec.saved ]; then \
+			mv libocispec/$$spec libocispec/$$spec.saved ; \
+			cp -rv /usr/share/gocode/src/github.com/opencontainers/$$spec/ libocispec/; \
+		fi; \
+	done
+
+# The test suite tries to perform all kinds of privileged operations, like
+# spawn containers, that are not necessarily allowed in the build environment,
+# as is the case in the Debian buildd network.
+#
+# Thus run the suite, but ignore all errors; proper testing can happen in the
+# autopkgtest testing environment
+override_dh_auto_test:
+	-dh_auto_test
+
+execute_before_dh_auto_build:
+	# These are generated with gperf, but regenerated for DFSG reasons here
+	make generate-signals.c
+	make generate-mount_flags.c
+	# upstream ships prebuilt manpages, regenerate them
+	rm -f *.1
+	make generate-man
+	# workaround remnants of cpuguy83/go-md2man#99
+	# address groff-message an.tmac:<standard input>:844: warning: tbl preprocessor failed, or it or soelim was not run
+	# by adding...
+	#   '\" t
+	# ...at the top of the manpage
+	sed -i '1{/^'\''\\" t$$/!{s/^/'\''\\" t\n/}}' crun.1
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
+	-$(RM) debian/tmp/usr/lib/*/*.la
+
+override_dh_gencontrol:
+	dh_gencontrol -- \
+		-Vmy:Built-Using="$(shell dpkg-query --show -f '$${source:Package} (= $${source:Version}), ' golang-github-opencontainers-image-spec-dev golang-github-opencontainers-specs-dev)"
+	# ensure we are linking against libyajl, and not building the embedded copy
+	grep -q yajl debian/crun.substvars

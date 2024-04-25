@@ -1,0 +1,1 @@
+extend-diff-ignore = "(^|/)(libocispec/src/(oci_.+_spec\..*|.+_spec_schema_.+|.+_manifest_.+|ocispec/.+_test_.+)|src/libcrun/signals.c|src/libcrun/mount_flags.c|build-aux/.+|m4/.+|Makefile.in|configure|config.h.in|aclocal.m4|missing|compile|ltmain.sh|install-sh|depcomp)$"
