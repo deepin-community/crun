@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Also see tests/Makefile.tests which does similar things to this script.
+
+set -e
+
+cp -a tests/ $AUTOPKGTEST_TMP/
+cp build-aux/tap-driver.sh $AUTOPKGTEST_TMP/tests/
+cd $AUTOPKGTEST_TMP/tests
+
+mkdir \
+  $AUTOPKGTEST_ARTIFACTS/rootless \
+  $AUTOPKGTEST_ARTIFACTS/rootful
+
+# disable sd-notify-proxy test: broken under autopkgtest for reasons yet unknown
+sed -i '/sd-notify-proxy/d' test_start.py
+
+echo "Running tests (rootless)..."
+( rm -f *.log *.trs || true
+trap "cp *.log $AUTOPKGTEST_ARTIFACTS/rootless" EXIT
+OCI_RUNTIME=/usr/bin/crun INIT=./init ./run_all_tests.sh )
+echo
+echo "Running tests (rootful)..."
+( rm -f *.log *.trs || true
+trap "cp *.log $AUTOPKGTEST_ARTIFACTS/rootful" EXIT
+sudo OCI_RUNTIME=/usr/bin/crun INIT=./init ./run_all_tests.sh )

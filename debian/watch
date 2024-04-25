@@ -1,0 +1,7 @@
+version=4
+opts="\
+pgpmode=auto,\
+searchmode=plain \
+" \
+https://api.github.com/repos/containers/@PACKAGE@/releases \
+https://github.com/containers/@PACKAGE@/releases/download/?[\d.]+/@PACKAGE@-@ANY_VERSION@@ARCHIVE_EXT@

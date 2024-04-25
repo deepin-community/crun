@@ -1,5 +1,226 @@
-template-repository (1.0-1) unstable; urgency=medium
+crun (1.14.4-1) unstable; urgency=medium
 
-  * Initial release
+  * New upstream release: 1.1.4
 
- -- Tsic404 <liuheng@deepin.org>  Sat, 28 Jan 2023 13:46:49 +0800
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 09 Mar 2024 09:39:23 -0500
+
+crun (1.14.1-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Harden codebase based on the learnings of runc's CVE-2024-21626.
+  * Drop alternative dependency pkg-config, obsolete since bookworm.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Mon, 12 Feb 2024 14:29:52 +0200
+
+crun (1.14-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Thu, 25 Jan 2024 10:36:38 +0200
+
+crun (1.13-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Mon, 15 Jan 2024 20:20:00 +0200
+
+crun (1.12-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Fri, 24 Nov 2023 11:11:19 +0200
+
+crun (1.11.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Thu, 02 Nov 2023 15:07:49 +0200
+
+crun (1.11-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Drop patch ioprio-test-issue-1330, merged upstream.
+  * Regenerate manpages from their Markdown sources, resolving lintian
+    groff-message warnings in the process, resulting from go-md2man upstream
+    issue #99 ("C" font portability), now fixed.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Fri, 27 Oct 2023 15:37:50 +0300
+
+crun (1.10-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Fix incompatibility with Linux >= 6.1.0. (Closes: #1053821)
+  * Fix a test failure with Linux >= 6.5 (test_prio/ioprio).
+
+ -- Faidon Liambotis <paravoid@debian.org>  Tue, 24 Oct 2023 18:17:09 +0300
+
+crun (1.9-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Wed, 13 Sep 2023 02:25:18 +0300
+
+crun (1.8.7-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Drop patch mount_flags.perf-add-get_mount_flags_from_wordlist, as it was
+      a backport.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Tue, 22 Aug 2023 03:24:25 +0300
+
+crun (1.8.6-1) unstable; urgency=medium
+
+  * New upstream release.
+    - Drop test suite patches that were merged upstream.
+  * Add patch mount_flags.perf-add-get_mount_flags_from_wordlist, fix for the
+    reported upstream issue #1253, an FTBFS caused by the regeneration of
+    gperf-generated files from source.
+  * Unmark autopkgtest tests from being flaky.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Thu, 17 Aug 2023 04:50:08 +0300
+
+crun (1.8.5-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Bump golang-github-opencontainers-specs-dev Build-Dependency to account
+    for required changes there (timeOffsets).
+  * Add an additional guard in override_dh_gencontrol to ensure that we are
+    building against libyajl. The embedded copy is not, and was never used in
+    this package, but add a guard to make sure we FTBFS if that ever becomes
+    the case. See bugs #1039083 and #1040147 for additional context.
+  * Add an autopkgtest running the upstream test suite, in an isolated-machine
+    test rig, under both rootless and rootful configurations.
+  * Enable wasm-wasi support on amd64 and arm64 through the WasmEdge runtime.
+    - Build-Depend on libwasmedge-dev, and Suggest libwasmedge0.
+    - Pass --with-wasmedge to ./configure.
+  * Move myself to Maintainer, and Dmitry to Uploaders.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Thu, 13 Jul 2023 17:54:38 +0300
+
+crun (1.8.1-1) unstable; urgency=medium
+
+  * New bugfix upstream release.
+  * Provide a lengthier long description.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Mon, 27 Feb 2023 22:01:38 +0200
+
+crun (1.8-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update debian/watch to point to the GitHub API.
+  * Ship the original upstream release, including its signature, instead of
+    the DFSG repack. The two binary files were removed in the latest upstream
+    release (PR #1126), and libocispec is DFSG-free, even if unused.
+  * Rework debian/copyright, to simplify, document previously undocumented
+    files (e.g. libyajl).
+  * Bump golang-github-opencontainers-specs-dev Build-Dependency to account
+    for required changes there (memory.checkBeforeUpdate).
+  * Regenerate a couple of pregenerated files using gperf.
+  * Bump debhelper level to 13.
+  * Switch buildsystem to autoreconf.
+  * Various other misc packaging changes (override -> execute_after,
+    d/install, wrap-and-sort -sabt, etc.)
+  * Bump Standards-Version to 4.6.2, no further changes needed.
+  * Add Reinhard Tartler to uploaders per his request.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Thu, 09 Feb 2023 03:36:22 +0200
+
+crun (1.5+dfsg-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #1014306)
+    - Includes a fix for CVE-2022-27650 (Closes: #1009881)
+    - Remove patch zos.patch, was an upstream backport.
+  * Replace invalid field Homepage by field Repository-Browse in upstream
+    metadata. Also add Repository and Changelog fields.
+  * Install crun.1 from the installed path in /usr/share/man, rather than the
+    source tree, silencing a dh_missing warning.
+  * Bump build-dep of golang-github-opencontainers-specs-dev to
+    >= v1.0.2.102.ga8106e9, which includes commit 2792412 for cpu.idle.
+  * Bump Standards-Version to 4.6.1, no changes needed.
+  * Add myself to Uploaders.
+
+ -- Faidon Liambotis <paravoid@debian.org>  Mon, 08 Aug 2022 13:42:27 +0300
+
+crun (0.17+dfsg-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Bug fix: "FTBFS: undefined reference to
+    `gen_runtime_spec_schema_config_zos", thanks to Lucas Nussbaum
+    (Closes: #997225).
+
+ -- Reinhard Tartler <siretart@tauware.de>  Wed, 10 Nov 2021 09:17:23 -0500
+
+crun (0.17+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Mon, 01 Feb 2021 12:33:51 +1100
+
+crun (0.16+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Thu, 07 Jan 2021 16:31:49 +1100
+
+crun (0.15.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Thu, 19 Nov 2020 22:32:23 +1100
+
+crun (0.15+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * rules: don't install .la file.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Thu, 24 Sep 2020 06:44:34 +1000
+
+crun (0.14.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Fri, 17 Jul 2020 23:14:03 +1000
+
+crun (0.13+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Rules-Requires-Root: no.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Mon, 06 Apr 2020 09:56:09 +1000
+
+crun (0.12.2.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Fri, 28 Feb 2020 19:04:21 +1100
+
+crun (0.12.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Wed, 12 Feb 2020 12:51:41 +1100
+
+crun (0.12+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Standards-Version: 4.5.0.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Tue, 04 Feb 2020 12:32:26 +1100
+
+crun (0.11+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Tue, 24 Dec 2019 13:09:41 +1100
+
+crun (0.10.6+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Mon, 18 Nov 2019 20:56:31 +1100
+
+crun (0.10.5+dfsg-1) unstable; urgency=medium
+
+  * Initial release (Closes: #944087).
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Sun, 10 Nov 2019 12:28:16 +1100
