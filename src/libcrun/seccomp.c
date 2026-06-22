@@ -456,10 +456,11 @@ open_rundir_dirfd (const char *state_root, libcrun_error_t *err)
 {
   cleanup_free char *dir = NULL;
   int dirfd;
+  int ret;
 
-  dir = libcrun_get_state_directory (state_root, NULL);
-  if (UNLIKELY (dir == NULL))
-    return crun_make_error (err, 0, "cannot get state directory");
+  ret = libcrun_get_state_directory (&dir, state_root, NULL, err);
+  if (UNLIKELY (ret < 0))
+    return ret;
 
   dirfd = TEMP_FAILURE_RETRY (open (dir, O_PATH | O_DIRECTORY | O_CLOEXEC));
   if (UNLIKELY (dirfd < 0))
@@ -848,9 +849,9 @@ libcrun_copy_seccomp (struct libcrun_seccomp_gen_ctx_s *gen_ctx, const char *b64
   if (UNLIKELY (consumed != (int) in_size))
     return crun_make_error (err, 0, "invalid seccomp BPF data");
 
-  ret = safe_write (gen_ctx->fd, bpf_data, (ssize_t) size);
+  ret = safe_write (gen_ctx->fd, "seccomp fd", bpf_data, size, err);
   if (UNLIKELY (ret < 0))
-    return crun_make_error (err, 0, "write to seccomp fd");
+    return ret;
 
   return 0;
 }

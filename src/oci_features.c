@@ -142,8 +142,10 @@ crun_features_add_seccomp_info (yajl_gen json_gen, const struct linux_info_s *li
   yajl_gen_map_open (json_gen);
 
   add_bool_to_json (json_gen, "enabled", linux->seccomp.enabled);
-  add_array_to_json (json_gen, "actions", linux->seccomp.actions);
-  add_array_to_json (json_gen, "operators", linux->seccomp.operators);
+  if (linux->seccomp.actions)
+    add_array_to_json (json_gen, "actions", linux->seccomp.actions);
+  if (linux->seccomp.operators)
+    add_array_to_json (json_gen, "operators", linux->seccomp.operators);
 
   yajl_gen_map_close (json_gen);
 }
@@ -217,7 +219,8 @@ crun_features_add_annotations_info (yajl_gen json_gen, const struct annotations_
   yajl_gen_string (json_gen, (const unsigned char *) "annotations", strlen ("annotations"));
   yajl_gen_map_open (json_gen);
 
-  add_string_to_json (json_gen, "io.github.seccomp.libseccomp.version", annotation->io_github_seccomp_libseccomp_version);
+  if (! is_empty_string (annotation->io_github_seccomp_libseccomp_version))
+    add_string_to_json (json_gen, "io.github.seccomp.libseccomp.version", annotation->io_github_seccomp_libseccomp_version);
 
   add_bool_str_to_json (json_gen, "org.opencontainers.runc.checkpoint.enabled", annotation->run_oci_crun_checkpoint_enabled);
   add_bool_str_to_json (json_gen, "run.oci.crun.checkpoint.enabled", annotation->run_oci_crun_checkpoint_enabled);
@@ -228,6 +231,12 @@ crun_features_add_annotations_info (yajl_gen json_gen, const struct annotations_
   add_bool_str_to_json (json_gen, "run.oci.crun.wasm", annotation->run_oci_crun_wasm);
 
   yajl_gen_map_close (json_gen);
+}
+
+void
+crun_features_add_potentially_unsafe_config_annotations_info (yajl_gen json_gen, char **annotations)
+{
+  add_array_to_json (json_gen, "potentiallyUnsafeConfigAnnotations", annotations);
 }
 
 int
@@ -278,6 +287,9 @@ crun_command_features (struct crun_global_arguments *global_args, int argc, char
 
   // Add annotations struct info
   crun_features_add_annotations_info (json_gen, &info->annotations);
+
+  // Add potentially unsafe config annotatinos info
+  crun_features_add_potentially_unsafe_config_annotations_info (json_gen, info->potentially_unsafe_annotations);
 
   // End building the JSON
   yajl_gen_map_close (json_gen);

@@ -74,8 +74,7 @@ make_runtime_spec_schema_config_zos (yajl_val tree, const struct parser_context 
 
         for (i = 0; i < tree->u.object.len; i++)
           {
-            if (strcmp (tree->u.object.keys[i], "devices"))
-              {
+            if (strcmp (tree->u.object.keys[i], "devices")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -87,13 +86,12 @@ make_runtime_spec_schema_config_zos (yajl_val tree, const struct parser_context 
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -103,8 +101,7 @@ free_runtime_spec_schema_config_zos (runtime_spec_schema_config_zos *ptr)
 {
     if (ptr == NULL)
         return;
-    if (ptr->devices != NULL)
-      {
+    if (ptr->devices != NULL)      {
         size_t i;
         for (i = 0; i < ptr->devices_len; i++)
           {
@@ -166,5 +163,29 @@ gen_runtime_spec_schema_config_zos (yajl_gen g, const runtime_spec_schema_config
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_zos *
+clone_runtime_spec_schema_config_zos (runtime_spec_schema_config_zos *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_zos) runtime_spec_schema_config_zos *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->devices)
+      {
+        ret->devices_len = src->devices_len;
+        ret->devices = calloc (src->devices_len + 1, sizeof (*ret->devices));
+        if (ret->devices == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->devices_len; i++)
+          {
+            ret->devices[i] = clone_runtime_spec_schema_defs_zos_device (src->devices[i]);
+            if (ret->devices[i] == NULL)
+                return NULL;
+          }
+      }
+    return move_ptr (ret);
 }
 

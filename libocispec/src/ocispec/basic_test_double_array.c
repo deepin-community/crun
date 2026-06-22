@@ -105,6 +105,25 @@ gen_basic_test_double_array_objectarrays_element (yajl_gen g, const basic_test_d
     return yajl_gen_status_ok;
 }
 
+basic_test_double_array_objectarrays_element *
+clone_basic_test_double_array_objectarrays_element (basic_test_double_array_objectarrays_element *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_basic_test_double_array_objectarrays_element) basic_test_double_array_objectarrays_element *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    ret->first = src->first;
+    ret->first_present = src->first_present;
+    if (src->second)
+      {
+        ret->second = strdup (src->second);
+        if (ret->second == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
+}
+
 define_cleaner_function (basic_test_double_array *, free_basic_test_double_array)
 basic_test_double_array *
 make_basic_test_double_array (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -340,8 +359,7 @@ make_basic_test_double_array (yajl_val tree, const struct parser_context *ctx, p
                 && strcmp (tree->u.object.keys[i], "intarrays")
                 && strcmp (tree->u.object.keys[i], "boolarrays")
                 && strcmp (tree->u.object.keys[i], "objectarrays")
-                && strcmp (tree->u.object.keys[i], "refobjarrays"))
-              {
+                && strcmp (tree->u.object.keys[i], "refobjarrays")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -353,13 +371,12 @@ make_basic_test_double_array (yajl_val tree, const struct parser_context *ctx, p
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -415,8 +432,7 @@ free_basic_test_double_array (basic_test_double_array *ptr)
         free (ptr->boolarrays);
         ptr->boolarrays = NULL;
     }
-    if (ptr->objectarrays != NULL)
-      {
+    if (ptr->objectarrays != NULL)      {
         size_t i;
         for (i = 0; i < ptr->objectarrays_len; i++)
           {
@@ -434,8 +450,7 @@ free_basic_test_double_array (basic_test_double_array *ptr)
         free (ptr->objectarrays);
         ptr->objectarrays = NULL;
       }
-    if (ptr->refobjarrays != NULL)
-      {
+    if (ptr->refobjarrays != NULL)      {
         size_t i;
         for (i = 0; i < ptr->refobjarrays_len; i++)
           {
@@ -644,12 +659,103 @@ gen_basic_test_double_array (yajl_gen g, const basic_test_double_array *ptr, con
     return yajl_gen_status_ok;
 }
 
+basic_test_double_array *
+clone_basic_test_double_array (basic_test_double_array *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_basic_test_double_array) basic_test_double_array *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->strarrays)
+      {
+        ret->strarrays_len = src->strarrays_len;
+        ret->strarrays = calloc (src->strarrays_len + 1, sizeof (*ret->strarrays));
+        if (ret->strarrays == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->strarrays_len; i++)
+          {
+            ret->strarrays[i] = calloc (ret->strarrays_item_lens[i] + 1, sizeof (**ret->strarrays[i]));
+            if (ret->strarrays[i] == NULL)
+                return NULL;
+            for (size_t j = 0; j < src->strarrays_item_lens[i]; j++)
+              {
+                ret->strarrays[i][j] = strdup (src->strarrays[i][j]);
+                if (ret->strarrays[i][j] == NULL)
+                    return NULL;
+              }
+          }
+      }
+    if (src->intarrays)
+      {
+        ret->intarrays_len = src->intarrays_len;
+        ret->intarrays = calloc (src->intarrays_len + 1, sizeof (*ret->intarrays));
+        if (ret->intarrays == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->intarrays_len; i++)
+          {
+            ret->intarrays[i] = src->intarrays[i];
+          }
+      }
+    if (src->boolarrays)
+      {
+        ret->boolarrays_len = src->boolarrays_len;
+        ret->boolarrays = calloc (src->boolarrays_len + 1, sizeof (*ret->boolarrays));
+        if (ret->boolarrays == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->boolarrays_len; i++)
+          {
+            ret->boolarrays[i] = src->boolarrays[i];
+          }
+      }
+    if (src->objectarrays)
+      {
+        ret->objectarrays_len = src->objectarrays_len;
+        ret->objectarrays = calloc (src->objectarrays_len + 1, sizeof (*ret->objectarrays));
+        if (ret->objectarrays == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->objectarrays_len; i++)
+          {
+            ret->objectarrays_item_lens[i] = src->objectarrays_item_lens[i];
+            ret->objectarrays[i] = calloc (ret->objectarrays_item_lens[i] + 1, sizeof (**ret->objectarrays[i]));
+            if (ret->objectarrays[i] == NULL)
+                return NULL;
+            for (size_t j = 0; j < src->objectarrays_item_lens[i]; j++)
+              {
+                ret->objectarrays[i][j] = clone_basic_test_double_array_objectarrays_element (src->objectarrays[i][j]);
+                if (ret->objectarrays[i][j] == NULL)
+                    return NULL;
+              }
+          }
+      }
+    if (src->refobjarrays)
+      {
+        ret->refobjarrays_len = src->refobjarrays_len;
+        ret->refobjarrays = calloc (src->refobjarrays_len + 1, sizeof (*ret->refobjarrays));
+        if (ret->refobjarrays == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->refobjarrays_len; i++)
+          {
+            ret->refobjarrays_item_lens[i] = src->refobjarrays_item_lens[i];
+            ret->refobjarrays[i] = calloc (ret->refobjarrays_item_lens[i] + 1, sizeof (**ret->refobjarrays[i]));
+            if (ret->refobjarrays[i] == NULL)
+                return NULL;
+            for (size_t j = 0; j < src->refobjarrays_item_lens[i]; j++)
+              {
+                ret->refobjarrays[i][j] = clone_basic_test_double_array_item (src->refobjarrays[i][j]);
+                if (ret->refobjarrays[i][j] == NULL)
+                    return NULL;
+              }
+          }
+      }
+    return move_ptr (ret);
+}
+
 
 basic_test_double_array *
 basic_test_double_array_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-    basic_test_double_array *ptr = NULL;
-    size_t filesize;
+basic_test_double_array *ptr = NULL;size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -662,16 +768,12 @@ basic_test_double_array_parse_file (const char *filename, const struct parser_co
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }
-    ptr = basic_test_double_array_parse_data (content, ctx, err);
-    return ptr;
+      }ptr = basic_test_double_array_parse_data (content, ctx, err);return ptr;
 }
-
-basic_test_double_array *
+basic_test_double_array * 
 basic_test_double_array_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{
-    basic_test_double_array *ptr = NULL;
-    size_t filesize;
+{basic_test_double_array *ptr = NULL;
+size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -684,17 +786,14 @@ basic_test_double_array_parse_file_stream (FILE *stream, const struct parser_con
         *err = strdup ("cannot read the file");
         return NULL;
       }
-    ptr = basic_test_double_array_parse_data (content, ctx, err);
-    return ptr;
+ptr = basic_test_double_array_parse_data (content, ctx, err);return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
-basic_test_double_array *
-basic_test_double_array_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
-{
-    basic_test_double_array *ptr = NULL;
-    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+ basic_test_double_array * basic_test_double_array_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+ { 
+  basic_test_double_array *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -712,8 +811,7 @@ basic_test_double_array_parse_data (const char *jsondata, const struct parser_co
             *err = strdup ("error allocating memory");
         return NULL;
       }
-    ptr = make_basic_test_double_array (tree, ctx, err);
-    return ptr;
+ptr = make_basic_test_double_array (tree, ctx, err);return ptr; 
 }
 
 static void
@@ -728,9 +826,8 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
-char *
-basic_test_double_array_generate_json (const basic_test_double_array *ptr, const struct parser_context *ctx, parser_error *err)
-{
+ char * 
+basic_test_double_array_generate_json (const basic_test_double_array *ptr, const struct parser_context *ctx, parser_error *err){
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -748,10 +845,9 @@ basic_test_double_array_generate_json (const basic_test_double_array *ptr, const
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      }
+      } 
 
-    if (yajl_gen_status_ok != gen_basic_test_double_array (g, ptr, ctx, err))
-      {
+if (yajl_gen_status_ok != gen_basic_test_double_array (g, ptr, ctx, err))  {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

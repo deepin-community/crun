@@ -29,6 +29,7 @@ runtime_spec_schema_defs_hook;
 
 void free_runtime_spec_schema_defs_hook (runtime_spec_schema_defs_hook *ptr);
 
+runtime_spec_schema_defs_hook *clone_runtime_spec_schema_defs_hook (runtime_spec_schema_defs_hook *src);
 runtime_spec_schema_defs_hook *make_runtime_spec_schema_defs_hook (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_defs_hook (yajl_gen g, const runtime_spec_schema_defs_hook *ptr, const struct parser_context *ctx, parser_error *err);
@@ -50,6 +51,7 @@ runtime_spec_schema_defs_id_mapping;
 
 void free_runtime_spec_schema_defs_id_mapping (runtime_spec_schema_defs_id_mapping *ptr);
 
+runtime_spec_schema_defs_id_mapping *clone_runtime_spec_schema_defs_id_mapping (runtime_spec_schema_defs_id_mapping *src);
 runtime_spec_schema_defs_id_mapping *make_runtime_spec_schema_defs_id_mapping (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_defs_id_mapping (yajl_gen g, const runtime_spec_schema_defs_id_mapping *ptr, const struct parser_context *ctx, parser_error *err);
@@ -76,6 +78,7 @@ runtime_spec_schema_defs_mount;
 
 void free_runtime_spec_schema_defs_mount (runtime_spec_schema_defs_mount *ptr);
 
+runtime_spec_schema_defs_mount *clone_runtime_spec_schema_defs_mount (runtime_spec_schema_defs_mount *src);
 runtime_spec_schema_defs_mount *make_runtime_spec_schema_defs_mount (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_defs_mount (yajl_gen g, const runtime_spec_schema_defs_mount *ptr, const struct parser_context *ctx, parser_error *err);

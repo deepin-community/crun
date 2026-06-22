@@ -63,16 +63,19 @@ minutes for all prior meetings.
 
 You can subscribe and join the mailing list on [Google Groups][dev-list].
 
-### IRC
+### Chat
 
-OCI discussion happens on #opencontainers on Freenode ([logs][irc-logs]).
+OCI discussion happens in the following chat rooms, which are all bridged together:
+
+- #general channel on [OCI Slack](https://opencontainers.org/community/overview/#chat)
+- #opencontainers:matrix.org
 
 ### Git commit
 
 #### Sign your work
 
 The sign-off is a simple line at the end of the explanation for the patch, which certifies that you wrote it or otherwise have the right to pass it on as an open-source patch.
-The rules are pretty simple: if you can certify the below (from http://developercertificate.org):
+The rules are pretty simple: if you can certify the below (from https://developercertificate.org):
 
 ```
 Developer Certificate of Origin
@@ -140,13 +143,12 @@ Read more on [How to Write a Git Commit Message][how-to-git-commit] or the Discu
 [charter]: https://github.com/opencontainers/tob/blob/master/CHARTER.md
 [code-of-conduct]: https://github.com/opencontainers/org/blob/master/CODE_OF_CONDUCT.md
 [dev-list]: https://groups.google.com/a/opencontainers.org/forum/#!forum/dev
-[how-to-git-commit]: http://chris.beams.io/posts/git-commit
-[irc-logs]: http://ircbot.wl.linuxfoundation.org/eavesdrop/%23opencontainers/
+[how-to-git-commit]: https://cbea.ms/git-commit/
 [iso-week]: https://en.wikipedia.org/wiki/ISO_week_date#Calculating_the_week_number_of_a_given_date
-[minutes]: http://ircbot.wl.linuxfoundation.org/meetings/opencontainers/
+[minutes]: https://ircbot.wl.linuxfoundation.org/meetings/opencontainers/
 [oci]: https://www.opencontainers.org
 [rfc5545]: https://tools.ietf.org/html/rfc5545
 [runtime-wiki]: https://github.com/opencontainers/runtime-spec/wiki
 [uberconference]: https://www.uberconference.com/opencontainers
 
-[git-commit.1]: http://git-scm.com/docs/git-commit
+[git-commit.1]: https://git-scm.com/docs/git-commit
