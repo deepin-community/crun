@@ -10,18 +10,14 @@
 #define YAJL_GET_ARRAY_NO_CHECK(v) (&(v)->u.array)
 #define YAJL_GET_OBJECT_NO_CHECK(v) (&(v)->u.object)
 
-
 define_cleaner_function (basic_test_top_array_int_container *, free_basic_test_top_array_int_container)
-
 basic_test_top_array_int_container
 *make_basic_test_top_array_int_container (yajl_val tree, const struct parser_context *ctx, parser_error *err)
 {
     __auto_cleanup(free_basic_test_top_array_int_container) basic_test_top_array_int_container *ptr = NULL;
     size_t i, alen;
-
-    (void) ctx;
-
-    if (tree == NULL || err == NULL || YAJL_GET_ARRAY (tree) == NULL)
+     (void) ctx;
+     if (tree == NULL || err == NULL || YAJL_GET_ARRAY (tree) == NULL)
       return NULL;
     *err = NULL;
     alen = YAJL_GET_ARRAY_NO_CHECK (tree)->len;
@@ -81,8 +77,6 @@ void free_basic_test_top_array_int_container (basic_test_top_array_int_container
 
     free (ptr);
 }
-
-
 yajl_gen_status gen_basic_test_top_array_int_container (yajl_gen g, const basic_test_top_array_int_container *ptr, const struct parser_context *ctx,
                        parser_error *err)
 {
@@ -120,8 +114,7 @@ yajl_gen_status gen_basic_test_top_array_int_container (yajl_gen g, const basic_
 basic_test_top_array_int_container *
 basic_test_top_array_int_container_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-    basic_test_top_array_int_container *ptr = NULL;
-    size_t filesize;
+basic_test_top_array_int_container *ptr = NULL;size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -134,16 +127,12 @@ basic_test_top_array_int_container_parse_file (const char *filename, const struc
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }
-    ptr = basic_test_top_array_int_container_parse_data (content, ctx, err);
-    return ptr;
+      }ptr = basic_test_top_array_int_container_parse_data (content, ctx, err);return ptr;
 }
-
-basic_test_top_array_int_container *
+basic_test_top_array_int_container * 
 basic_test_top_array_int_container_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{
-    basic_test_top_array_int_container *ptr = NULL;
-    size_t filesize;
+{basic_test_top_array_int_container *ptr = NULL;
+size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -156,17 +145,14 @@ basic_test_top_array_int_container_parse_file_stream (FILE *stream, const struct
         *err = strdup ("cannot read the file");
         return NULL;
       }
-    ptr = basic_test_top_array_int_container_parse_data (content, ctx, err);
-    return ptr;
+ptr = basic_test_top_array_int_container_parse_data (content, ctx, err);return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
-basic_test_top_array_int_container *
-basic_test_top_array_int_container_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
-{
-    basic_test_top_array_int_container *ptr = NULL;
-    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+ basic_test_top_array_int_container * basic_test_top_array_int_container_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+ { 
+  basic_test_top_array_int_container *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -184,8 +170,7 @@ basic_test_top_array_int_container_parse_data (const char *jsondata, const struc
             *err = strdup ("error allocating memory");
         return NULL;
       }
-    ptr = make_basic_test_top_array_int_container (tree, ctx, err);
-    return ptr;
+ptr = make_basic_test_top_array_int_container (tree, ctx, err);return ptr; 
 }
 
 static void
@@ -200,9 +185,8 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
-char *
-basic_test_top_array_int_container_generate_json (const basic_test_top_array_int_container *ptr, const struct parser_context *ctx, parser_error *err)
-{
+ char * 
+basic_test_top_array_int_container_generate_json (const basic_test_top_array_int_container *ptr, const struct parser_context *ctx, parser_error *err){
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -220,10 +204,9 @@ basic_test_top_array_int_container_generate_json (const basic_test_top_array_int
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      }
+      } 
 
-    if (yajl_gen_status_ok != gen_basic_test_top_array_int_container (g, ptr, ctx, err))
-      {
+if (yajl_gen_status_ok != gen_basic_test_top_array_int_container (g, ptr, ctx, err))  {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

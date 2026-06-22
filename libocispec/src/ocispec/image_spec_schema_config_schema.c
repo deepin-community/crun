@@ -218,8 +218,7 @@ make_image_spec_schema_config_schema_config (yajl_val tree, const struct parser_
                 && strcmp (tree->u.object.keys[i], "WorkingDir")
                 && strcmp (tree->u.object.keys[i], "Labels")
                 && strcmp (tree->u.object.keys[i], "StopSignal")
-                && strcmp (tree->u.object.keys[i], "ArgsEscaped"))
-              {
+                && strcmp (tree->u.object.keys[i], "ArgsEscaped")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -231,13 +230,12 @@ make_image_spec_schema_config_schema_config (yajl_val tree, const struct parser_
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -434,7 +432,7 @@ gen_image_spec_schema_config_schema_config (yajl_gen g, const image_spec_schema_
       }
     if ((ctx->options & OPT_GEN_KEY_VALUE) || (ptr != NULL && ptr->labels != NULL))
       {
-        stat = yajl_gen_string ((yajl_gen) g, (const unsigned char *)("Labels"), 6 /* strlen ("Labels") */);
+        stat = yajl_gen_string ((yajl_gen) g, (const unsigned char *)("labels"), 6 /* strlen ("labels") */);
         if (stat != yajl_gen_status_ok)
             GEN_SET_ERROR_AND_RETURN (stat, err);
         stat = gen_json_map_string_string (g, ptr ? ptr->labels : NULL, ctx, err);
@@ -476,6 +474,132 @@ gen_image_spec_schema_config_schema_config (yajl_gen g, const image_spec_schema_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+image_spec_schema_config_schema_config *
+clone_image_spec_schema_config_schema_config (image_spec_schema_config_schema_config *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_image_spec_schema_config_schema_config) image_spec_schema_config_schema_config *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->user)
+      {
+        ret->user = strdup (src->user);
+        if (ret->user == NULL)
+          return NULL;
+      }
+    if (src->exposed_ports)
+      {
+        ret->exposed_ports = calloc (1, sizeof (image_spec_schema_defs_map_string_object));
+        if (ret->exposed_ports == NULL)
+            return NULL;
+        ret->exposed_ports->len = src->exposed_ports->len;
+        ret->exposed_ports->keys = calloc (src->exposed_ports->len + 1, sizeof (char *));
+        if (ret->exposed_ports->keys == NULL)
+            return NULL;
+        ret->exposed_ports->values = calloc (src->exposed_ports->len + 1, sizeof (*ret->exposed_ports->values));
+        if (ret->exposed_ports->values == NULL)
+            return NULL;
+        for (size_t i = 0; i < ret->exposed_ports->len; i++)
+          {
+            ret->exposed_ports->keys[i] = strdup (src->exposed_ports->keys[i]);
+            if (ret->exposed_ports->keys[i] == NULL)
+              return NULL;
+            ret->exposed_ports->values[i] = clone_image_spec_schema_defs_map_string_object_element (src->exposed_ports->values[i]);
+            if (ret->exposed_ports->values[i] == NULL)
+              return NULL;
+          }
+      }
+    if (src->env)
+      {
+        ret->env_len = src->env_len;
+        ret->env = calloc (src->env_len + 1, sizeof (*ret->env));
+        if (ret->env == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->env_len; i++)
+          {
+            if (src->env[i])
+              {
+                ret->env[i] = strdup (src->env[i]);
+                if (ret->env[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->entrypoint)
+      {
+        ret->entrypoint_len = src->entrypoint_len;
+        ret->entrypoint = calloc (src->entrypoint_len + 1, sizeof (*ret->entrypoint));
+        if (ret->entrypoint == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->entrypoint_len; i++)
+          {
+            if (src->entrypoint[i])
+              {
+                ret->entrypoint[i] = strdup (src->entrypoint[i]);
+                if (ret->entrypoint[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->cmd)
+      {
+        ret->cmd_len = src->cmd_len;
+        ret->cmd = calloc (src->cmd_len + 1, sizeof (*ret->cmd));
+        if (ret->cmd == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->cmd_len; i++)
+          {
+            if (src->cmd[i])
+              {
+                ret->cmd[i] = strdup (src->cmd[i]);
+                if (ret->cmd[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->volumes)
+      {
+        ret->volumes = calloc (1, sizeof (image_spec_schema_defs_map_string_object));
+        if (ret->volumes == NULL)
+            return NULL;
+        ret->volumes->len = src->volumes->len;
+        ret->volumes->keys = calloc (src->volumes->len + 1, sizeof (char *));
+        if (ret->volumes->keys == NULL)
+            return NULL;
+        ret->volumes->values = calloc (src->volumes->len + 1, sizeof (*ret->volumes->values));
+        if (ret->volumes->values == NULL)
+            return NULL;
+        for (size_t i = 0; i < ret->volumes->len; i++)
+          {
+            ret->volumes->keys[i] = strdup (src->volumes->keys[i]);
+            if (ret->volumes->keys[i] == NULL)
+              return NULL;
+            ret->volumes->values[i] = clone_image_spec_schema_defs_map_string_object_element (src->volumes->values[i]);
+            if (ret->volumes->values[i] == NULL)
+              return NULL;
+          }
+      }
+    if (src->working_dir)
+      {
+        ret->working_dir = strdup (src->working_dir);
+        if (ret->working_dir == NULL)
+          return NULL;
+      }
+    ret->labels = clone_map_string_string (src->labels);
+    if (ret->labels == NULL)
+        return NULL;
+    if (src->stop_signal)
+      {
+        ret->stop_signal = strdup (src->stop_signal);
+        if (ret->stop_signal == NULL)
+          return NULL;
+      }
+    ret->args_escaped = src->args_escaped;
+    ret->args_escaped_present = src->args_escaped_present;
+    return move_ptr (ret);
 }
 
 define_cleaner_function (image_spec_schema_config_schema_rootfs *, free_image_spec_schema_config_schema_rootfs)
@@ -572,8 +696,7 @@ make_image_spec_schema_config_schema_rootfs (yajl_val tree, const struct parser_
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "diff_ids")
-                && strcmp (tree->u.object.keys[i], "type"))
-              {
+                && strcmp (tree->u.object.keys[i], "type")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -585,13 +708,12 @@ make_image_spec_schema_config_schema_rootfs (yajl_val tree, const struct parser_
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -678,6 +800,39 @@ gen_image_spec_schema_config_schema_rootfs (yajl_gen g, const image_spec_schema_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+image_spec_schema_config_schema_rootfs *
+clone_image_spec_schema_config_schema_rootfs (image_spec_schema_config_schema_rootfs *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_image_spec_schema_config_schema_rootfs) image_spec_schema_config_schema_rootfs *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->diff_ids)
+      {
+        ret->diff_ids_len = src->diff_ids_len;
+        ret->diff_ids = calloc (src->diff_ids_len + 1, sizeof (*ret->diff_ids));
+        if (ret->diff_ids == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->diff_ids_len; i++)
+          {
+            if (src->diff_ids[i])
+              {
+                ret->diff_ids[i] = strdup (src->diff_ids[i]);
+                if (ret->diff_ids[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->type)
+      {
+        ret->type = strdup (src->type);
+        if (ret->type == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
 }
 
 define_cleaner_function (image_spec_schema_config_schema_history_element *, free_image_spec_schema_config_schema_history_element)
@@ -852,6 +1007,43 @@ gen_image_spec_schema_config_schema_history_element (yajl_gen g, const image_spe
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+image_spec_schema_config_schema_history_element *
+clone_image_spec_schema_config_schema_history_element (image_spec_schema_config_schema_history_element *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_image_spec_schema_config_schema_history_element) image_spec_schema_config_schema_history_element *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->created)
+      {
+        ret->created = strdup (src->created);
+        if (ret->created == NULL)
+          return NULL;
+      }
+    if (src->author)
+      {
+        ret->author = strdup (src->author);
+        if (ret->author == NULL)
+          return NULL;
+      }
+    if (src->created_by)
+      {
+        ret->created_by = strdup (src->created_by);
+        if (ret->created_by == NULL)
+          return NULL;
+      }
+    if (src->comment)
+      {
+        ret->comment = strdup (src->comment);
+        if (ret->comment == NULL)
+          return NULL;
+      }
+    ret->empty_layer = src->empty_layer;
+    ret->empty_layer_present = src->empty_layer_present;
+    return move_ptr (ret);
 }
 
 define_cleaner_function (image_spec_schema_config_schema *, free_image_spec_schema_config_schema)
@@ -1050,8 +1242,7 @@ make_image_spec_schema_config_schema (yajl_val tree, const struct parser_context
                 && strcmp (tree->u.object.keys[i], "os.features")
                 && strcmp (tree->u.object.keys[i], "config")
                 && strcmp (tree->u.object.keys[i], "rootfs")
-                && strcmp (tree->u.object.keys[i], "history"))
-              {
+                && strcmp (tree->u.object.keys[i], "history")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1063,13 +1254,12 @@ make_image_spec_schema_config_schema (yajl_val tree, const struct parser_context
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1115,8 +1305,7 @@ free_image_spec_schema_config_schema (image_spec_schema_config_schema *ptr)
         free_image_spec_schema_config_schema_rootfs (ptr->rootfs);
         ptr->rootfs = NULL;
       }
-    if (ptr->history != NULL)
-      {
+    if (ptr->history != NULL)      {
         size_t i;
         for (i = 0; i < ptr->history_len; i++)
           {
@@ -1295,12 +1484,99 @@ gen_image_spec_schema_config_schema (yajl_gen g, const image_spec_schema_config_
     return yajl_gen_status_ok;
 }
 
+image_spec_schema_config_schema *
+clone_image_spec_schema_config_schema (image_spec_schema_config_schema *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_image_spec_schema_config_schema) image_spec_schema_config_schema *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->created)
+      {
+        ret->created = strdup (src->created);
+        if (ret->created == NULL)
+          return NULL;
+      }
+    if (src->author)
+      {
+        ret->author = strdup (src->author);
+        if (ret->author == NULL)
+          return NULL;
+      }
+    if (src->architecture)
+      {
+        ret->architecture = strdup (src->architecture);
+        if (ret->architecture == NULL)
+          return NULL;
+      }
+    if (src->variant)
+      {
+        ret->variant = strdup (src->variant);
+        if (ret->variant == NULL)
+          return NULL;
+      }
+    if (src->os)
+      {
+        ret->os = strdup (src->os);
+        if (ret->os == NULL)
+          return NULL;
+      }
+    if (src->os_version)
+      {
+        ret->os_version = strdup (src->os_version);
+        if (ret->os_version == NULL)
+          return NULL;
+      }
+    if (src->os_features)
+      {
+        ret->os_features_len = src->os_features_len;
+        ret->os_features = calloc (src->os_features_len + 1, sizeof (*ret->os_features));
+        if (ret->os_features == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->os_features_len; i++)
+          {
+            if (src->os_features[i])
+              {
+                ret->os_features[i] = strdup (src->os_features[i]);
+                if (ret->os_features[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->config)
+      {
+        ret->config = clone_image_spec_schema_config_schema_config (src->config);
+        if (ret->config == NULL)
+          return NULL;
+      }
+    if (src->rootfs)
+      {
+        ret->rootfs = clone_image_spec_schema_config_schema_rootfs (src->rootfs);
+        if (ret->rootfs == NULL)
+          return NULL;
+      }
+    if (src->history)
+      {
+        ret->history_len = src->history_len;
+        ret->history = calloc (src->history_len + 1, sizeof (*ret->history));
+        if (ret->history == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->history_len; i++)
+          {
+            ret->history[i] = clone_image_spec_schema_config_schema_history_element (src->history[i]);
+            if (ret->history[i] == NULL)
+                return NULL;
+          }
+      }
+    return move_ptr (ret);
+}
+
 
 image_spec_schema_config_schema *
 image_spec_schema_config_schema_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-    image_spec_schema_config_schema *ptr = NULL;
-    size_t filesize;
+image_spec_schema_config_schema *ptr = NULL;size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -1313,16 +1589,12 @@ image_spec_schema_config_schema_parse_file (const char *filename, const struct p
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }
-    ptr = image_spec_schema_config_schema_parse_data (content, ctx, err);
-    return ptr;
+      }ptr = image_spec_schema_config_schema_parse_data (content, ctx, err);return ptr;
 }
-
-image_spec_schema_config_schema *
+image_spec_schema_config_schema * 
 image_spec_schema_config_schema_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{
-    image_spec_schema_config_schema *ptr = NULL;
-    size_t filesize;
+{image_spec_schema_config_schema *ptr = NULL;
+size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -1335,17 +1607,14 @@ image_spec_schema_config_schema_parse_file_stream (FILE *stream, const struct pa
         *err = strdup ("cannot read the file");
         return NULL;
       }
-    ptr = image_spec_schema_config_schema_parse_data (content, ctx, err);
-    return ptr;
+ptr = image_spec_schema_config_schema_parse_data (content, ctx, err);return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
-image_spec_schema_config_schema *
-image_spec_schema_config_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
-{
-    image_spec_schema_config_schema *ptr = NULL;
-    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+ image_spec_schema_config_schema * image_spec_schema_config_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+ { 
+  image_spec_schema_config_schema *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -1363,8 +1632,7 @@ image_spec_schema_config_schema_parse_data (const char *jsondata, const struct p
             *err = strdup ("error allocating memory");
         return NULL;
       }
-    ptr = make_image_spec_schema_config_schema (tree, ctx, err);
-    return ptr;
+ptr = make_image_spec_schema_config_schema (tree, ctx, err);return ptr; 
 }
 
 static void
@@ -1379,9 +1647,8 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
-char *
-image_spec_schema_config_schema_generate_json (const image_spec_schema_config_schema *ptr, const struct parser_context *ctx, parser_error *err)
-{
+ char * 
+image_spec_schema_config_schema_generate_json (const image_spec_schema_config_schema *ptr, const struct parser_context *ctx, parser_error *err){
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -1399,10 +1666,9 @@ image_spec_schema_config_schema_generate_json (const image_spec_schema_config_sc
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      }
+      } 
 
-    if (yajl_gen_status_ok != gen_image_spec_schema_config_schema (g, ptr, ctx, err))
-      {
+if (yajl_gen_status_ok != gen_image_spec_schema_config_schema (g, ptr, ctx, err))  {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

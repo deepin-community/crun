@@ -9,22 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: ['1.18', '1.19', '1.20']
+        # current Go releases plus the version in the go.mod are tested
+        go: ['1.18', '1.22', '1.23']
+
+    env:
+      RELEASE_GO_VER: "1.23"
 
     name: Documentation and Linting
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: go/src/github.com/opencontainers/image-spec
 
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go }}
 
       - name: Render and Lint
         env:
           GOPATH: /home/runner/work/image-spec/image-spec/go
+          # do not automatically upgrade go to a different version: https://go.dev/doc/toolchain
+          GOTOOLCHAIN: local
         run: |
           export PATH=$GOPATH/bin:$PATH
           cd go/src/github.com/opencontainers/image-spec
@@ -39,7 +45,8 @@ jobs:
           make docs
 
       - name: documentation artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
+        if: matrix.go == env.RELEASE_GO_VER
         with:
           name: oci-docs
           path: go/src/github.com/opencontainers/image-spec/output

@@ -29,6 +29,7 @@ enum
   CGROUP_CPUSET = 1 << 3,
   CGROUP_PIDS = 1 << 4,
   CGROUP_IO = 1 << 5,
+  CGROUP_MISC = 1 << 6,
 };
 
 struct libcrun_cgroup_status
@@ -47,7 +48,7 @@ struct libcrun_cgroup_manager
   /* Destroy the cgroup and kill any process if needed.  */
   int (*destroy_cgroup) (struct libcrun_cgroup_status *cgroup_status, libcrun_error_t *err);
   /* Additional resources configuration specific to this manager.  */
-  int (*update_resources) (struct libcrun_cgroup_status *cgroup_status, runtime_spec_schema_config_linux_resources *resources, libcrun_error_t *err);
+  int (*update_resources) (struct libcrun_cgroup_status *cgroup_status, const char *state_root, runtime_spec_schema_config_linux_resources *resources, libcrun_error_t *err);
 };
 
 int move_process_to_cgroup (pid_t pid, const char *subsystem, const char *path, libcrun_error_t *err);
@@ -55,7 +56,6 @@ int enter_cgroup_subsystem (pid_t pid, const char *subsystem, const char *path, 
                             libcrun_error_t *err);
 int enable_controllers (const char *path, libcrun_error_t *err);
 int chown_cgroups (const char *path, uid_t uid, gid_t gid, libcrun_error_t *err);
-int destroy_cgroup_path (const char *path, int mode, libcrun_error_t *err);
 int cgroup_killall_path (const char *path, int signal, libcrun_error_t *err);
 
 int libcrun_cgroup_read_pids_from_path (const char *path, bool recurse, pid_t **pids, libcrun_error_t *err);

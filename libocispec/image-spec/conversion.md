@@ -19,9 +19,6 @@ Externally provided inputs are considered to be a modification of the `applicati
 For example, externally provided inputs MAY cause an environment variable to be added, removed or changed.
 However an implementation-defined default SHOULD NOT result in an environment variable being removed or changed.
 
-[oci-runtime-bundle]: https://github.com/opencontainers/runtime-spec/blob/v1.0.0/bundle.md
-[oci-runtime-config]: https://github.com/opencontainers/runtime-spec/blob/v1.0.0/config.md
-
 ## Verbatim Fields
 
 Certain image configuration fields have an identical counterpart in the runtime configuration.
@@ -47,8 +44,8 @@ These fields all affect the `annotations` of the runtime configuration, and are 
 | `os`                | `annotations`   | 1,2   |
 | `architecture`      | `annotations`   | 1,3   |
 | `variant`           | `annotations`   | 1,4   |
-| `os.version`         | `annotations`   | 1,5   |
-| `os.features`        | `annotations`   | 1,6   |
+| `os.version`        | `annotations`   | 1,5   |
+| `os.features`       | `annotations`   | 1,6   |
 | `author`            | `annotations`   | 1,7   |
 | `created`           | `annotations`   | 1,8   |
 | `Config.Labels`     | `annotations`   |       |
@@ -99,7 +96,7 @@ A compliant configuration converter SHOULD provide a way for users to extract th
 | `Config.Volumes`      | `mounts`           | 2     |
 
 1. The runtime configuration does not have a corresponding field for this image field.
-   However, converters SHOULD set the [`org.opencontainers.image.exposedPorts` annotation](#config.exposedports).
+   However, converters SHOULD set the [`org.opencontainers.image.exposedPorts` annotation](#configexposedports).
 2. Implementations SHOULD provide mounts for these locations such that application data is not written to the container's root filesystem.
    If a converter implements conversion for this field using mountpoints, it SHOULD set the `destination` of the mountpoint to the value specified in `Config.Volumes`.
    An implementation MAY seed the contents of the mount with data in the image at the same location.
@@ -128,3 +125,6 @@ If there is a conflict (same key but different value) between an implicit annota
 
 A converter MAY add annotations which have keys not specified in the image.
 A converter MUST NOT modify the values of annotations specified in the image.
+
+[oci-runtime-bundle]: https://github.com/opencontainers/runtime-spec/blob/main/bundle.md
+[oci-runtime-config]: https://github.com/opencontainers/runtime-spec/blob/main/config.md

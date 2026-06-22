@@ -74,8 +74,7 @@ make_runtime_spec_schema_config_windows_resources_memory (yajl_val tree, const s
 
         for (i = 0; i < tree->u.object.len; i++)
           {
-            if (strcmp (tree->u.object.keys[i], "limit"))
-              {
+            if (strcmp (tree->u.object.keys[i], "limit")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -87,13 +86,12 @@ make_runtime_spec_schema_config_windows_resources_memory (yajl_val tree, const s
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -139,6 +137,19 @@ gen_runtime_spec_schema_config_windows_resources_memory (yajl_gen g, const runti
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows_resources_memory *
+clone_runtime_spec_schema_config_windows_resources_memory (runtime_spec_schema_config_windows_resources_memory *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_resources_memory) runtime_spec_schema_config_windows_resources_memory *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    ret->limit = src->limit;
+    ret->limit_present = src->limit_present;
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_windows_resources_cpu *, free_runtime_spec_schema_config_windows_resources_cpu)
@@ -252,8 +263,7 @@ make_runtime_spec_schema_config_windows_resources_cpu (yajl_val tree, const stru
           {
             if (strcmp (tree->u.object.keys[i], "count")
                 && strcmp (tree->u.object.keys[i], "shares")
-                && strcmp (tree->u.object.keys[i], "maximum"))
-              {
+                && strcmp (tree->u.object.keys[i], "maximum")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -265,13 +275,12 @@ make_runtime_spec_schema_config_windows_resources_cpu (yajl_val tree, const stru
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -341,6 +350,23 @@ gen_runtime_spec_schema_config_windows_resources_cpu (yajl_gen g, const runtime_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows_resources_cpu *
+clone_runtime_spec_schema_config_windows_resources_cpu (runtime_spec_schema_config_windows_resources_cpu *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_resources_cpu) runtime_spec_schema_config_windows_resources_cpu *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    ret->count = src->count;
+    ret->count_present = src->count_present;
+    ret->shares = src->shares;
+    ret->shares_present = src->shares_present;
+    ret->maximum = src->maximum;
+    ret->maximum_present = src->maximum_present;
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_windows_resources_storage *, free_runtime_spec_schema_config_windows_resources_storage)
@@ -454,8 +480,7 @@ make_runtime_spec_schema_config_windows_resources_storage (yajl_val tree, const 
           {
             if (strcmp (tree->u.object.keys[i], "iops")
                 && strcmp (tree->u.object.keys[i], "bps")
-                && strcmp (tree->u.object.keys[i], "sandboxSize"))
-              {
+                && strcmp (tree->u.object.keys[i], "sandboxSize")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -467,13 +492,12 @@ make_runtime_spec_schema_config_windows_resources_storage (yajl_val tree, const 
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -545,6 +569,23 @@ gen_runtime_spec_schema_config_windows_resources_storage (yajl_gen g, const runt
     return yajl_gen_status_ok;
 }
 
+runtime_spec_schema_config_windows_resources_storage *
+clone_runtime_spec_schema_config_windows_resources_storage (runtime_spec_schema_config_windows_resources_storage *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_resources_storage) runtime_spec_schema_config_windows_resources_storage *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    ret->iops = src->iops;
+    ret->iops_present = src->iops_present;
+    ret->bps = src->bps;
+    ret->bps_present = src->bps_present;
+    ret->sandbox_size = src->sandbox_size;
+    ret->sandbox_size_present = src->sandbox_size_present;
+    return move_ptr (ret);
+}
+
 define_cleaner_function (runtime_spec_schema_config_windows_resources *, free_runtime_spec_schema_config_windows_resources)
 runtime_spec_schema_config_windows_resources *
 make_runtime_spec_schema_config_windows_resources (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -599,8 +640,7 @@ make_runtime_spec_schema_config_windows_resources (yajl_val tree, const struct p
           {
             if (strcmp (tree->u.object.keys[i], "memory")
                 && strcmp (tree->u.object.keys[i], "cpu")
-                && strcmp (tree->u.object.keys[i], "storage"))
-              {
+                && strcmp (tree->u.object.keys[i], "storage")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -612,13 +652,12 @@ make_runtime_spec_schema_config_windows_resources (yajl_val tree, const struct p
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -694,6 +733,35 @@ gen_runtime_spec_schema_config_windows_resources (yajl_gen g, const runtime_spec
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows_resources *
+clone_runtime_spec_schema_config_windows_resources (runtime_spec_schema_config_windows_resources *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_resources) runtime_spec_schema_config_windows_resources *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->memory)
+      {
+        ret->memory = clone_runtime_spec_schema_config_windows_resources_memory (src->memory);
+        if (ret->memory == NULL)
+          return NULL;
+      }
+    if (src->cpu)
+      {
+        ret->cpu = clone_runtime_spec_schema_config_windows_resources_cpu (src->cpu);
+        if (ret->cpu == NULL)
+          return NULL;
+      }
+    if (src->storage)
+      {
+        ret->storage = clone_runtime_spec_schema_config_windows_resources_storage (src->storage);
+        if (ret->storage == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_windows_network *, free_runtime_spec_schema_config_windows_network)
@@ -838,8 +906,7 @@ make_runtime_spec_schema_config_windows_network (yajl_val tree, const struct par
                 && strcmp (tree->u.object.keys[i], "allowUnqualifiedDNSQuery")
                 && strcmp (tree->u.object.keys[i], "DNSSearchList")
                 && strcmp (tree->u.object.keys[i], "networkSharedContainerName")
-                && strcmp (tree->u.object.keys[i], "networkNamespace"))
-              {
+                && strcmp (tree->u.object.keys[i], "networkNamespace")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -851,13 +918,12 @@ make_runtime_spec_schema_config_windows_network (yajl_val tree, const struct par
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1012,6 +1078,63 @@ gen_runtime_spec_schema_config_windows_network (yajl_gen g, const runtime_spec_s
     return yajl_gen_status_ok;
 }
 
+runtime_spec_schema_config_windows_network *
+clone_runtime_spec_schema_config_windows_network (runtime_spec_schema_config_windows_network *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_network) runtime_spec_schema_config_windows_network *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->endpoint_list)
+      {
+        ret->endpoint_list_len = src->endpoint_list_len;
+        ret->endpoint_list = calloc (src->endpoint_list_len + 1, sizeof (*ret->endpoint_list));
+        if (ret->endpoint_list == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->endpoint_list_len; i++)
+          {
+            if (src->endpoint_list[i])
+              {
+                ret->endpoint_list[i] = strdup (src->endpoint_list[i]);
+                if (ret->endpoint_list[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    ret->allow_unqualified_dns_query = src->allow_unqualified_dns_query;
+    ret->allow_unqualified_dns_query_present = src->allow_unqualified_dns_query_present;
+    if (src->dns_search_list)
+      {
+        ret->dns_search_list_len = src->dns_search_list_len;
+        ret->dns_search_list = calloc (src->dns_search_list_len + 1, sizeof (*ret->dns_search_list));
+        if (ret->dns_search_list == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->dns_search_list_len; i++)
+          {
+            if (src->dns_search_list[i])
+              {
+                ret->dns_search_list[i] = strdup (src->dns_search_list[i]);
+                if (ret->dns_search_list[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->network_shared_container_name)
+      {
+        ret->network_shared_container_name = strdup (src->network_shared_container_name);
+        if (ret->network_shared_container_name == NULL)
+          return NULL;
+      }
+    if (src->network_namespace)
+      {
+        ret->network_namespace = strdup (src->network_namespace);
+        if (ret->network_namespace == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
+}
+
 define_cleaner_function (runtime_spec_schema_config_windows_credential_spec *, free_runtime_spec_schema_config_windows_credential_spec)
 runtime_spec_schema_config_windows_credential_spec *
 make_runtime_spec_schema_config_windows_credential_spec (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -1052,6 +1175,17 @@ gen_runtime_spec_schema_config_windows_credential_spec (yajl_gen g, const runtim
     if (!(ctx->options & OPT_GEN_SIMPLIFY))
         yajl_gen_config (g, yajl_gen_beautify, 1);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows_credential_spec *
+clone_runtime_spec_schema_config_windows_credential_spec (runtime_spec_schema_config_windows_credential_spec *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_credential_spec) runtime_spec_schema_config_windows_credential_spec *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_windows_hyperv *, free_runtime_spec_schema_config_windows_hyperv)
@@ -1109,8 +1243,7 @@ make_runtime_spec_schema_config_windows_hyperv (yajl_val tree, const struct pars
 
         for (i = 0; i < tree->u.object.len; i++)
           {
-            if (strcmp (tree->u.object.keys[i], "utilityVMPath"))
-              {
+            if (strcmp (tree->u.object.keys[i], "utilityVMPath")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1122,13 +1255,12 @@ make_runtime_spec_schema_config_windows_hyperv (yajl_val tree, const struct pars
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1176,6 +1308,23 @@ gen_runtime_spec_schema_config_windows_hyperv (yajl_gen g, const runtime_spec_sc
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows_hyperv *
+clone_runtime_spec_schema_config_windows_hyperv (runtime_spec_schema_config_windows_hyperv *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows_hyperv) runtime_spec_schema_config_windows_hyperv *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->utility_vm_path)
+      {
+        ret->utility_vm_path = strdup (src->utility_vm_path);
+        if (ret->utility_vm_path == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_windows *, free_runtime_spec_schema_config_windows)
@@ -1332,8 +1481,7 @@ make_runtime_spec_schema_config_windows (yajl_val tree, const struct parser_cont
                 && strcmp (tree->u.object.keys[i], "credentialSpec")
                 && strcmp (tree->u.object.keys[i], "servicing")
                 && strcmp (tree->u.object.keys[i], "ignoreFlushesDuringBoot")
-                && strcmp (tree->u.object.keys[i], "hyperv"))
-              {
+                && strcmp (tree->u.object.keys[i], "hyperv")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1345,13 +1493,12 @@ make_runtime_spec_schema_config_windows (yajl_val tree, const struct parser_cont
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1375,8 +1522,7 @@ free_runtime_spec_schema_config_windows (runtime_spec_schema_config_windows *ptr
         free (ptr->layer_folders);
         ptr->layer_folders = NULL;
     }
-    if (ptr->devices != NULL)
-      {
+    if (ptr->devices != NULL)      {
         size_t i;
         for (i = 0; i < ptr->devices_len; i++)
           {
@@ -1545,5 +1691,73 @@ gen_runtime_spec_schema_config_windows (yajl_gen g, const runtime_spec_schema_co
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_windows *
+clone_runtime_spec_schema_config_windows (runtime_spec_schema_config_windows *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_windows) runtime_spec_schema_config_windows *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->layer_folders)
+      {
+        ret->layer_folders_len = src->layer_folders_len;
+        ret->layer_folders = calloc (src->layer_folders_len + 1, sizeof (*ret->layer_folders));
+        if (ret->layer_folders == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->layer_folders_len; i++)
+          {
+            if (src->layer_folders[i])
+              {
+                ret->layer_folders[i] = strdup (src->layer_folders[i]);
+                if (ret->layer_folders[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->devices)
+      {
+        ret->devices_len = src->devices_len;
+        ret->devices = calloc (src->devices_len + 1, sizeof (*ret->devices));
+        if (ret->devices == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->devices_len; i++)
+          {
+            ret->devices[i] = clone_runtime_spec_schema_defs_windows_device (src->devices[i]);
+            if (ret->devices[i] == NULL)
+                return NULL;
+          }
+      }
+    if (src->resources)
+      {
+        ret->resources = clone_runtime_spec_schema_config_windows_resources (src->resources);
+        if (ret->resources == NULL)
+          return NULL;
+      }
+    if (src->network)
+      {
+        ret->network = clone_runtime_spec_schema_config_windows_network (src->network);
+        if (ret->network == NULL)
+          return NULL;
+      }
+    if (src->credential_spec)
+      {
+        ret->credential_spec = clone_runtime_spec_schema_config_windows_credential_spec (src->credential_spec);
+        if (ret->credential_spec == NULL)
+          return NULL;
+      }
+    ret->servicing = src->servicing;
+    ret->servicing_present = src->servicing_present;
+    ret->ignore_flushes_during_boot = src->ignore_flushes_during_boot;
+    ret->ignore_flushes_during_boot_present = src->ignore_flushes_during_boot_present;
+    if (src->hyperv)
+      {
+        ret->hyperv = clone_runtime_spec_schema_config_windows_hyperv (src->hyperv);
+        if (ret->hyperv == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
 }
 

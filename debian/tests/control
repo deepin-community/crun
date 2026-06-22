@@ -11,7 +11,9 @@
 Tests: upstream-test-suite
 Depends:
  @,
+ @recommends@,
  python-is-python3,
+ iptables,
 Restrictions:
  isolation-machine,
  build-needed,

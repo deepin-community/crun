@@ -44,6 +44,9 @@ enum
   OPTION_CONSOLE_SOCKET,
   OPTION_FILE_LOCKS,
   OPTION_MANAGE_CGROUPS_MODE,
+  OPTION_NETWORK_LOCK_METHOD,
+  OPTION_LSM_PROFILE,
+  OPTION_LSM_MOUNT_CONTEXT,
 };
 
 static char doc[] = "OCI runtime";
@@ -64,9 +67,12 @@ static struct argp_option options[]
         { "detach", 'd', 0, 0, "detach from the container's process", 0 },
         { "pid-file", OPTION_PID_FILE, "FILE", 0, "where to write the PID of the container", 0 },
         { "console-socket", OPTION_CONSOLE_SOCKET, "SOCKET", 0,
-          "path to a socket that will receive the master end of the tty", 0 },
+          "path to a socket that will receive the ptmx end of the tty", 0 },
         { "file-locks", OPTION_FILE_LOCKS, 0, 0, "allow file locks", 0 },
         { "manage-cgroups-mode", OPTION_MANAGE_CGROUPS_MODE, "MODE", 0, "cgroups mode: 'soft' (default), 'ignore', 'full' and 'strict'", 0 },
+        { "network-lock", OPTION_NETWORK_LOCK_METHOD, 0, 0, "set network lock method", 0 },
+        { "lsm-profile", OPTION_LSM_PROFILE, "VALUE", 0, "Specify an LSM profile to be used during restore in the form of TYPE:NAME", 0 },
+        { "lsm-mount-context", OPTION_LSM_MOUNT_CONTEXT, "VALUE", 0, "Specify an LSM mount context to be used during restore", 0 },
         {
             0,
         } };
@@ -125,6 +131,18 @@ parse_opt (int key, char *arg, struct argp_state *state)
       cr_options.manage_cgroups_mode = crun_parse_manage_cgroups_mode (argp_mandatory_argument (arg, state));
       break;
 
+    case OPTION_NETWORK_LOCK_METHOD:
+      cr_options.network_lock_method = crun_parse_network_lock_method (argp_mandatory_argument (arg, state));
+      break;
+
+    case OPTION_LSM_PROFILE:
+      cr_options.lsm_profile = argp_mandatory_argument (arg, state);
+      break;
+
+    case OPTION_LSM_MOUNT_CONTEXT:
+      cr_options.lsm_mount_context = argp_mandatory_argument (arg, state);
+      break;
+
     default:
       return ARGP_ERR_UNKNOWN;
     }
@@ -168,6 +186,8 @@ crun_command_restore (struct crun_global_arguments *global_args, int argc, char 
   ret = init_libcrun_context (&crun_context, argv[first_arg], global_args, err);
   if (UNLIKELY (ret < 0))
     return ret;
+
+  cr_options.manage_cgroups_mode = -1;
 
   if (cr_options.image_path == NULL)
     {

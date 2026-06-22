@@ -1,13 +1,18 @@
 %global krun_opts %{nil}
 %global wasmedge_opts %{nil}
-%global wasmtime_opts %{nil}
+%global yajl_opts %{nil}
 
-# krun and wasm[edge,time] support only on aarch64 and x86_64
+%if %{defined copr_username}
+%define copr_build 1
+%endif
+
+# krun and wasm support only on aarch64 and x86_64
 %ifarch aarch64 || x86_64
-%global wasm_support 1
 
-# wasmedge not present on Fedora ELN environments
-%if !0%{?eln}
+# Disable wasmedge on rhel 10 until EPEL10 is in place, otherwise it causes
+# build issues on copr
+%if %{defined fedora} || (%{defined copr_build} && %{defined rhel} && 0%{?rhel} < 10)
+%global wasm_support 1
 %global wasmedge_support 1
 %global wasmedge_opts --with-wasmedge
 %endif
@@ -18,17 +23,17 @@
 %global krun_opts --with-libkrun
 %endif
 
-# wasmtime exists only on podman-next copr for now
-%if %{defined copr_project} && "%{?copr_project}" == "podman-next"
-%global wasmtime_support 1
-%global wasmtime_opts --with-wasmtime
 %endif
 
+%if %{defined fedora} || (%{defined rhel} && 0%{?rhel} < 10)
+%global system_yajl 1
+%else
+%global yajl_opts --enable-embedded-yajl
 %endif
 
 Summary: OCI runtime written in C
 Name: crun
-%if %{defined copr_username}
+%if %{defined copr_build}
 Epoch: 102
 %endif
 # DO NOT TOUCH the Version string!
@@ -40,7 +45,7 @@ Epoch: 102
 Version: 0
 Release: %autorelease
 URL: https://github.com/containers/%{name}
-Source0: %{url}/releases/download/%{version}/%{name}-%{version}.tar.xz
+Source0: %{url}/releases/download/%{version}/%{name}-%{version}.tar.zst
 License: GPL-2.0-only
 %if %{defined golang_arches_future}
 ExclusiveArch: %{golang_arches_future}
@@ -57,25 +62,22 @@ BuildRequires: libcap-devel
 BuildRequires: libkrun-devel
 %endif
 BuildRequires: systemd-devel
+%if %{defined system_yajl}
 BuildRequires: yajl-devel
+%endif
 BuildRequires: libseccomp-devel
 BuildRequires: python3-libmount
 BuildRequires: libtool
 BuildRequires: protobuf-c-devel
+%ifnarch riscv64
 BuildRequires: criu-devel >= 3.17.1-2
 Recommends: criu >= 3.17.1
 Recommends: criu-libs
+%endif
 %if %{defined wasmedge_support}
 BuildRequires: wasmedge-devel
 %endif
-%if %{defined wasmtime_support}
-BuildRequires: wasmtime-c-api-devel
-%endif
-%if %{defined rhel} && 0%{?rhel} == 8
-BuildRequires: python3
-%else
 BuildRequires: python
-%endif
 Provides: oci-runtime
 
 %description
@@ -96,7 +98,11 @@ krun is a symlink to the %{name} binary, with libkrun as an additional dependenc
 %package wasm
 Summary: %{name} with wasm support
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+# wasm packages are not present on RHEL yet and are currently a PITA to test
+# Best to only include wasmedge as weak dep on rhel
+%if %{defined fedora}
 Requires: wasm-library
+%endif
 Recommends: wasmedge
 
 %description wasm
@@ -108,20 +114,12 @@ Recommends: wasmedge
 
 %build
 ./autogen.sh
-./configure --disable-silent-rules %{krun_opts} %{wasmedge_opts} %{wasmtime_opts}
+./configure --disable-silent-rules %{krun_opts} %{wasmedge_opts} %{yajl_opts}
 %make_build
 
 %install
 %make_install prefix=%{_prefix}
 rm -rf %{buildroot}%{_prefix}/lib*
-
-%if %{defined krun_support}
-ln -s %{name} %{buildroot}%{_bindir}/krun
-%endif
-
-%if %{defined wasm_support}
-ln -s %{name} %{buildroot}%{_bindir}/%{name}-wasm
-%endif
 
 %files
 %license COPYING
@@ -142,12 +140,4 @@ ln -s %{name} %{buildroot}%{_bindir}/%{name}-wasm
 %endif
 
 %changelog
-%if %{defined autochangelog}
 %autochangelog
-%else
-# NOTE: This changelog will be visible on CentOS 8 Stream builds
-# Other envs are capable of handling autochangelog
-* Tue Jun 13 2023 RH Container Bot <rhcontainerbot@fedoraproject.org>
-- Placeholder changelog for envs that are not autochangelog-ready.
-- Contact upstream if you need to report an issue with the build.
-%endif

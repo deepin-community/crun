@@ -19,6 +19,7 @@ runtime_spec_schema_config_solaris_capped_cpu;
 
 void free_runtime_spec_schema_config_solaris_capped_cpu (runtime_spec_schema_config_solaris_capped_cpu *ptr);
 
+runtime_spec_schema_config_solaris_capped_cpu *clone_runtime_spec_schema_config_solaris_capped_cpu (runtime_spec_schema_config_solaris_capped_cpu *src);
 runtime_spec_schema_config_solaris_capped_cpu *make_runtime_spec_schema_config_solaris_capped_cpu (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_solaris_capped_cpu (yajl_gen g, const runtime_spec_schema_config_solaris_capped_cpu *ptr, const struct parser_context *ctx, parser_error *err);
@@ -34,6 +35,7 @@ runtime_spec_schema_config_solaris_capped_memory;
 
 void free_runtime_spec_schema_config_solaris_capped_memory (runtime_spec_schema_config_solaris_capped_memory *ptr);
 
+runtime_spec_schema_config_solaris_capped_memory *clone_runtime_spec_schema_config_solaris_capped_memory (runtime_spec_schema_config_solaris_capped_memory *src);
 runtime_spec_schema_config_solaris_capped_memory *make_runtime_spec_schema_config_solaris_capped_memory (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_solaris_capped_memory (yajl_gen g, const runtime_spec_schema_config_solaris_capped_memory *ptr, const struct parser_context *ctx, parser_error *err);
@@ -73,6 +75,7 @@ runtime_spec_schema_config_solaris;
 
 void free_runtime_spec_schema_config_solaris (runtime_spec_schema_config_solaris *ptr);
 
+runtime_spec_schema_config_solaris *clone_runtime_spec_schema_config_solaris (runtime_spec_schema_config_solaris *src);
 runtime_spec_schema_config_solaris *make_runtime_spec_schema_config_solaris (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_solaris (yajl_gen g, const runtime_spec_schema_config_solaris *ptr, const struct parser_context *ctx, parser_error *err);

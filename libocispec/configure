@@ -12405,6 +12405,67 @@ fi
 if test -z "$HAVE_EMBEDDED_YAJL_TRUE"; then :
   else
 
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing yajl_tree_get" >&5
+$as_echo_n "checking for library containing yajl_tree_get... " >&6; }
+if ${ac_cv_search_yajl_tree_get+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char yajl_tree_get ();
+int
+main ()
+{
+return yajl_tree_get ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' yajl; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_yajl_tree_get=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_yajl_tree_get+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_yajl_tree_get+:} false; then :
+
+else
+  ac_cv_search_yajl_tree_get=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_yajl_tree_get" >&5
+$as_echo "$ac_cv_search_yajl_tree_get" >&6; }
+ac_res=$ac_cv_search_yajl_tree_get
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+$as_echo "#define HAVE_YAJL 1" >>confdefs.h
+
+else
+  as_fn_error $? "*** libyajl headers not found" "$LINENO" 5
+fi
+
+
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for YAJL" >&5
 $as_echo_n "checking for YAJL... " >&6; }
@@ -12413,12 +12474,12 @@ if test -n "$YAJL_CFLAGS"; then
     pkg_cv_YAJL_CFLAGS="$YAJL_CFLAGS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"yajl >= 2.1.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "yajl >= 2.1.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"yajl >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "yajl >= 2.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_YAJL_CFLAGS=`$PKG_CONFIG --cflags "yajl >= 2.1.0" 2>/dev/null`
+  pkg_cv_YAJL_CFLAGS=`$PKG_CONFIG --cflags "yajl >= 2.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -12430,12 +12491,12 @@ if test -n "$YAJL_LIBS"; then
     pkg_cv_YAJL_LIBS="$YAJL_LIBS"
  elif test -n "$PKG_CONFIG"; then
     if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"yajl >= 2.1.0\""; } >&5
-  ($PKG_CONFIG --exists --print-errors "yajl >= 2.1.0") 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"yajl >= 2.0.0\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "yajl >= 2.0.0") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
-  pkg_cv_YAJL_LIBS=`$PKG_CONFIG --libs "yajl >= 2.1.0" 2>/dev/null`
+  pkg_cv_YAJL_LIBS=`$PKG_CONFIG --libs "yajl >= 2.0.0" 2>/dev/null`
 		      test "x$?" != "x0" && pkg_failed=yes
 else
   pkg_failed=yes
@@ -12456,14 +12517,14 @@ else
         _pkg_short_errors_supported=no
 fi
         if test $_pkg_short_errors_supported = yes; then
-	        YAJL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "yajl >= 2.1.0" 2>&1`
+	        YAJL_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "yajl >= 2.0.0" 2>&1`
         else
-	        YAJL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "yajl >= 2.1.0" 2>&1`
+	        YAJL_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "yajl >= 2.0.0" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$YAJL_PKG_ERRORS" >&5
 
-	as_fn_error $? "Package requirements (yajl >= 2.1.0) were not met:
+	as_fn_error $? "Package requirements (yajl >= 2.0.0) were not met:
 
 $YAJL_PKG_ERRORS
 
@@ -12495,6 +12556,7 @@ else
 $as_echo "yes" >&6; }
 
 fi
+
 fi
 
 # Optionally install the library.

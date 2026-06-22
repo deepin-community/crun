@@ -97,8 +97,7 @@ make_runtime_spec_schema_config_vm_hypervisor (yajl_val tree, const struct parse
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "path")
-                && strcmp (tree->u.object.keys[i], "parameters"))
-              {
+                && strcmp (tree->u.object.keys[i], "parameters")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -110,13 +109,12 @@ make_runtime_spec_schema_config_vm_hypervisor (yajl_val tree, const struct parse
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -203,6 +201,39 @@ gen_runtime_spec_schema_config_vm_hypervisor (yajl_gen g, const runtime_spec_sch
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_vm_hypervisor *
+clone_runtime_spec_schema_config_vm_hypervisor (runtime_spec_schema_config_vm_hypervisor *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_vm_hypervisor) runtime_spec_schema_config_vm_hypervisor *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->path)
+      {
+        ret->path = strdup (src->path);
+        if (ret->path == NULL)
+          return NULL;
+      }
+    if (src->parameters)
+      {
+        ret->parameters_len = src->parameters_len;
+        ret->parameters = calloc (src->parameters_len + 1, sizeof (*ret->parameters));
+        if (ret->parameters == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->parameters_len; i++)
+          {
+            if (src->parameters[i])
+              {
+                ret->parameters[i] = strdup (src->parameters[i]);
+                if (ret->parameters[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_vm_kernel *, free_runtime_spec_schema_config_vm_kernel)
@@ -306,8 +337,7 @@ make_runtime_spec_schema_config_vm_kernel (yajl_val tree, const struct parser_co
           {
             if (strcmp (tree->u.object.keys[i], "path")
                 && strcmp (tree->u.object.keys[i], "parameters")
-                && strcmp (tree->u.object.keys[i], "initrd"))
-              {
+                && strcmp (tree->u.object.keys[i], "initrd")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -319,13 +349,12 @@ make_runtime_spec_schema_config_vm_kernel (yajl_val tree, const struct parser_co
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -428,6 +457,45 @@ gen_runtime_spec_schema_config_vm_kernel (yajl_gen g, const runtime_spec_schema_
     return yajl_gen_status_ok;
 }
 
+runtime_spec_schema_config_vm_kernel *
+clone_runtime_spec_schema_config_vm_kernel (runtime_spec_schema_config_vm_kernel *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_vm_kernel) runtime_spec_schema_config_vm_kernel *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->path)
+      {
+        ret->path = strdup (src->path);
+        if (ret->path == NULL)
+          return NULL;
+      }
+    if (src->parameters)
+      {
+        ret->parameters_len = src->parameters_len;
+        ret->parameters = calloc (src->parameters_len + 1, sizeof (*ret->parameters));
+        if (ret->parameters == NULL)
+          return NULL;
+        for (size_t i = 0; i < src->parameters_len; i++)
+          {
+            if (src->parameters[i])
+              {
+                ret->parameters[i] = strdup (src->parameters[i]);
+                if (ret->parameters[i] == NULL)
+                  return NULL;
+              }
+          }
+      }
+    if (src->initrd)
+      {
+        ret->initrd = strdup (src->initrd);
+        if (ret->initrd == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
+}
+
 define_cleaner_function (runtime_spec_schema_config_vm_image *, free_runtime_spec_schema_config_vm_image)
 runtime_spec_schema_config_vm_image *
 make_runtime_spec_schema_config_vm_image (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -508,8 +576,7 @@ make_runtime_spec_schema_config_vm_image (yajl_val tree, const struct parser_con
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "path")
-                && strcmp (tree->u.object.keys[i], "format"))
-              {
+                && strcmp (tree->u.object.keys[i], "format")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -521,13 +588,12 @@ make_runtime_spec_schema_config_vm_image (yajl_val tree, const struct parser_con
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -591,6 +657,29 @@ gen_runtime_spec_schema_config_vm_image (yajl_gen g, const runtime_spec_schema_c
     return yajl_gen_status_ok;
 }
 
+runtime_spec_schema_config_vm_image *
+clone_runtime_spec_schema_config_vm_image (runtime_spec_schema_config_vm_image *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_vm_image) runtime_spec_schema_config_vm_image *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->path)
+      {
+        ret->path = strdup (src->path);
+        if (ret->path == NULL)
+          return NULL;
+      }
+    if (src->format)
+      {
+        ret->format = strdup (src->format);
+        if (ret->format == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
+}
+
 define_cleaner_function (runtime_spec_schema_config_vm *, free_runtime_spec_schema_config_vm)
 runtime_spec_schema_config_vm *
 make_runtime_spec_schema_config_vm (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -651,8 +740,7 @@ make_runtime_spec_schema_config_vm (yajl_val tree, const struct parser_context *
           {
             if (strcmp (tree->u.object.keys[i], "hypervisor")
                 && strcmp (tree->u.object.keys[i], "kernel")
-                && strcmp (tree->u.object.keys[i], "image"))
-              {
+                && strcmp (tree->u.object.keys[i], "image")){
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -664,13 +752,12 @@ make_runtime_spec_schema_config_vm (yajl_val tree, const struct parser_context *
                 j++;
               }
           }
-        if (ctx->options & OPT_PARSE_STRICT)
-          {
-            if (j > 0 && ctx->errfile != NULL)
-                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-          }
+
+        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
+          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+
         if (ctx->options & OPT_PARSE_FULLKEY)
-            ret->_residual = resi;
+          ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -746,5 +833,34 @@ gen_runtime_spec_schema_config_vm (yajl_gen g, const runtime_spec_schema_config_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
+}
+
+runtime_spec_schema_config_vm *
+clone_runtime_spec_schema_config_vm (runtime_spec_schema_config_vm *src)
+{
+    (void) src;  /* Silence compiler warning.  */
+    __auto_cleanup(free_runtime_spec_schema_config_vm) runtime_spec_schema_config_vm *ret = NULL;
+    ret = calloc (1, sizeof (*ret));
+    if (ret == NULL)
+      return NULL;
+    if (src->hypervisor)
+      {
+        ret->hypervisor = clone_runtime_spec_schema_config_vm_hypervisor (src->hypervisor);
+        if (ret->hypervisor == NULL)
+          return NULL;
+      }
+    if (src->kernel)
+      {
+        ret->kernel = clone_runtime_spec_schema_config_vm_kernel (src->kernel);
+        if (ret->kernel == NULL)
+          return NULL;
+      }
+    if (src->image)
+      {
+        ret->image = clone_runtime_spec_schema_config_vm_image (src->image);
+        if (ret->image == NULL)
+          return NULL;
+      }
+    return move_ptr (ret);
 }
 

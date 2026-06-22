@@ -395,8 +395,8 @@ The following parameters can be specified to set up the controller:
 * **`period`** *(uint64, OPTIONAL)* - specifies a period of time in microseconds for how regularly a cgroup's access to CPU resources should be reallocated (CFS scheduler only)
 * **`realtimeRuntime`** *(int64, OPTIONAL)* - specifies a period of time in microseconds for the longest continuous period in which the tasks in a cgroup have access to CPU resources
 * **`realtimePeriod`** *(uint64, OPTIONAL)* - same as **`period`** but applies to realtime scheduler only
-* **`cpus`** *(string, OPTIONAL)* - list of CPUs the container will run in
-* **`mems`** *(string, OPTIONAL)* - list of Memory Nodes the container will run in
+* **`cpus`** *(string, OPTIONAL)* - list of CPUs the container will run on. This is a comma-separated list, with dashes to represent ranges. For example, `0-3,7` represents CPUs 0,1,2,3, and 7.
+* **`mems`** *(string, OPTIONAL)* - list of memory nodes the container will run on. This is a comma-separated list, with dashes to represent ranges. For example, `0-3,7` represents memory nodes 0,1,2,3, and 7.
 * **`idle`** *(int64, OPTIONAL)* - cgroups are configured with minimum weight, 0: default behavior, 1: SCHED_IDLE.
 
 #### Example
@@ -959,7 +959,7 @@ subset of the available options.
 [cgroup-v2-io]: https://docs.kernel.org/admin-guide/cgroup-v2.html#io
 [devices]: https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
 [devpts]: https://www.kernel.org/doc/Documentation/filesystems/devpts.txt
-[file]: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_164
+[file]: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_164
 [libseccomp]: https://github.com/seccomp/libseccomp
 [proc]: https://www.kernel.org/doc/Documentation/filesystems/proc.txt
 [seccomp]: https://www.kernel.org/doc/Documentation/prctl/seccomp_filter.txt
@@ -967,17 +967,17 @@ subset of the available options.
 [sysfs]: https://www.kernel.org/doc/Documentation/filesystems/sysfs.txt
 [tmpfs]: https://www.kernel.org/doc/Documentation/filesystems/tmpfs.txt
 
-[full.4]: http://man7.org/linux/man-pages/man4/full.4.html
-[mknod.1]: http://man7.org/linux/man-pages/man1/mknod.1.html
-[mknod.2]: http://man7.org/linux/man-pages/man2/mknod.2.html
-[namespaces.7_2]: http://man7.org/linux/man-pages/man7/namespaces.7.html
-[null.4]: http://man7.org/linux/man-pages/man4/null.4.html
-[personality.2]: http://man7.org/linux/man-pages/man2/personality.2.html
-[pts.4]: http://man7.org/linux/man-pages/man4/pts.4.html
-[random.4]: http://man7.org/linux/man-pages/man4/random.4.html
-[sysctl.8]: http://man7.org/linux/man-pages/man8/sysctl.8.html
-[tty.4]: http://man7.org/linux/man-pages/man4/tty.4.html
-[zero.4]: http://man7.org/linux/man-pages/man4/zero.4.html
-[user-namespaces]: http://man7.org/linux/man-pages/man7/user_namespaces.7.html
+[full.4]: https://man7.org/linux/man-pages/man4/full.4.html
+[mknod.1]: https://man7.org/linux/man-pages/man1/mknod.1.html
+[mknod.2]: https://man7.org/linux/man-pages/man2/mknod.2.html
+[namespaces.7_2]: https://man7.org/linux/man-pages/man7/namespaces.7.html
+[null.4]: https://man7.org/linux/man-pages/man4/null.4.html
+[personality.2]: https://man7.org/linux/man-pages/man2/personality.2.html
+[pts.4]: https://man7.org/linux/man-pages/man4/pts.4.html
+[random.4]: https://man7.org/linux/man-pages/man4/random.4.html
+[sysctl.8]: https://man7.org/linux/man-pages/man8/sysctl.8.html
+[tty.4]: https://man7.org/linux/man-pages/man4/tty.4.html
+[zero.4]: https://man7.org/linux/man-pages/man4/zero.4.html
+[user-namespaces]: https://man7.org/linux/man-pages/man7/user_namespaces.7.html
 [intel-rdt-cat-kernel-interface]: https://www.kernel.org/doc/Documentation/x86/intel_rdt_ui.txt
 [time_namespaces.7]: https://man7.org/linux/man-pages/man7/time_namespaces.7.html

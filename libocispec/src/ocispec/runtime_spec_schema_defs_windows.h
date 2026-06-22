@@ -21,6 +21,7 @@ runtime_spec_schema_defs_windows_device;
 
 void free_runtime_spec_schema_defs_windows_device (runtime_spec_schema_defs_windows_device *ptr);
 
+runtime_spec_schema_defs_windows_device *clone_runtime_spec_schema_defs_windows_device (runtime_spec_schema_defs_windows_device *src);
 runtime_spec_schema_defs_windows_device *make_runtime_spec_schema_defs_windows_device (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_defs_windows_device (yajl_gen g, const runtime_spec_schema_defs_windows_device *ptr, const struct parser_context *ctx, parser_error *err);

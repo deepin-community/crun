@@ -199,7 +199,7 @@ License: MIT-X11
 Files: debian/*
 Copyright:
  2019-2021 Dmitry Smirnov <onlyjob@debian.org>
- 2022-2023 Faidon Liambotis <paravoid@debian.org>
+ 2022-2025 Faidon Liambotis <paravoid@debian.org>
 License: Expat or GPL-3+
 
 License: Expat

@@ -4,23 +4,29 @@ run:
 linters:
   disable-all: true
   enable:
-    - deadcode
     - dupl
+    - errorlint
     - gofmt
     - goimports
+    - gomodguard
     - gosimple
     - govet
     - ineffassign
     - misspell
     - nakedret
     - revive
-    - structcheck
     - unused
-    - varcheck
     - staticcheck
 
 linters-settings:
   gofmt:
     simplify: true
+  gomodguard:
+    blocked:
+      modules:
+        - github.com/pkg/errors:
+            recommendations:
+              - errors
+              - fmt
   dupl:
     threshold: 400

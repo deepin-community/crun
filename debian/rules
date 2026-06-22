@@ -5,6 +5,10 @@ include /usr/share/dpkg/architecture.mk
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 ifneq (,$(findstring $(DEB_HOST_ARCH),amd64 arm64))
+  ENABLE_WASMEDGE := 1
+endif
+
+ifeq ($(ENABLE_WASMEDGE),1)
   DEB_CONFIGOPTS += --with-wasmedge
 endif
 
@@ -52,19 +56,17 @@ execute_before_dh_auto_build:
 	# upstream ships prebuilt manpages, regenerate them
 	rm -f *.1
 	make generate-man
-	# workaround remnants of cpuguy83/go-md2man#99
-	# address groff-message an.tmac:<standard input>:844: warning: tbl preprocessor failed, or it or soelim was not run
-	# by adding...
-	#   '\" t
-	# ...at the top of the manpage
-	sed -i '1{/^'\''\\" t$$/!{s/^/'\''\\" t\n/}}' crun.1
+	# we don't ship this, but autopkgtest needs it through build-needed
+	make tests/init
 
 override_dh_auto_install:
 	dh_auto_install --destdir=debian/tmp
+ifeq ($(ENABLE_WASMEDGE),1)
+	dh_link usr/bin/crun usr/bin/crun-wasm
+	dh_link usr/share/man/man1/crun.1 usr/share/man/man1/crun-wasm.1
+endif
 	-$(RM) debian/tmp/usr/lib/*/*.la
 
-override_dh_gencontrol:
-	dh_gencontrol -- \
-		-Vmy:Built-Using="$(shell dpkg-query --show -f '$${source:Package} (= $${source:Version}), ' golang-github-opencontainers-image-spec-dev golang-github-opencontainers-specs-dev)"
+execute_after_dh_gencontrol:
 	# ensure we are linking against libyajl, and not building the embedded copy
 	grep -q yajl debian/crun.substvars

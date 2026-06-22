@@ -32,17 +32,18 @@ runtime_spec_schema_state_schema;
 
 void free_runtime_spec_schema_state_schema (runtime_spec_schema_state_schema *ptr);
 
+runtime_spec_schema_state_schema *clone_runtime_spec_schema_state_schema (runtime_spec_schema_state_schema *src);
 runtime_spec_schema_state_schema *make_runtime_spec_schema_state_schema (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_state_schema (yajl_gen g, const runtime_spec_schema_state_schema *ptr, const struct parser_context *ctx, parser_error *err);
 
-runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_file(const char *filename, const struct parser_context *ctx, parser_error *err);
+runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err);
 
-runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_file_stream(FILE *stream, const struct parser_context *ctx, parser_error *err);
+runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err);
 
-runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_data(const char *jsondata, const struct parser_context *ctx, parser_error *err);
+runtime_spec_schema_state_schema *runtime_spec_schema_state_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err);
 
-char *runtime_spec_schema_state_schema_generate_json(const runtime_spec_schema_state_schema *ptr, const struct parser_context *ctx, parser_error *err);
+char *runtime_spec_schema_state_schema_generate_json (const runtime_spec_schema_state_schema *ptr, const struct parser_context *ctx, parser_error *err);
 
 #ifdef __cplusplus
 }

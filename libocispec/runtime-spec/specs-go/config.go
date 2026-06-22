@@ -94,10 +94,12 @@ type Process struct {
 	SelinuxLabel string `json:"selinuxLabel,omitempty" platform:"linux"`
 	// IOPriority contains the I/O priority settings for the cgroup.
 	IOPriority *LinuxIOPriority `json:"ioPriority,omitempty" platform:"linux"`
+	// ExecCPUAffinity specifies CPU affinity for exec processes.
+	ExecCPUAffinity *CPUAffinity `json:"execCPUAffinity,omitempty" platform:"linux"`
 }
 
 // LinuxCapabilities specifies the list of allowed capabilities that are kept for a process.
-// http://man7.org/linux/man-pages/man7/capabilities.7.html
+// https://man7.org/linux/man-pages/man7/capabilities.7.html
 type LinuxCapabilities struct {
 	// Bounding is the set of capabilities checked by the kernel.
 	Bounding []string `json:"bounding,omitempty" platform:"linux"`
@@ -126,6 +128,12 @@ const (
 	IOPRIO_CLASS_BE   IOPriorityClass = "IOPRIO_CLASS_BE"
 	IOPRIO_CLASS_IDLE IOPriorityClass = "IOPRIO_CLASS_IDLE"
 )
+
+// CPUAffinity specifies process' CPU affinity.
+type CPUAffinity struct {
+	Initial string `json:"initial,omitempty"`
+	Final   string `json:"final,omitempty"`
+}
 
 // Box specifies dimensions of a rectangle. Used for specifying the size of a console.
 type Box struct {
@@ -187,6 +195,10 @@ type Hook struct {
 type Hooks struct {
 	// Prestart is Deprecated. Prestart is a list of hooks to be run before the container process is executed.
 	// It is called in the Runtime Namespace
+	//
+	// Deprecated: use [Hooks.CreateRuntime], [Hooks.CreateContainer], and
+	// [Hooks.StartContainer] instead, which allow more granular hook control
+	// during the create and start phase.
 	Prestart []Hook `json:"prestart,omitempty"`
 	// CreateRuntime is a list of hooks to be run after the container has been created but before pivot_root or any equivalent operation has been called
 	// It is called in the Runtime Namespace
@@ -371,6 +383,12 @@ type LinuxMemory struct {
 	// Total memory limit (memory + swap).
 	Swap *int64 `json:"swap,omitempty"`
 	// Kernel memory limit (in bytes).
+	//
+	// Deprecated: kernel-memory limits are not supported in cgroups v2, and
+	// were obsoleted in [kernel v5.4]. This field should no longer be used,
+	// as it may be ignored by runtimes.
+	//
+	// [kernel v5.4]: https://github.com/torvalds/linux/commit/0158115f702b0ba208ab0
 	Kernel *int64 `json:"kernel,omitempty"`
 	// Kernel memory limit for tcp (in bytes)
 	KernelTCP *int64 `json:"kernelTCP,omitempty"`

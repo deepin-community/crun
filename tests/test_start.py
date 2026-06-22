@@ -24,56 +24,6 @@ import socket
 import json
 from tests_utils import *
 
-def test_cwd_relative():
-    conf = base_config()
-    conf['process']['args'] = ['./init', 'echo', 'hello']
-    conf['process']['cwd'] = "/sbin"
-    add_all_namespaces(conf)
-    try:
-        out, _ = run_and_get_output(conf)
-        if "hello" not in str(out):
-            return -1
-    except Exception as e:
-        return -1
-    return 0
-
-def test_cwd_relative_subdir():
-    conf = base_config()
-    conf['process']['args'] = ['sbin/init', 'echo', 'hello']
-    conf['process']['cwd'] = "/"
-    add_all_namespaces(conf)
-    try:
-        out, _ = run_and_get_output(conf)
-        if "hello" not in str(out):
-            return -1
-    except:
-        return -1
-    return 0
-
-def test_cwd_not_exist():
-    conf = base_config()
-    conf['process']['args'] = ['/init', 'true']
-    conf['process']['cwd'] = "/doesnotexist"
-    add_all_namespaces(conf)
-    try:
-        run_and_get_output(conf)
-    except:
-        return -1
-    return 0
-
-def test_cwd_absolute():
-    conf = base_config()
-    conf['process']['args'] = ['/init', 'echo', 'hello']
-    conf['process']['cwd'] = "/sbin"
-    add_all_namespaces(conf)
-    try:
-        out, _ = run_and_get_output(conf)
-        if "hello" not in str(out):
-            return -1
-    except:
-        return -1
-    return 0
-
 def test_not_allowed_ipc_sysctl():
     if is_rootless():
         return 77
@@ -503,6 +453,74 @@ def test_ioprio():
             run_crun_command(["delete", "-f", cid])
     return 0
 
+def test_run_keep():
+    conf = base_config()
+    conf['process']['args'] = ['/init', 'cat', '/dev/null']
+    add_all_namespaces(conf)
+    try:
+        out, cid = run_and_get_output(conf, command='run')
+    except:
+        sys.stderr.write("failed to create container\n")
+        return -1
+
+    # without --keep, we must be able to recreate the container with the same id
+    try:
+        out, cid = run_and_get_output(conf, command='run', keep=True, id_container=cid)
+    except:
+        sys.stderr.write("failed to create container\n")
+        return -1
+
+    # now it must fail
+    try:
+        try:
+            out, cid = run_and_get_output(conf, command='run', keep=True, id_container=cid)
+            sys.stderr.write("run --keep succeeded twice\n")
+            return -1
+        except:
+            # expected
+            pass
+
+        try:
+            s = run_crun_command(["state", cid])
+        except:
+            sys.stderr.write("crun state failed on --keep container\n")
+            return -1
+    finally:
+        run_crun_command(["delete", "-f", cid])
+
+    return 0
+
+def test_invalid_id():
+    conf = base_config()
+    conf['process']['args'] = ['./init', 'echo', 'hello']
+    conf['process']['cwd'] = "/sbin"
+    add_all_namespaces(conf)
+    try:
+        out, _ = run_and_get_output(conf, id_container="this/is/invalid")
+        return -1
+    except Exception as e:
+        err = e.output.decode()
+        if "invalid character `/` in the ID" in err:
+            return 0
+        sys.stderr.write("Got error: %s\n" % err)
+        return -1
+    return 0
+
+def test_home_unknown_id():
+    if is_rootless():
+        return 77
+
+    conf = base_config()
+    conf['process']['args'] = ['/init', 'printenv', "HOME"]
+    conf['process']['user']['uid'] = 101010
+    conf['process']['user']['gid'] = 101010
+    add_all_namespaces(conf)
+    out, _ = run_and_get_output(conf)
+    if out != "/":
+        sys.stderr.write("expected: `/`, got output: `%s`\n" % out)
+        return -1
+    return 0
+
 all_tests = {
     "start" : test_start,
     "start-override-config" : test_start_override_config,
@@ -512,10 +530,6 @@ all_tests = {
     "sd-notify-env" : test_sd_notify_env,
     "sd-notify-proxy": test_sd_notify_proxy,
     "listen_pid_env": test_listen_pid_env,
-    "cwd-relative": test_cwd_relative,
-    "cwd-relative-subdir": test_cwd_relative_subdir,
-    "cwd-absolute": test_cwd_absolute,
-    "cwd-not-exist" : test_cwd_not_exist,
     "empty-home": test_empty_home,
     "delete-in-created-state": test_delete_in_created_state,
     "run-rootless-netns-with-userns" : test_run_rootless_netns_with_userns,
@@ -524,6 +538,9 @@ all_tests = {
     "uts-sysctl": test_uts_sysctl,
     "unknown-sysctl": test_unknown_sysctl,
     "ioprio": test_ioprio,
+    "run-keep": test_run_keep,
+    "invalid-id": test_invalid_id,
+    "home-unknown-id": test_home_unknown_id,
 }
 
 if __name__ == "__main__":

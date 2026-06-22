@@ -23,6 +23,7 @@ runtime_spec_schema_config_linux_resources_pids;
 
 void free_runtime_spec_schema_config_linux_resources_pids (runtime_spec_schema_config_linux_resources_pids *ptr);
 
+runtime_spec_schema_config_linux_resources_pids *clone_runtime_spec_schema_config_linux_resources_pids (runtime_spec_schema_config_linux_resources_pids *src);
 runtime_spec_schema_config_linux_resources_pids *make_runtime_spec_schema_config_linux_resources_pids (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_pids (yajl_gen g, const runtime_spec_schema_config_linux_resources_pids *ptr, const struct parser_context *ctx, parser_error *err);
@@ -56,6 +57,7 @@ runtime_spec_schema_config_linux_resources_block_io;
 
 void free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_config_linux_resources_block_io *ptr);
 
+runtime_spec_schema_config_linux_resources_block_io *clone_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_config_linux_resources_block_io *src);
 runtime_spec_schema_config_linux_resources_block_io *make_runtime_spec_schema_config_linux_resources_block_io (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_block_io (yajl_gen g, const runtime_spec_schema_config_linux_resources_block_io *ptr, const struct parser_context *ctx, parser_error *err);
@@ -93,6 +95,7 @@ runtime_spec_schema_config_linux_resources_cpu;
 
 void free_runtime_spec_schema_config_linux_resources_cpu (runtime_spec_schema_config_linux_resources_cpu *ptr);
 
+runtime_spec_schema_config_linux_resources_cpu *clone_runtime_spec_schema_config_linux_resources_cpu (runtime_spec_schema_config_linux_resources_cpu *src);
 runtime_spec_schema_config_linux_resources_cpu *make_runtime_spec_schema_config_linux_resources_cpu (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_cpu (yajl_gen g, const runtime_spec_schema_config_linux_resources_cpu *ptr, const struct parser_context *ctx, parser_error *err);
@@ -143,6 +146,7 @@ runtime_spec_schema_config_linux_resources_memory;
 
 void free_runtime_spec_schema_config_linux_resources_memory (runtime_spec_schema_config_linux_resources_memory *ptr);
 
+runtime_spec_schema_config_linux_resources_memory *clone_runtime_spec_schema_config_linux_resources_memory (runtime_spec_schema_config_linux_resources_memory *src);
 runtime_spec_schema_config_linux_resources_memory *make_runtime_spec_schema_config_linux_resources_memory (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_memory (yajl_gen g, const runtime_spec_schema_config_linux_resources_memory *ptr, const struct parser_context *ctx, parser_error *err);
@@ -161,6 +165,7 @@ runtime_spec_schema_config_linux_resources_network;
 
 void free_runtime_spec_schema_config_linux_resources_network (runtime_spec_schema_config_linux_resources_network *ptr);
 
+runtime_spec_schema_config_linux_resources_network *clone_runtime_spec_schema_config_linux_resources_network (runtime_spec_schema_config_linux_resources_network *src);
 runtime_spec_schema_config_linux_resources_network *make_runtime_spec_schema_config_linux_resources_network (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_network (yajl_gen g, const runtime_spec_schema_config_linux_resources_network *ptr, const struct parser_context *ctx, parser_error *err);
@@ -172,6 +177,7 @@ runtime_spec_schema_config_linux_resources_rdma;
 
 void free_runtime_spec_schema_config_linux_resources_rdma (runtime_spec_schema_config_linux_resources_rdma *ptr);
 
+runtime_spec_schema_config_linux_resources_rdma *clone_runtime_spec_schema_config_linux_resources_rdma (runtime_spec_schema_config_linux_resources_rdma *src);
 runtime_spec_schema_config_linux_resources_rdma *make_runtime_spec_schema_config_linux_resources_rdma (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources_rdma (yajl_gen g, const runtime_spec_schema_config_linux_resources_rdma *ptr, const struct parser_context *ctx, parser_error *err);
@@ -203,6 +209,7 @@ runtime_spec_schema_config_linux_resources;
 
 void free_runtime_spec_schema_config_linux_resources (runtime_spec_schema_config_linux_resources *ptr);
 
+runtime_spec_schema_config_linux_resources *clone_runtime_spec_schema_config_linux_resources (runtime_spec_schema_config_linux_resources *src);
 runtime_spec_schema_config_linux_resources *make_runtime_spec_schema_config_linux_resources (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_resources (yajl_gen g, const runtime_spec_schema_config_linux_resources *ptr, const struct parser_context *ctx, parser_error *err);
@@ -233,6 +240,7 @@ runtime_spec_schema_config_linux_seccomp;
 
 void free_runtime_spec_schema_config_linux_seccomp (runtime_spec_schema_config_linux_seccomp *ptr);
 
+runtime_spec_schema_config_linux_seccomp *clone_runtime_spec_schema_config_linux_seccomp (runtime_spec_schema_config_linux_seccomp *src);
 runtime_spec_schema_config_linux_seccomp *make_runtime_spec_schema_config_linux_seccomp (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_seccomp (yajl_gen g, const runtime_spec_schema_config_linux_seccomp *ptr, const struct parser_context *ctx, parser_error *err);
@@ -257,6 +265,7 @@ runtime_spec_schema_config_linux_intel_rdt;
 
 void free_runtime_spec_schema_config_linux_intel_rdt (runtime_spec_schema_config_linux_intel_rdt *ptr);
 
+runtime_spec_schema_config_linux_intel_rdt *clone_runtime_spec_schema_config_linux_intel_rdt (runtime_spec_schema_config_linux_intel_rdt *src);
 runtime_spec_schema_config_linux_intel_rdt *make_runtime_spec_schema_config_linux_intel_rdt (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_intel_rdt (yajl_gen g, const runtime_spec_schema_config_linux_intel_rdt *ptr, const struct parser_context *ctx, parser_error *err);
@@ -272,6 +281,7 @@ runtime_spec_schema_config_linux_time_offsets;
 
 void free_runtime_spec_schema_config_linux_time_offsets (runtime_spec_schema_config_linux_time_offsets *ptr);
 
+runtime_spec_schema_config_linux_time_offsets *clone_runtime_spec_schema_config_linux_time_offsets (runtime_spec_schema_config_linux_time_offsets *src);
 runtime_spec_schema_config_linux_time_offsets *make_runtime_spec_schema_config_linux_time_offsets (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux_time_offsets (yajl_gen g, const runtime_spec_schema_config_linux_time_offsets *ptr, const struct parser_context *ctx, parser_error *err);
@@ -319,6 +329,7 @@ runtime_spec_schema_config_linux;
 
 void free_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *ptr);
 
+runtime_spec_schema_config_linux *clone_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *src);
 runtime_spec_schema_config_linux *make_runtime_spec_schema_config_linux (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_linux (yajl_gen g, const runtime_spec_schema_config_linux *ptr, const struct parser_context *ctx, parser_error *err);

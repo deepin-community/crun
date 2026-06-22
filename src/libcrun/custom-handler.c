@@ -45,6 +45,9 @@ extern struct custom_handler_s handler_wasmedge;
 #if HAVE_DLOPEN && HAVE_WASMER
 extern struct custom_handler_s handler_wasmer;
 #endif
+#if HAVE_DLOPEN && HAVE_WAMR
+extern struct custom_handler_s handler_wamr;
+#endif
 #if HAVE_DLOPEN && HAVE_MONO
 extern struct custom_handler_s handler_mono;
 #endif
@@ -64,6 +67,9 @@ static struct custom_handler_s *static_handlers[] = {
 #endif
 #if HAVE_DLOPEN && HAVE_WASMTIME
   &handler_wasmtime,
+#endif
+#if HAVE_DLOPEN && HAVE_WAMR
+  &handler_wamr,
 #endif
 #if HAVE_DLOPEN && HAVE_MONO
   &handler_mono,
@@ -299,7 +305,7 @@ libcrun_configure_handler (struct custom_handler_manager_s *manager,
       struct custom_handler_s *h;
 
       if (manager == NULL)
-        return crun_make_error (err, 0, "handler requested but no manager configured: `%s`", context->handler);
+        return crun_make_error (err, 0, "handler requested but no manager configured: `%s`", explicit_handler);
 
       h = handler_by_name (manager, explicit_handler);
       if (h)
