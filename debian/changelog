@@ -1,3 +1,9 @@
+crun (1.21-1deepin1) unstable; urgency=medium
+
+  * fix(cve): CVE-2026-47766
+
+ -- deepin-ci-robot <packages@deepin.org>  Thu, 16 Jul 2026 21:40:24 +0800
+
 crun (1.21-1) unstable; urgency=medium
 
   * New upstream release.
