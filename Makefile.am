@@ -32,11 +32,9 @@ else
 noinst_LTLIBRARIES = libcrun.la
 endif
 
-check_LTLIBRARIES = libcrun_testing.la
+check_LIBRARIES = libcrun_testing.a
 
 libcrun_SOURCES = src/libcrun/utils.c \
-		src/libcrun/string_map.c \
-		src/libcrun/ring_buffer.c \
 		src/libcrun/blake3/blake3.c \
 		src/libcrun/blake3/blake3_portable.c \
 		src/libcrun/cgroup-cgroupfs.c \
@@ -59,7 +57,6 @@ libcrun_SOURCES = src/libcrun/utils.c \
 		src/libcrun/handlers/wasmedge.c \
 		src/libcrun/handlers/wasmer.c \
 		src/libcrun/handlers/wasmtime.c \
-		src/libcrun/handlers/wamr.c \
 		src/libcrun/intelrdt.c \
 		src/libcrun/io_priority.c \
 		src/libcrun/linux.c \
@@ -86,9 +83,9 @@ libcrun_la_LIBADD = libocispec/libocispec.la $(FOUND_LIBS) $(maybe_libyajl.la)
 libcrun_la_LDFLAGS = -Wl,--version-script=$(abs_top_srcdir)/libcrun.lds
 
 # build a version with all the symbols visible for testing
-libcrun_testing_la_SOURCES = $(libcrun_SOURCES)
-libcrun_testing_la_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(abs_top_srcdir)/libocispec/src -fvisibility=default
-libcrun_testing_la_LIBADD = libocispec/libocispec.la $(maybe_libyajl.la)
+libcrun_testing_a_SOURCES = $(libcrun_SOURCES)
+libcrun_testing_a_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(abs_top_srcdir)/libocispec/src -fvisibility=default
+libcrun_testing_a_LIBADD = libocispec/libocispec.la $(maybe_libyajl.la)
 
 if PYTHON_BINDINGS
 pyexec_LTLIBRARIES = python_crun.la
@@ -133,7 +130,7 @@ endif
 crun_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(abs_top_srcdir)/libocispec/src -D CRUN_LIBDIR="\"$(CRUN_LIBDIR)\""
 crun_SOURCES = src/crun.c src/run.c src/delete.c src/kill.c src/pause.c src/unpause.c src/oci_features.c src/spec.c \
 		src/exec.c src/list.c src/create.c src/start.c src/state.c src/update.c src/ps.c \
-		src/checkpoint.c src/restore.c
+		src/checkpoint.c src/restore.c src/libcrun/cloned_binary.c
 
 if DYNLOAD_LIBCRUN
 crun_LDFLAGS = -Wl,--unresolved-symbols=ignore-all $(CRUN_LDFLAGS)
@@ -156,12 +153,12 @@ EXTRA_DIST = COPYING COPYING.libcrun README.md NEWS SECURITY.md rpm/crun.spec au
 	src/libcrun/handlers/handler-utils.h \
 	src/libcrun/linux.h src/libcrun/utils.h src/libcrun/error.h src/libcrun/criu.h \
 	src/libcrun/scheduler.h src/libcrun/status.h src/libcrun/terminal.h \
-	src/libcrun/mount_flags.h src/libcrun/intelrdt.h src/libcrun/ring_buffer.h src/libcrun/string_map.h \
+	src/libcrun/mount_flags.h src/libcrun/intelrdt.h \
 	crun.1.md crun.1 libcrun.lds \
 	krun.1.md krun.1 \
 	lua/luacrun.rockspec
 
-UNIT_TESTS = tests/tests_libcrun_utils tests/tests_libcrun_ring_buffer tests/tests_libcrun_errors tests/tests_libcrun_intelrdt
+UNIT_TESTS = tests/tests_libcrun_utils tests/tests_libcrun_errors tests/tests_libcrun_intelrdt
 
 if ENABLE_CRUN
 bin_PROGRAMS = crun
@@ -170,9 +167,9 @@ else
 noinst_PROGRAMS = crun
 endif
 
-check_PROGRAMS = tests/init $(UNIT_TESTS) tests/tests_libcrun_fuzzer
+noinst_PROGRAMS += tests/init $(UNIT_TESTS) tests/tests_libcrun_fuzzer
 
-TESTS_LDADD = libcrun_testing.la $(FOUND_LIBS) $(maybe_libyajl.la)
+TESTS_LDADD = libcrun_testing.a $(FOUND_LIBS) $(maybe_libyajl.la)
 
 tests_init_LDADD =
 tests_init_LDFLAGS = -static-libgcc -all-static
@@ -182,11 +179,6 @@ tests_tests_libcrun_utils_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(ab
 tests_tests_libcrun_utils_SOURCES = tests/tests_libcrun_utils.c
 tests_tests_libcrun_utils_LDADD = $(TESTS_LDADD)
 tests_tests_libcrun_utils_LDFLAGS = $(crun_LDFLAGS)
-
-tests_tests_libcrun_ring_buffer_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(abs_top_srcdir)/libocispec/src -I $(abs_top_builddir)/src -I $(abs_top_srcdir)/src
-tests_tests_libcrun_ring_buffer_SOURCES = tests/tests_libcrun_ring_buffer.c
-tests_tests_libcrun_ring_buffer_LDADD = $(TESTS_LDADD)
-tests_tests_libcrun_ring_buffer_LDFLAGS = $(crun_LDFLAGS)
 
 tests_tests_libcrun_intelrdt_CFLAGS = -I $(abs_top_builddir)/libocispec/src -I $(abs_top_srcdir)/libocispec/src -I $(abs_top_builddir)/src -I $(abs_top_srcdir)/src
 tests_tests_libcrun_intelrdt_SOURCES = tests/tests_libcrun_intelrdt.c
@@ -247,7 +239,7 @@ git-version.h:
 	fi
 
 nixpkgs:
-	@nix --extra-experimental-features nix-command run -f channel:nixpkgs-unstable nix-prefetch-git -- \
+	@nix run -f channel:nixpkgs-unstable nix-prefetch-git -- \
 		--no-deepClone https://github.com/nixos/nixpkgs > nix/nixpkgs.json
 
 dist-hook:
@@ -278,22 +270,6 @@ krun.1: $(abs_srcdir)/krun.1.md
 if HAVE_MD2MAN
 	$(MD2MAN) -in $(abs_srcdir)/krun.1.md -out krun.1
 endif HAVE_MD2MAN
-
-install-exec-hook:
-if ENABLE_KRUN
-	$(LN_S) -f crun$(EXEEXT) $(DESTDIR)$(bindir)/krun$(EXEEXT)
-endif
-if ENABLE_WASM
-	$(LN_S) -f crun$(EXEEXT) $(DESTDIR)$(bindir)/crun-wasm$(EXEEXT)
-endif
-
-uninstall-hook:
-if ENABLE_KRUN
-	rm -f $(DESTDIR)$(bindir)/krun$(EXEEXT)
-endif
-if ENABLE_WASM
-	rm -f $(DESTDIR)$(bindir)/crun-wasm$(EXEEXT)
-endif
 
 generate-man: crun.1 krun.1
 

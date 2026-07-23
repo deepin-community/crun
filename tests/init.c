@@ -364,7 +364,7 @@ memhog (int megabytes)
   while (1)
     {
       /* change one page each 0.1 seconds */
-      nanosleep ((const struct timespec[]) { { 0, 100000000L } }, NULL);
+      nanosleep ((const struct timespec[]){ { 0, 100000000L } }, NULL);
       buf[pos] = 'c';
       pos += sysconf (_SC_PAGESIZE);
       if (pos > megabytes * 1024 * 1024)
@@ -452,51 +452,6 @@ main (int argc, char **argv)
 
       if (access (argv[2], F_OK) < 0)
         error (EXIT_FAILURE, errno, "could not access %s", argv[2]);
-      return 0;
-    }
-
-  if (strcmp (argv[1], "type") == 0)
-    {
-      struct stat st;
-
-      if (argc < 3)
-        error (EXIT_FAILURE, 0, "'type' requires two arguments");
-      if (stat (argv[2], &st) < 0)
-        error (EXIT_FAILURE, errno, "stat %s", argv[2]);
-
-      switch (st.st_mode & S_IFMT)
-        {
-        case S_IFBLK:
-          printf ("block device\n");
-          break;
-        case S_IFCHR:
-          printf ("character device\n");
-          break;
-
-        case S_IFDIR:
-          printf ("directory\n");
-          break;
-
-        case S_IFIFO:
-          printf ("FIFO/pipe\n");
-          break;
-
-        case S_IFLNK:
-          printf ("symlink\n");
-          break;
-
-        case S_IFREG:
-          printf ("regular file\n");
-          break;
-
-        case S_IFSOCK:
-          printf ("socket\n");
-          break;
-
-        default:
-          printf ("unknown?\n");
-          break;
-        }
       return 0;
     }
 
@@ -689,13 +644,6 @@ main (int argc, char **argv)
 
   if (strcmp (argv[1], "systemd-notify") == 0)
     return sd_notify ();
-
-  if (strcmp (argv[1], "getpgrp") == 0)
-    {
-      pid_t pid = getpgrp ();
-      printf ("%d\n", pid);
-      return 0;
-    }
 
   if (strcmp (argv[1], "check-feature") == 0)
     {

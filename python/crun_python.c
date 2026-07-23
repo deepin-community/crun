@@ -193,7 +193,7 @@ container_create (PyObject *self arg_unused, PyObject *args)
     return NULL;
 
   Py_BEGIN_ALLOW_THREADS;
-  ret = libcrun_container_create (ctx, ctr, LIBCRUN_CREATE_OPTIONS_PREFORK, &err);
+  ret = libcrun_container_create (ctx, ctr, LIBCRUN_RUN_OPTIONS_PREFORK, &err);
   Py_END_ALLOW_THREADS;
   if (ret < 0)
     return set_error (&err);
@@ -519,6 +519,5 @@ PyInit_python_crun (void)
     return ret;
   (void) PyModule_AddIntConstant (ret, "VERBOSITY_ERROR", LIBCRUN_VERBOSITY_ERROR);
   (void) PyModule_AddIntConstant (ret, "VERBOSITY_WARNING", LIBCRUN_VERBOSITY_WARNING);
-  (void) PyModule_AddIntConstant (ret, "VERBOSITY_DEBUG", LIBCRUN_VERBOSITY_DEBUG);
   return ret;
 }

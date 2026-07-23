@@ -89,7 +89,8 @@ make_runtime_spec_schema_defs_windows_device (yajl_val tree, const struct parser
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "id")
-                && strcmp (tree->u.object.keys[i], "idType")){
+                && strcmp (tree->u.object.keys[i], "idType"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -101,12 +102,13 @@ make_runtime_spec_schema_defs_windows_device (yajl_val tree, const struct parser
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -168,28 +170,5 @@ gen_runtime_spec_schema_defs_windows_device (yajl_gen g, const runtime_spec_sche
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_windows_device *
-clone_runtime_spec_schema_defs_windows_device (runtime_spec_schema_defs_windows_device *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_windows_device) runtime_spec_schema_defs_windows_device *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->id)
-      {
-        ret->id = strdup (src->id);
-        if (ret->id == NULL)
-          return NULL;
-      }
-    if (src->id_type)
-      {
-        ret->id_type = strdup (src->id_type);
-        if (ret->id_type == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 

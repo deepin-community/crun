@@ -1,19 +1,19 @@
 Source: crun
 Section: admin
 Priority: optional
-Standards-Version: 4.7.2
+Standards-Version: 4.6.2
 Maintainer: Faidon Liambotis <paravoid@debian.org>
 Uploaders:
+ Dmitry Smirnov <onlyjob@debian.org>,
  Reinhard Tartler <siretart@tauware.de>,
 Build-Depends:
  automake,
  debhelper-compat (= 13),
  go-md2man,
  golang-github-opencontainers-image-spec-dev,
- golang-github-opencontainers-specs-dev (>= 1.2.0-2~),
+ golang-github-opencontainers-specs-dev (>= 1.1.0),
  gperf,
  libcap-dev,
- libcriu-dev [amd64 arm64 ppc64el s390x],
  libseccomp-dev,
  libsystemd-dev,
  libwasmedge-dev [amd64 arm64],
@@ -27,11 +27,11 @@ Vcs-Browser: https://salsa.debian.org/debian/crun
 
 Package: crun
 Architecture: any
+Built-Using:
+ ${my:Built-Using},
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
-Recommends:
- libcriu2 [amd64 arm64 ppc64el s390x],
 Suggests:
  libwasmedge0 [amd64 arm64],
 Description: lightweight OCI runtime for running containers

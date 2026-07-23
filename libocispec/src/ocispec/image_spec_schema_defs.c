@@ -51,17 +51,6 @@ gen_image_spec_schema_defs_map_string_object_element (yajl_gen g, const image_sp
     return yajl_gen_status_ok;
 }
 
-image_spec_schema_defs_map_string_object_element *
-clone_image_spec_schema_defs_map_string_object_element (image_spec_schema_defs_map_string_object_element *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_image_spec_schema_defs_map_string_object_element) image_spec_schema_defs_map_string_object_element *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (image_spec_schema_defs_map_string_object *, free_image_spec_schema_defs_map_string_object)
 image_spec_schema_defs_map_string_object *
 make_image_spec_schema_defs_map_string_object (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -159,16 +148,5 @@ gen_image_spec_schema_defs_map_string_object (yajl_gen g, const image_spec_schem
     if (!len && !(ctx->options & OPT_GEN_SIMPLIFY))
         yajl_gen_config (g, yajl_gen_beautify, 1);
     return yajl_gen_status_ok;
-}
-
-image_spec_schema_defs_map_string_object *
-clone_image_spec_schema_defs_map_string_object (image_spec_schema_defs_map_string_object *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_image_spec_schema_defs_map_string_object) image_spec_schema_defs_map_string_object *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    return move_ptr (ret);
 }
 

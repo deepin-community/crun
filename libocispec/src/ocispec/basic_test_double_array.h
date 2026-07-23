@@ -49,18 +49,17 @@ basic_test_double_array;
 
 void free_basic_test_double_array (basic_test_double_array *ptr);
 
-basic_test_double_array *clone_basic_test_double_array (basic_test_double_array *src);
 basic_test_double_array *make_basic_test_double_array (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_basic_test_double_array (yajl_gen g, const basic_test_double_array *ptr, const struct parser_context *ctx, parser_error *err);
 
-basic_test_double_array *basic_test_double_array_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err);
+basic_test_double_array *basic_test_double_array_parse_file(const char *filename, const struct parser_context *ctx, parser_error *err);
 
-basic_test_double_array *basic_test_double_array_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err);
+basic_test_double_array *basic_test_double_array_parse_file_stream(FILE *stream, const struct parser_context *ctx, parser_error *err);
 
-basic_test_double_array *basic_test_double_array_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err);
+basic_test_double_array *basic_test_double_array_parse_data(const char *jsondata, const struct parser_context *ctx, parser_error *err);
 
-char *basic_test_double_array_generate_json (const basic_test_double_array *ptr, const struct parser_context *ctx, parser_error *err);
+char *basic_test_double_array_generate_json(const basic_test_double_array *ptr, const struct parser_context *ctx, parser_error *err);
 
 #ifdef __cplusplus
 }

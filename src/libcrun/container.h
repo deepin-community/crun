@@ -22,7 +22,6 @@
 #include <config.h>
 #include <ocispec/runtime_spec_schema_config_schema.h>
 #include "error.h"
-#include "string_map.h"
 
 enum handler_configure_phase
 {
@@ -67,12 +66,6 @@ struct libcrun_context_s
 enum
 {
   LIBCRUN_RUN_OPTIONS_PREFORK = 1 << 0,
-  LIBCRUN_RUN_OPTIONS_KEEP = 1 << 1,
-};
-
-enum
-{
-  LIBCRUN_CREATE_OPTIONS_PREFORK = 1 << 0,
 };
 
 struct libcrun_container_s
@@ -88,8 +81,6 @@ struct libcrun_container_s
 
   char *config_file;
   char *config_file_content;
-
-  string_map *annotations;
 
   void *private_data;
   void (*cleanup_private_data) (void *private_data);
@@ -173,7 +164,6 @@ struct features_info_s
   char **mount_options;
   struct linux_info_s linux;
   struct annotations_info_s annotations;
-  char **potentially_unsafe_annotations;
 };
 
 struct libcrun_checkpoint_restore_s
@@ -190,9 +180,6 @@ struct libcrun_checkpoint_restore_s
   char *parent_path;
   bool pre_dump;
   int manage_cgroups_mode;
-  int network_lock_method;
-  char *lsm_profile;
-  char *lsm_mount_context;
 };
 typedef struct libcrun_checkpoint_restore_s libcrun_checkpoint_restore_t;
 

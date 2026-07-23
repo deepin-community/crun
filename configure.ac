@@ -8,8 +8,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AC_CONFIG_SRCDIR([src/crun.c])
 
-AC_PROG_LN_S
-
 LT_INIT([disable-shared])
 
 AM_INIT_AUTOMAKE([1.11.2 -Wno-portability foreign tar-ustar no-dist-gzip dist-xz subdir-objects])
@@ -30,7 +28,7 @@ AC_CHECK_HEADERS([error.h linux/openat2.h stdatomic.h linux/ioprio.h])
 
 AC_CHECK_TYPES([atomic_int], [], [], [[#include <stdatomic.h>]])
 
-AC_CHECK_FUNCS(eaccess hsearch_r copy_file_range fgetxattr statx fgetpwent_r issetugid memfd_create)
+AC_CHECK_FUNCS(copy_file_range fgetxattr statx fgetpwent_r issetugid memfd_create)
 
 AC_ARG_ENABLE(crun,
 AS_HELP_STRING([--enable-crun], [Include crun executable in installation (default: yes)]),
@@ -124,17 +122,11 @@ dnl include support for wasmedge (EXPERIMENTAL)
 AC_ARG_WITH([wasmedge], AS_HELP_STRING([--with-wasmedge], [build with WasmEdge support]))
 AS_IF([test "x$with_wasmedge" = "xyes"], AC_CHECK_HEADERS([wasmedge/wasmedge.h], AC_DEFINE([HAVE_WASMEDGE], 1, [Define if WasmEdge is available]), [AC_MSG_ERROR([*** Missing wasmedge headers])]))
 
-dnl include support for wamr (EXPERIMENTAL)
-AC_ARG_WITH([wamr], AS_HELP_STRING([--with-wamr], [build with WAMR support]))
-AS_IF([test "x$with_wamr" = "xyes"], AC_CHECK_HEADERS([wasm_export.h], AC_DEFINE([HAVE_WAMR], 1, [Define if WAMR is available]), [AC_MSG_ERROR([*** Missing WAMR headers])]))
-
 dnl include support for libkrun (EXPERIMENTAL)
 AC_ARG_WITH([libkrun], AS_HELP_STRING([--with-libkrun], [build with libkrun support]))
 AS_IF([test "x$with_libkrun" = "xyes"], AC_CHECK_HEADERS([libkrun.h], AC_DEFINE([HAVE_LIBKRUN], 1, [Define if libkrun is available]), [AC_MSG_ERROR([*** Missing libkrun headers])]))
 
 AM_CONDITIONAL([ENABLE_KRUN], [test "x$with_libkrun" = xyes])
-
-AM_CONDITIONAL([ENABLE_WASM], [test "x$with_wasmer" = xyes || test "x$with_wasmedge" = xyes || test "x$with_wasmtime" = xyes])
 
 dnl include support for spin (EXPERIMENTAL)
 AC_ARG_WITH([spin], AS_HELP_STRING([--with-spin], [build with spin support]))
@@ -252,8 +244,6 @@ AS_IF([test "x$enable_criu" != "xno"], [
 	        AC_MSG_NOTICE([CRIU version doesn't support join-ns API])])
 	PKG_CHECK_MODULES([CRIU_PRE_DUMP], [criu > 3.16.1], [have_criu_pre_dump="yes"], [have_criu_pre_dump="no"
 	        AC_MSG_NOTICE([CRIU version doesn't support for pre-dumping])])
-	PKG_CHECK_MODULES([CRIU_NETWORK_LOCK_SKIP], [criu >= 3.19], [have_criu_network_lock_skip="yes"], [have_criu_network_lock_skip="no"
-	        AC_MSG_NOTICE([CRIU version doesn't support CRIU_NETWORK_LOCK_SKIP])])
 	AS_IF([test "$have_criu" = "yes"], [
 		AC_DEFINE([HAVE_CRIU], 1, [Define if CRIU is available])
 	])
@@ -263,10 +253,6 @@ AS_IF([test "x$enable_criu" != "xno"], [
 	AS_IF([test "$have_criu_pre_dump" = "yes"], [
 		AC_DEFINE([CRIU_PRE_DUMP_SUPPORT], 1, [Define if CRIU pre-dump support is available])
 	])
-	AS_IF([test "$have_criu_network_lock_skip" = "yes"], [
-		AC_DEFINE([CRIU_NETWORK_LOCK_SKIP_SUPPORT], 1, [Define if CRIU_NETWORK_LOCK_SKIP is available])
-	])
-
 ], [AC_MSG_NOTICE([CRIU support disabled per user request])])
 
 FOUND_LIBS=$LIBS

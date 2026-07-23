@@ -147,7 +147,8 @@ make_runtime_spec_schema_defs_hook (yajl_val tree, const struct parser_context *
             if (strcmp (tree->u.object.keys[i], "path")
                 && strcmp (tree->u.object.keys[i], "args")
                 && strcmp (tree->u.object.keys[i], "env")
-                && strcmp (tree->u.object.keys[i], "timeout")){
+                && strcmp (tree->u.object.keys[i], "timeout"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -159,12 +160,13 @@ make_runtime_spec_schema_defs_hook (yajl_val tree, const struct parser_context *
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -304,57 +306,6 @@ gen_runtime_spec_schema_defs_hook (yajl_gen g, const runtime_spec_schema_defs_ho
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_defs_hook *
-clone_runtime_spec_schema_defs_hook (runtime_spec_schema_defs_hook *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_hook) runtime_spec_schema_defs_hook *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->path)
-      {
-        ret->path = strdup (src->path);
-        if (ret->path == NULL)
-          return NULL;
-      }
-    if (src->args)
-      {
-        ret->args_len = src->args_len;
-        ret->args = calloc (src->args_len + 1, sizeof (*ret->args));
-        if (ret->args == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->args_len; i++)
-          {
-            if (src->args[i])
-              {
-                ret->args[i] = strdup (src->args[i]);
-                if (ret->args[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->env)
-      {
-        ret->env_len = src->env_len;
-        ret->env = calloc (src->env_len + 1, sizeof (*ret->env));
-        if (ret->env == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->env_len; i++)
-          {
-            if (src->env[i])
-              {
-                ret->env[i] = strdup (src->env[i]);
-                if (ret->env[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    ret->timeout = src->timeout;
-    ret->timeout_present = src->timeout_present;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_defs_id_mapping *, free_runtime_spec_schema_defs_id_mapping)
 runtime_spec_schema_defs_id_mapping *
 make_runtime_spec_schema_defs_id_mapping (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -466,7 +417,8 @@ make_runtime_spec_schema_defs_id_mapping (yajl_val tree, const struct parser_con
           {
             if (strcmp (tree->u.object.keys[i], "containerID")
                 && strcmp (tree->u.object.keys[i], "hostID")
-                && strcmp (tree->u.object.keys[i], "size")){
+                && strcmp (tree->u.object.keys[i], "size"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -478,12 +430,13 @@ make_runtime_spec_schema_defs_id_mapping (yajl_val tree, const struct parser_con
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -553,23 +506,6 @@ gen_runtime_spec_schema_defs_id_mapping (yajl_gen g, const runtime_spec_schema_d
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_id_mapping *
-clone_runtime_spec_schema_defs_id_mapping (runtime_spec_schema_defs_id_mapping *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_id_mapping) runtime_spec_schema_defs_id_mapping *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->container_id = src->container_id;
-    ret->container_id_present = src->container_id_present;
-    ret->host_id = src->host_id;
-    ret->host_id_present = src->host_id_present;
-    ret->size = src->size;
-    ret->size_present = src->size_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_mount *, free_runtime_spec_schema_defs_mount)
@@ -732,7 +668,8 @@ make_runtime_spec_schema_defs_mount (yajl_val tree, const struct parser_context 
                 && strcmp (tree->u.object.keys[i], "options")
                 && strcmp (tree->u.object.keys[i], "type")
                 && strcmp (tree->u.object.keys[i], "uidMappings")
-                && strcmp (tree->u.object.keys[i], "gidMappings")){
+                && strcmp (tree->u.object.keys[i], "gidMappings"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -744,12 +681,13 @@ make_runtime_spec_schema_defs_mount (yajl_val tree, const struct parser_context 
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -779,7 +717,8 @@ free_runtime_spec_schema_defs_mount (runtime_spec_schema_defs_mount *ptr)
     }
     free (ptr->type);
     ptr->type = NULL;
-    if (ptr->uid_mappings != NULL)      {
+    if (ptr->uid_mappings != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->uid_mappings_len; i++)
           {
@@ -792,7 +731,8 @@ free_runtime_spec_schema_defs_mount (runtime_spec_schema_defs_mount *ptr)
         free (ptr->uid_mappings);
         ptr->uid_mappings = NULL;
       }
-    if (ptr->gid_mappings != NULL)      {
+    if (ptr->gid_mappings != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->gid_mappings_len; i++)
           {
@@ -940,76 +880,5 @@ gen_runtime_spec_schema_defs_mount (yajl_gen g, const runtime_spec_schema_defs_m
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_mount *
-clone_runtime_spec_schema_defs_mount (runtime_spec_schema_defs_mount *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_mount) runtime_spec_schema_defs_mount *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->source)
-      {
-        ret->source = strdup (src->source);
-        if (ret->source == NULL)
-          return NULL;
-      }
-    if (src->destination)
-      {
-        ret->destination = strdup (src->destination);
-        if (ret->destination == NULL)
-          return NULL;
-      }
-    if (src->options)
-      {
-        ret->options_len = src->options_len;
-        ret->options = calloc (src->options_len + 1, sizeof (*ret->options));
-        if (ret->options == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->options_len; i++)
-          {
-            if (src->options[i])
-              {
-                ret->options[i] = strdup (src->options[i]);
-                if (ret->options[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->type)
-      {
-        ret->type = strdup (src->type);
-        if (ret->type == NULL)
-          return NULL;
-      }
-    if (src->uid_mappings)
-      {
-        ret->uid_mappings_len = src->uid_mappings_len;
-        ret->uid_mappings = calloc (src->uid_mappings_len + 1, sizeof (*ret->uid_mappings));
-        if (ret->uid_mappings == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->uid_mappings_len; i++)
-          {
-            ret->uid_mappings[i] = clone_runtime_spec_schema_defs_id_mapping (src->uid_mappings[i]);
-            if (ret->uid_mappings[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->gid_mappings)
-      {
-        ret->gid_mappings_len = src->gid_mappings_len;
-        ret->gid_mappings = calloc (src->gid_mappings_len + 1, sizeof (*ret->gid_mappings));
-        if (ret->gid_mappings == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->gid_mappings_len; i++)
-          {
-            ret->gid_mappings[i] = clone_runtime_spec_schema_defs_id_mapping (src->gid_mappings[i]);
-            if (ret->gid_mappings[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
 }
 

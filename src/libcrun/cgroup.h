@@ -19,7 +19,6 @@
 #define CGROUP_H
 
 #include "container.h"
-#include "string_map.h"
 #include <unistd.h>
 
 #ifndef CGROUP_ROOT
@@ -49,7 +48,7 @@ struct libcrun_cgroup_status;
 struct libcrun_cgroup_args
 {
   runtime_spec_schema_config_linux_resources *resources;
-  string_map *annotations;
+  json_map_string_string *annotations;
   const char *cgroup_path;
   int manager;
   pid_t pid;
@@ -57,8 +56,6 @@ struct libcrun_cgroup_args
   gid_t root_gid;
   const char *id;
   bool joined;
-
-  const char *state_root;
 };
 
 /* cgroup life-cycle management.  */
@@ -92,7 +89,6 @@ int libcrun_cgroup_has_oom (struct libcrun_cgroup_status *status, libcrun_error_
 int libcrun_cgroup_read_pids (struct libcrun_cgroup_status *status, bool recurse, pid_t **pids, libcrun_error_t *err);
 
 int libcrun_update_cgroup_resources (struct libcrun_cgroup_status *status,
-                                     const char *state_root,
                                      runtime_spec_schema_config_linux_resources *resources,
                                      libcrun_error_t *err);
 

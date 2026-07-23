@@ -84,9 +84,7 @@ int libcrun_join_process (libcrun_context_t *context, libcrun_container_t *conta
                           libcrun_container_status_t *status, const char *cgroup, int detach,
                           runtime_spec_schema_config_schema_process *process, int *terminal_fd, libcrun_error_t *err);
 int libcrun_linux_container_update (libcrun_container_status_t *status,
-                                    const char *state_root,
-                                    runtime_spec_schema_config_linux_resources *resources,
-                                    libcrun_error_t *err);
+                                    runtime_spec_schema_config_linux_resources *resources, libcrun_error_t *err);
 int libcrun_create_keyring (const char *name, const char *label, libcrun_error_t *err);
 int libcrun_container_pause_linux (libcrun_container_status_t *status, libcrun_error_t *err);
 int libcrun_container_unpause_linux (libcrun_container_status_t *status, libcrun_error_t *err);
@@ -146,7 +144,5 @@ int libcrun_destroy_intelrdt (const char *name, libcrun_error_t *err);
 int libcrun_update_intel_rdt (const char *ctr_name, libcrun_container_t *container, const char *l3_cache_schema, const char *mem_bw_schema, libcrun_error_t *err);
 
 int libcrun_safe_chdir (const char *path, libcrun_error_t *err);
-
-int get_bind_mount (int dirfd, const char *src, bool recursive, bool rdonly, libcrun_error_t *err);
 
 #endif

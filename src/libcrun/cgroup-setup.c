@@ -50,7 +50,7 @@ initialize_cpuset_subsystem_rec (char *path, size_t path_len, char *cpus, char *
   bool has_cpus = false, has_mems = false;
   int b_len;
 
-  dirfd = open (path, O_DIRECTORY | O_PATH | O_CLOEXEC);
+  dirfd = open (path, O_DIRECTORY | O_RDONLY | O_CLOEXEC);
   if (UNLIKELY (dirfd < 0))
     return crun_make_error (err, errno, "open `%s`", path);
 
@@ -174,7 +174,7 @@ initialize_memory_subsystem (const char *path, libcrun_error_t *err)
   cleanup_close int dirfd = -1;
   int i;
 
-  dirfd = open (path, O_DIRECTORY | O_PATH | O_CLOEXEC);
+  dirfd = open (path, O_DIRECTORY | O_RDONLY | O_CLOEXEC);
   if (UNLIKELY (dirfd < 0))
     return crun_make_error (err, errno, "open `%s`", path);
 
@@ -200,7 +200,7 @@ enter_cgroup_subsystem (pid_t pid, const char *subsystem, const char *path, bool
   cleanup_free char *cgroup_path = NULL;
   int ret;
 
-  ret = append_paths (&cgroup_path, err, CGROUP_ROOT, subsystem, path ? path : "", NULL);
+  ret = append_paths (&cgroup_path, err, CGROUP_ROOT, subsystem ? subsystem : "", path ? path : "", NULL);
   if (UNLIKELY (ret < 0))
     return ret;
 
@@ -505,6 +505,21 @@ enter_cgroup (int cgroup_mode, pid_t pid, pid_t init_pid, const char *path,
       ret = enter_cgroup_v1 (pid, path, create_if_missing, err);
       if (UNLIKELY (ret < 0))
         return ret;
+    }
+  /* Reset the inherited cpu affinity. Old kernels do that automatically, but
+     new kernels remember the affinity that was set before the cgroup move.
+     This is undesirable, because it inherits the systemd affinity when the container
+     should really move to the container space cpus.
+
+     The sched_setaffinity call will always return an error (EINVAL or ENODEV)
+     when used like this. This is expected and part of the backward compatibility.
+
+     See: https://issues.redhat.com/browse/OCPBUGS-15102   */
+  ret = sched_setaffinity (pid, 0, NULL);
+  if (LIKELY (ret < 0))
+    {
+      if (UNLIKELY (! ((errno == EINVAL) || (errno == ENODEV))))
+        return crun_make_error (err, errno, "failed to reset affinity");
     }
   return 0;
 }

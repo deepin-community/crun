@@ -3,9 +3,6 @@
 /* Define if CRIU join NS support is available */
 #undef CRIU_JOIN_NS_SUPPORT
 
-/* Define if CRIU_NETWORK_LOCK_SKIP is available */
-#undef CRIU_NETWORK_LOCK_SKIP_SUPPORT
-
 /* Define if CRIU pre-dump support is available */
 #undef CRIU_PRE_DUMP_SUPPORT
 
@@ -30,9 +27,6 @@
 /* Define if DLOPEN is available */
 #undef HAVE_DLOPEN
 
-/* Define to 1 if you have the `eaccess' function. */
-#undef HAVE_EACCESS
-
 /* Define if eBPF is available */
 #undef HAVE_EBPF
 
@@ -50,9 +44,6 @@
 
 /* Define if FSCONFIG_CMD_CREATE is available in sys/mount.h */
 #undef HAVE_FSCONFIG_CMD_CREATE_SYS_MOUNT_H
-
-/* Define to 1 if you have the `hsearch_r' function. */
-#undef HAVE_HSEARCH_R
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -150,9 +141,6 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Define if WAMR is available */
-#undef HAVE_WAMR
-
 /* Define if WasmEdge is available */
 #undef HAVE_WASMEDGE
 
@@ -170,9 +158,6 @@
 
 /* Define to 1 if you have the <wasmtime.h> header file. */
 #undef HAVE_WASMTIME_H
-
-/* Define to 1 if you have the <wasm_export.h> header file. */
-#undef HAVE_WASM_EXPORT_H
 
 /* Define if libyajl is available */
 #undef HAVE_YAJL

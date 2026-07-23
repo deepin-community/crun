@@ -159,14 +159,8 @@
         "createRuntime": [
             {
                 "path": "/usr/bin/fix-mounts",
-                "args": [
-                    "fix-mounts",
-                    "arg1",
-                    "arg2"
-                ],
-                "env": [
-                    "key1=value1"
-                ]
+                "args": ["fix-mounts", "arg1", "arg2"],
+                "env":  [ "key1=value1"]
             },
             {
                 "path": "/usr/bin/setup-network"
@@ -175,14 +169,8 @@
         "createContainer": [
             {
                 "path": "/usr/bin/mount-hook",
-                "args": [
-                    "-mount",
-                    "arg1",
-                    "arg2"
-                ],
-                "env": [
-                    "key1=value1"
-                ]
+                "args": ["-mount", "arg1", "arg2"],
+                "env":  [ "key1=value1"]
             }
         ],
         "startContainer": [

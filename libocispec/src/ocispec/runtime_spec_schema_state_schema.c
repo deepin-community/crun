@@ -169,7 +169,8 @@ make_runtime_spec_schema_state_schema (yajl_val tree, const struct parser_contex
                 && strcmp (tree->u.object.keys[i], "status")
                 && strcmp (tree->u.object.keys[i], "pid")
                 && strcmp (tree->u.object.keys[i], "bundle")
-                && strcmp (tree->u.object.keys[i], "annotations")){
+                && strcmp (tree->u.object.keys[i], "annotations"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -181,12 +182,13 @@ make_runtime_spec_schema_state_schema (yajl_val tree, const struct parser_contex
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -301,51 +303,12 @@ gen_runtime_spec_schema_state_schema (yajl_gen g, const runtime_spec_schema_stat
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_state_schema *
-clone_runtime_spec_schema_state_schema (runtime_spec_schema_state_schema *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_state_schema) runtime_spec_schema_state_schema *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->oci_version)
-      {
-        ret->oci_version = strdup (src->oci_version);
-        if (ret->oci_version == NULL)
-          return NULL;
-      }
-    if (src->id)
-      {
-        ret->id = strdup (src->id);
-        if (ret->id == NULL)
-          return NULL;
-      }
-    if (src->status)
-      {
-        ret->status = strdup (src->status);
-        if (ret->status == NULL)
-          return NULL;
-      }
-    ret->pid = src->pid;
-    ret->pid_present = src->pid_present;
-    if (src->bundle)
-      {
-        ret->bundle = strdup (src->bundle);
-        if (ret->bundle == NULL)
-          return NULL;
-      }
-    ret->annotations = clone_map_string_string (src->annotations);
-    if (ret->annotations == NULL)
-        return NULL;
-    return move_ptr (ret);
-}
-
 
 runtime_spec_schema_state_schema *
 runtime_spec_schema_state_schema_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-runtime_spec_schema_state_schema *ptr = NULL;size_t filesize;
+    runtime_spec_schema_state_schema *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -358,12 +321,16 @@ runtime_spec_schema_state_schema *ptr = NULL;size_t filesize;
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }ptr = runtime_spec_schema_state_schema_parse_data (content, ctx, err);return ptr;
+      }
+    ptr = runtime_spec_schema_state_schema_parse_data (content, ctx, err);
+    return ptr;
 }
-runtime_spec_schema_state_schema * 
+
+runtime_spec_schema_state_schema *
 runtime_spec_schema_state_schema_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{runtime_spec_schema_state_schema *ptr = NULL;
-size_t filesize;
+{
+    runtime_spec_schema_state_schema *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -376,14 +343,17 @@ size_t filesize;
         *err = strdup ("cannot read the file");
         return NULL;
       }
-ptr = runtime_spec_schema_state_schema_parse_data (content, ctx, err);return ptr;
+    ptr = runtime_spec_schema_state_schema_parse_data (content, ctx, err);
+    return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
- runtime_spec_schema_state_schema * runtime_spec_schema_state_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
- { 
-  runtime_spec_schema_state_schema *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+runtime_spec_schema_state_schema *
+runtime_spec_schema_state_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+{
+    runtime_spec_schema_state_schema *ptr = NULL;
+    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -401,7 +371,8 @@ define_cleaner_function (yajl_val, yajl_tree_free)
             *err = strdup ("error allocating memory");
         return NULL;
       }
-ptr = make_runtime_spec_schema_state_schema (tree, ctx, err);return ptr; 
+    ptr = make_runtime_spec_schema_state_schema (tree, ctx, err);
+    return ptr;
 }
 
 static void
@@ -416,8 +387,9 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
- char * 
-runtime_spec_schema_state_schema_generate_json (const runtime_spec_schema_state_schema *ptr, const struct parser_context *ctx, parser_error *err){
+char *
+runtime_spec_schema_state_schema_generate_json (const runtime_spec_schema_state_schema *ptr, const struct parser_context *ctx, parser_error *err)
+{
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -435,9 +407,10 @@ runtime_spec_schema_state_schema_generate_json (const runtime_spec_schema_state_
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      } 
+      }
 
-if (yajl_gen_status_ok != gen_runtime_spec_schema_state_schema (g, ptr, ctx, err))  {
+    if (yajl_gen_status_ok != gen_runtime_spec_schema_state_schema (g, ptr, ctx, err))
+      {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

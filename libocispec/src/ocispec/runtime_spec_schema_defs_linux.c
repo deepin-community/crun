@@ -91,7 +91,8 @@ make_runtime_spec_schema_defs_linux_personality (yajl_val tree, const struct par
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "domain")
-                && strcmp (tree->u.object.keys[i], "flags")){
+                && strcmp (tree->u.object.keys[i], "flags"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -103,12 +104,13 @@ make_runtime_spec_schema_defs_linux_personality (yajl_val tree, const struct par
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -195,39 +197,6 @@ gen_runtime_spec_schema_defs_linux_personality (yajl_gen g, const runtime_spec_s
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_personality *
-clone_runtime_spec_schema_defs_linux_personality (runtime_spec_schema_defs_linux_personality *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_personality) runtime_spec_schema_defs_linux_personality *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->domain)
-      {
-        ret->domain = strdup (src->domain);
-        if (ret->domain == NULL)
-          return NULL;
-      }
-    if (src->flags)
-      {
-        ret->flags_len = src->flags_len;
-        ret->flags = calloc (src->flags_len + 1, sizeof (*ret->flags));
-        if (ret->flags == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->flags_len; i++)
-          {
-            if (src->flags[i])
-              {
-                ret->flags[i] = strdup (src->flags[i]);
-                if (ret->flags[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_syscall_arg *, free_runtime_spec_schema_defs_linux_syscall_arg)
@@ -360,7 +329,8 @@ make_runtime_spec_schema_defs_linux_syscall_arg (yajl_val tree, const struct par
             if (strcmp (tree->u.object.keys[i], "index")
                 && strcmp (tree->u.object.keys[i], "value")
                 && strcmp (tree->u.object.keys[i], "valueTwo")
-                && strcmp (tree->u.object.keys[i], "op")){
+                && strcmp (tree->u.object.keys[i], "op"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -372,12 +342,13 @@ make_runtime_spec_schema_defs_linux_syscall_arg (yajl_val tree, const struct par
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -461,29 +432,6 @@ gen_runtime_spec_schema_defs_linux_syscall_arg (yajl_gen g, const runtime_spec_s
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_syscall_arg *
-clone_runtime_spec_schema_defs_linux_syscall_arg (runtime_spec_schema_defs_linux_syscall_arg *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_syscall_arg) runtime_spec_schema_defs_linux_syscall_arg *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->index = src->index;
-    ret->index_present = src->index_present;
-    ret->value = src->value;
-    ret->value_present = src->value_present;
-    ret->value_two = src->value_two;
-    ret->value_two_present = src->value_two_present;
-    if (src->op)
-      {
-        ret->op = strdup (src->op);
-        if (ret->op == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_syscall *, free_runtime_spec_schema_defs_linux_syscall)
@@ -626,7 +574,8 @@ make_runtime_spec_schema_defs_linux_syscall (yajl_val tree, const struct parser_
             if (strcmp (tree->u.object.keys[i], "names")
                 && strcmp (tree->u.object.keys[i], "action")
                 && strcmp (tree->u.object.keys[i], "errnoRet")
-                && strcmp (tree->u.object.keys[i], "args")){
+                && strcmp (tree->u.object.keys[i], "args"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -638,12 +587,13 @@ make_runtime_spec_schema_defs_linux_syscall (yajl_val tree, const struct parser_
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -669,7 +619,8 @@ free_runtime_spec_schema_defs_linux_syscall (runtime_spec_schema_defs_linux_sysc
     }
     free (ptr->action);
     ptr->action = NULL;
-    if (ptr->args != NULL)      {
+    if (ptr->args != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->args_len; i++)
           {
@@ -780,54 +731,6 @@ gen_runtime_spec_schema_defs_linux_syscall (yajl_gen g, const runtime_spec_schem
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_syscall *
-clone_runtime_spec_schema_defs_linux_syscall (runtime_spec_schema_defs_linux_syscall *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_syscall) runtime_spec_schema_defs_linux_syscall *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->names)
-      {
-        ret->names_len = src->names_len;
-        ret->names = calloc (src->names_len + 1, sizeof (*ret->names));
-        if (ret->names == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->names_len; i++)
-          {
-            if (src->names[i])
-              {
-                ret->names[i] = strdup (src->names[i]);
-                if (ret->names[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->action)
-      {
-        ret->action = strdup (src->action);
-        if (ret->action == NULL)
-          return NULL;
-      }
-    ret->errno_ret = src->errno_ret;
-    ret->errno_ret_present = src->errno_ret_present;
-    if (src->args)
-      {
-        ret->args_len = src->args_len;
-        ret->args = calloc (src->args_len + 1, sizeof (*ret->args));
-        if (ret->args == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->args_len; i++)
-          {
-            ret->args[i] = clone_runtime_spec_schema_defs_linux_syscall_arg (src->args[i]);
-            if (ret->args[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_device *, free_runtime_spec_schema_defs_linux_device)
@@ -1025,7 +928,8 @@ make_runtime_spec_schema_defs_linux_device (yajl_val tree, const struct parser_c
                 && strcmp (tree->u.object.keys[i], "major")
                 && strcmp (tree->u.object.keys[i], "minor")
                 && strcmp (tree->u.object.keys[i], "uid")
-                && strcmp (tree->u.object.keys[i], "gid")){
+                && strcmp (tree->u.object.keys[i], "gid"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1037,12 +941,13 @@ make_runtime_spec_schema_defs_linux_device (yajl_val tree, const struct parser_c
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1166,39 +1071,6 @@ gen_runtime_spec_schema_defs_linux_device (yajl_gen g, const runtime_spec_schema
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_defs_linux_device *
-clone_runtime_spec_schema_defs_linux_device (runtime_spec_schema_defs_linux_device *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_device) runtime_spec_schema_defs_linux_device *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->type)
-      {
-        ret->type = strdup (src->type);
-        if (ret->type == NULL)
-          return NULL;
-      }
-    if (src->path)
-      {
-        ret->path = strdup (src->path);
-        if (ret->path == NULL)
-          return NULL;
-      }
-    ret->file_mode = src->file_mode;
-    ret->file_mode_present = src->file_mode_present;
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    ret->uid = src->uid;
-    ret->uid_present = src->uid_present;
-    ret->gid = src->gid;
-    ret->gid_present = src->gid_present;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_defs_linux_block_io_device *, free_runtime_spec_schema_defs_linux_block_io_device)
 runtime_spec_schema_defs_linux_block_io_device *
 make_runtime_spec_schema_defs_linux_block_io_device (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -1287,7 +1159,8 @@ make_runtime_spec_schema_defs_linux_block_io_device (yajl_val tree, const struct
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "major")
-                && strcmp (tree->u.object.keys[i], "minor")){
+                && strcmp (tree->u.object.keys[i], "minor"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1299,12 +1172,13 @@ make_runtime_spec_schema_defs_linux_block_io_device (yajl_val tree, const struct
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1362,21 +1236,6 @@ gen_runtime_spec_schema_defs_linux_block_io_device (yajl_gen g, const runtime_sp
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_block_io_device *
-clone_runtime_spec_schema_defs_linux_block_io_device (runtime_spec_schema_defs_linux_block_io_device *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_block_io_device) runtime_spec_schema_defs_linux_block_io_device *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_block_io_device_weight *, free_runtime_spec_schema_defs_linux_block_io_device_weight)
@@ -1513,7 +1372,8 @@ make_runtime_spec_schema_defs_linux_block_io_device_weight (yajl_val tree, const
             if (strcmp (tree->u.object.keys[i], "major")
                 && strcmp (tree->u.object.keys[i], "minor")
                 && strcmp (tree->u.object.keys[i], "weight")
-                && strcmp (tree->u.object.keys[i], "leafWeight")){
+                && strcmp (tree->u.object.keys[i], "leafWeight"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1525,12 +1385,13 @@ make_runtime_spec_schema_defs_linux_block_io_device_weight (yajl_val tree, const
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1612,25 +1473,6 @@ gen_runtime_spec_schema_defs_linux_block_io_device_weight (yajl_gen g, const run
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_block_io_device_weight *
-clone_runtime_spec_schema_defs_linux_block_io_device_weight (runtime_spec_schema_defs_linux_block_io_device_weight *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_block_io_device_weight) runtime_spec_schema_defs_linux_block_io_device_weight *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    ret->weight = src->weight;
-    ret->weight_present = src->weight_present;
-    ret->leaf_weight = src->leaf_weight;
-    ret->leaf_weight_present = src->leaf_weight_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_block_io_device_throttle *, free_runtime_spec_schema_defs_linux_block_io_device_throttle)
@@ -1744,7 +1586,8 @@ make_runtime_spec_schema_defs_linux_block_io_device_throttle (yajl_val tree, con
           {
             if (strcmp (tree->u.object.keys[i], "major")
                 && strcmp (tree->u.object.keys[i], "minor")
-                && strcmp (tree->u.object.keys[i], "rate")){
+                && strcmp (tree->u.object.keys[i], "rate"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1756,12 +1599,13 @@ make_runtime_spec_schema_defs_linux_block_io_device_throttle (yajl_val tree, con
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1831,23 +1675,6 @@ gen_runtime_spec_schema_defs_linux_block_io_device_throttle (yajl_gen g, const r
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_block_io_device_throttle *
-clone_runtime_spec_schema_defs_linux_block_io_device_throttle (runtime_spec_schema_defs_linux_block_io_device_throttle *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_block_io_device_throttle) runtime_spec_schema_defs_linux_block_io_device_throttle *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    ret->rate = src->rate;
-    ret->rate_present = src->rate_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_device_cgroup *, free_runtime_spec_schema_defs_linux_device_cgroup)
@@ -1984,7 +1811,8 @@ make_runtime_spec_schema_defs_linux_device_cgroup (yajl_val tree, const struct p
                 && strcmp (tree->u.object.keys[i], "type")
                 && strcmp (tree->u.object.keys[i], "major")
                 && strcmp (tree->u.object.keys[i], "minor")
-                && strcmp (tree->u.object.keys[i], "access")){
+                && strcmp (tree->u.object.keys[i], "access"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1996,12 +1824,13 @@ make_runtime_spec_schema_defs_linux_device_cgroup (yajl_val tree, const struct p
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2102,35 +1931,6 @@ gen_runtime_spec_schema_defs_linux_device_cgroup (yajl_gen g, const runtime_spec
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_defs_linux_device_cgroup *
-clone_runtime_spec_schema_defs_linux_device_cgroup (runtime_spec_schema_defs_linux_device_cgroup *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_device_cgroup) runtime_spec_schema_defs_linux_device_cgroup *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->allow = src->allow;
-    ret->allow_present = src->allow_present;
-    if (src->type)
-      {
-        ret->type = strdup (src->type);
-        if (ret->type == NULL)
-          return NULL;
-      }
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    if (src->access)
-      {
-        ret->access = strdup (src->access);
-        if (ret->access == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_defs_linux_network_interface_priority *, free_runtime_spec_schema_defs_linux_network_interface_priority)
 runtime_spec_schema_defs_linux_network_interface_priority *
 make_runtime_spec_schema_defs_linux_network_interface_priority (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -2215,7 +2015,8 @@ make_runtime_spec_schema_defs_linux_network_interface_priority (yajl_val tree, c
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "name")
-                && strcmp (tree->u.object.keys[i], "priority")){
+                && strcmp (tree->u.object.keys[i], "priority"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2227,12 +2028,13 @@ make_runtime_spec_schema_defs_linux_network_interface_priority (yajl_val tree, c
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2292,25 +2094,6 @@ gen_runtime_spec_schema_defs_linux_network_interface_priority (yajl_gen g, const
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_network_interface_priority *
-clone_runtime_spec_schema_defs_linux_network_interface_priority (runtime_spec_schema_defs_linux_network_interface_priority *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_network_interface_priority) runtime_spec_schema_defs_linux_network_interface_priority *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->name)
-      {
-        ret->name = strdup (src->name);
-        if (ret->name == NULL)
-          return NULL;
-      }
-    ret->priority = src->priority;
-    ret->priority_present = src->priority_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_rdma *, free_runtime_spec_schema_defs_linux_rdma)
@@ -2401,7 +2184,8 @@ make_runtime_spec_schema_defs_linux_rdma (yajl_val tree, const struct parser_con
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "hcaHandles")
-                && strcmp (tree->u.object.keys[i], "hcaObjects")){
+                && strcmp (tree->u.object.keys[i], "hcaObjects"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2413,12 +2197,13 @@ make_runtime_spec_schema_defs_linux_rdma (yajl_val tree, const struct parser_con
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2476,21 +2261,6 @@ gen_runtime_spec_schema_defs_linux_rdma (yajl_gen g, const runtime_spec_schema_d
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_rdma *
-clone_runtime_spec_schema_defs_linux_rdma (runtime_spec_schema_defs_linux_rdma *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_rdma) runtime_spec_schema_defs_linux_rdma *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->hca_handles = src->hca_handles;
-    ret->hca_handles_present = src->hca_handles_present;
-    ret->hca_objects = src->hca_objects;
-    ret->hca_objects_present = src->hca_objects_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_namespace_reference *, free_runtime_spec_schema_defs_linux_namespace_reference)
@@ -2567,7 +2337,8 @@ make_runtime_spec_schema_defs_linux_namespace_reference (yajl_val tree, const st
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "type")
-                && strcmp (tree->u.object.keys[i], "path")){
+                && strcmp (tree->u.object.keys[i], "path"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2579,12 +2350,13 @@ make_runtime_spec_schema_defs_linux_namespace_reference (yajl_val tree, const st
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2646,29 +2418,6 @@ gen_runtime_spec_schema_defs_linux_namespace_reference (yajl_gen g, const runtim
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_namespace_reference *
-clone_runtime_spec_schema_defs_linux_namespace_reference (runtime_spec_schema_defs_linux_namespace_reference *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_namespace_reference) runtime_spec_schema_defs_linux_namespace_reference *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->type)
-      {
-        ret->type = strdup (src->type);
-        if (ret->type == NULL)
-          return NULL;
-      }
-    if (src->path)
-      {
-        ret->path = strdup (src->path);
-        if (ret->path == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_defs_linux_time_offsets *, free_runtime_spec_schema_defs_linux_time_offsets)
@@ -2759,7 +2508,8 @@ make_runtime_spec_schema_defs_linux_time_offsets (yajl_val tree, const struct pa
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "secs")
-                && strcmp (tree->u.object.keys[i], "nanosecs")){
+                && strcmp (tree->u.object.keys[i], "nanosecs"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2771,12 +2521,13 @@ make_runtime_spec_schema_defs_linux_time_offsets (yajl_val tree, const struct pa
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2834,20 +2585,5 @@ gen_runtime_spec_schema_defs_linux_time_offsets (yajl_gen g, const runtime_spec_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_linux_time_offsets *
-clone_runtime_spec_schema_defs_linux_time_offsets (runtime_spec_schema_defs_linux_time_offsets *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_linux_time_offsets) runtime_spec_schema_defs_linux_time_offsets *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->secs = src->secs;
-    ret->secs_present = src->secs_present;
-    ret->nanosecs = src->nanosecs;
-    ret->nanosecs_present = src->nanosecs_present;
-    return move_ptr (ret);
 }
 

@@ -241,70 +241,19 @@ gen_image_manifest_items_image_manifest_items_schema_element (yajl_gen g, const 
     return yajl_gen_status_ok;
 }
 
-image_manifest_items_image_manifest_items_schema_element *
-clone_image_manifest_items_image_manifest_items_schema_element (image_manifest_items_image_manifest_items_schema_element *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_image_manifest_items_image_manifest_items_schema_element) image_manifest_items_image_manifest_items_schema_element *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->config)
-      {
-        ret->config = strdup (src->config);
-        if (ret->config == NULL)
-          return NULL;
-      }
-    if (src->layers)
-      {
-        ret->layers_len = src->layers_len;
-        ret->layers = calloc (src->layers_len + 1, sizeof (*ret->layers));
-        if (ret->layers == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->layers_len; i++)
-          {
-            if (src->layers[i])
-              {
-                ret->layers[i] = strdup (src->layers[i]);
-                if (ret->layers[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->repo_tags)
-      {
-        ret->repo_tags_len = src->repo_tags_len;
-        ret->repo_tags = calloc (src->repo_tags_len + 1, sizeof (*ret->repo_tags));
-        if (ret->repo_tags == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->repo_tags_len; i++)
-          {
-            if (src->repo_tags[i])
-              {
-                ret->repo_tags[i] = strdup (src->repo_tags[i]);
-                if (ret->repo_tags[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->parent)
-      {
-        ret->parent = strdup (src->parent);
-        if (ret->parent == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
-}
 
 
 define_cleaner_function (image_manifest_items_image_manifest_items_schema_container *, free_image_manifest_items_image_manifest_items_schema_container)
+
 image_manifest_items_image_manifest_items_schema_container
 *make_image_manifest_items_image_manifest_items_schema_container (yajl_val tree, const struct parser_context *ctx, parser_error *err)
 {
     __auto_cleanup(free_image_manifest_items_image_manifest_items_schema_container) image_manifest_items_image_manifest_items_schema_container *ptr = NULL;
     size_t i, alen;
-     (void) ctx;
-     if (tree == NULL || err == NULL || YAJL_GET_ARRAY (tree) == NULL)
+
+    (void) ctx;
+
+    if (tree == NULL || err == NULL || YAJL_GET_ARRAY (tree) == NULL)
       return NULL;
     *err = NULL;
     alen = YAJL_GET_ARRAY_NO_CHECK (tree)->len;
@@ -352,6 +301,8 @@ void free_image_manifest_items_image_manifest_items_schema_container (image_mani
 
     free (ptr);
 }
+
+
 yajl_gen_status gen_image_manifest_items_image_manifest_items_schema_container (yajl_gen g, const image_manifest_items_image_manifest_items_schema_container *ptr, const struct parser_context *ctx,
                        parser_error *err)
 {
@@ -389,7 +340,8 @@ yajl_gen_status gen_image_manifest_items_image_manifest_items_schema_container (
 image_manifest_items_image_manifest_items_schema_container *
 image_manifest_items_image_manifest_items_schema_container_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-image_manifest_items_image_manifest_items_schema_container *ptr = NULL;size_t filesize;
+    image_manifest_items_image_manifest_items_schema_container *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -402,12 +354,16 @@ image_manifest_items_image_manifest_items_schema_container *ptr = NULL;size_t fi
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }ptr = image_manifest_items_image_manifest_items_schema_container_parse_data (content, ctx, err);return ptr;
+      }
+    ptr = image_manifest_items_image_manifest_items_schema_container_parse_data (content, ctx, err);
+    return ptr;
 }
-image_manifest_items_image_manifest_items_schema_container * 
+
+image_manifest_items_image_manifest_items_schema_container *
 image_manifest_items_image_manifest_items_schema_container_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{image_manifest_items_image_manifest_items_schema_container *ptr = NULL;
-size_t filesize;
+{
+    image_manifest_items_image_manifest_items_schema_container *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -420,14 +376,17 @@ size_t filesize;
         *err = strdup ("cannot read the file");
         return NULL;
       }
-ptr = image_manifest_items_image_manifest_items_schema_container_parse_data (content, ctx, err);return ptr;
+    ptr = image_manifest_items_image_manifest_items_schema_container_parse_data (content, ctx, err);
+    return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
- image_manifest_items_image_manifest_items_schema_container * image_manifest_items_image_manifest_items_schema_container_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
- { 
-  image_manifest_items_image_manifest_items_schema_container *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+image_manifest_items_image_manifest_items_schema_container *
+image_manifest_items_image_manifest_items_schema_container_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+{
+    image_manifest_items_image_manifest_items_schema_container *ptr = NULL;
+    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -445,7 +404,8 @@ define_cleaner_function (yajl_val, yajl_tree_free)
             *err = strdup ("error allocating memory");
         return NULL;
       }
-ptr = make_image_manifest_items_image_manifest_items_schema_container (tree, ctx, err);return ptr; 
+    ptr = make_image_manifest_items_image_manifest_items_schema_container (tree, ctx, err);
+    return ptr;
 }
 
 static void
@@ -460,8 +420,9 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
- char * 
-image_manifest_items_image_manifest_items_schema_container_generate_json (const image_manifest_items_image_manifest_items_schema_container *ptr, const struct parser_context *ctx, parser_error *err){
+char *
+image_manifest_items_image_manifest_items_schema_container_generate_json (const image_manifest_items_image_manifest_items_schema_container *ptr, const struct parser_context *ctx, parser_error *err)
+{
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -479,9 +440,10 @@ image_manifest_items_image_manifest_items_schema_container_generate_json (const 
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      } 
+      }
 
-if (yajl_gen_status_ok != gen_image_manifest_items_image_manifest_items_schema_container (g, ptr, ctx, err))  {
+    if (yajl_gen_status_ok != gen_image_manifest_items_image_manifest_items_schema_container (g, ptr, ctx, err))
+      {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;
