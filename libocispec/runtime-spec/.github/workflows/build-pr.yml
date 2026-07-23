@@ -1,7 +1,7 @@
-name: build
+name: build-pr
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go }}
-
+      
       - name: create go.mod
         run: |
           # Fix for "cannot find main module" issue

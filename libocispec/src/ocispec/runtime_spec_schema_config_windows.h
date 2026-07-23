@@ -23,7 +23,6 @@ runtime_spec_schema_config_windows_resources_memory;
 
 void free_runtime_spec_schema_config_windows_resources_memory (runtime_spec_schema_config_windows_resources_memory *ptr);
 
-runtime_spec_schema_config_windows_resources_memory *clone_runtime_spec_schema_config_windows_resources_memory (runtime_spec_schema_config_windows_resources_memory *src);
 runtime_spec_schema_config_windows_resources_memory *make_runtime_spec_schema_config_windows_resources_memory (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_resources_memory (yajl_gen g, const runtime_spec_schema_config_windows_resources_memory *ptr, const struct parser_context *ctx, parser_error *err);
@@ -45,7 +44,6 @@ runtime_spec_schema_config_windows_resources_cpu;
 
 void free_runtime_spec_schema_config_windows_resources_cpu (runtime_spec_schema_config_windows_resources_cpu *ptr);
 
-runtime_spec_schema_config_windows_resources_cpu *clone_runtime_spec_schema_config_windows_resources_cpu (runtime_spec_schema_config_windows_resources_cpu *src);
 runtime_spec_schema_config_windows_resources_cpu *make_runtime_spec_schema_config_windows_resources_cpu (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_resources_cpu (yajl_gen g, const runtime_spec_schema_config_windows_resources_cpu *ptr, const struct parser_context *ctx, parser_error *err);
@@ -67,7 +65,6 @@ runtime_spec_schema_config_windows_resources_storage;
 
 void free_runtime_spec_schema_config_windows_resources_storage (runtime_spec_schema_config_windows_resources_storage *ptr);
 
-runtime_spec_schema_config_windows_resources_storage *clone_runtime_spec_schema_config_windows_resources_storage (runtime_spec_schema_config_windows_resources_storage *src);
 runtime_spec_schema_config_windows_resources_storage *make_runtime_spec_schema_config_windows_resources_storage (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_resources_storage (yajl_gen g, const runtime_spec_schema_config_windows_resources_storage *ptr, const struct parser_context *ctx, parser_error *err);
@@ -85,7 +82,6 @@ runtime_spec_schema_config_windows_resources;
 
 void free_runtime_spec_schema_config_windows_resources (runtime_spec_schema_config_windows_resources *ptr);
 
-runtime_spec_schema_config_windows_resources *clone_runtime_spec_schema_config_windows_resources (runtime_spec_schema_config_windows_resources *src);
 runtime_spec_schema_config_windows_resources *make_runtime_spec_schema_config_windows_resources (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_resources (yajl_gen g, const runtime_spec_schema_config_windows_resources *ptr, const struct parser_context *ctx, parser_error *err);
@@ -111,7 +107,6 @@ runtime_spec_schema_config_windows_network;
 
 void free_runtime_spec_schema_config_windows_network (runtime_spec_schema_config_windows_network *ptr);
 
-runtime_spec_schema_config_windows_network *clone_runtime_spec_schema_config_windows_network (runtime_spec_schema_config_windows_network *src);
 runtime_spec_schema_config_windows_network *make_runtime_spec_schema_config_windows_network (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_network (yajl_gen g, const runtime_spec_schema_config_windows_network *ptr, const struct parser_context *ctx, parser_error *err);
@@ -123,7 +118,6 @@ runtime_spec_schema_config_windows_credential_spec;
 
 void free_runtime_spec_schema_config_windows_credential_spec (runtime_spec_schema_config_windows_credential_spec *ptr);
 
-runtime_spec_schema_config_windows_credential_spec *clone_runtime_spec_schema_config_windows_credential_spec (runtime_spec_schema_config_windows_credential_spec *src);
 runtime_spec_schema_config_windows_credential_spec *make_runtime_spec_schema_config_windows_credential_spec (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_credential_spec (yajl_gen g, const runtime_spec_schema_config_windows_credential_spec *ptr, const struct parser_context *ctx, parser_error *err);
@@ -137,7 +131,6 @@ runtime_spec_schema_config_windows_hyperv;
 
 void free_runtime_spec_schema_config_windows_hyperv (runtime_spec_schema_config_windows_hyperv *ptr);
 
-runtime_spec_schema_config_windows_hyperv *clone_runtime_spec_schema_config_windows_hyperv (runtime_spec_schema_config_windows_hyperv *src);
 runtime_spec_schema_config_windows_hyperv *make_runtime_spec_schema_config_windows_hyperv (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows_hyperv (yajl_gen g, const runtime_spec_schema_config_windows_hyperv *ptr, const struct parser_context *ctx, parser_error *err);
@@ -170,7 +163,6 @@ runtime_spec_schema_config_windows;
 
 void free_runtime_spec_schema_config_windows (runtime_spec_schema_config_windows *ptr);
 
-runtime_spec_schema_config_windows *clone_runtime_spec_schema_config_windows (runtime_spec_schema_config_windows *src);
 runtime_spec_schema_config_windows *make_runtime_spec_schema_config_windows (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_windows (yajl_gen g, const runtime_spec_schema_config_windows *ptr, const struct parser_context *ctx, parser_error *err);

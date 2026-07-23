@@ -37,7 +37,6 @@
 #include <inttypes.h>
 #include <time.h>
 
-#include <linux/magic.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -86,11 +85,11 @@ get_cgroup_manager (int manager, struct libcrun_cgroup_manager **out, libcrun_er
 }
 
 static const char *
-find_delegate_cgroup (string_map *annotations)
+find_delegate_cgroup (json_map_string_string *annotations)
 {
   const char *annotation;
 
-  annotation = find_string_map_value (annotations, "run.oci.delegate-cgroup");
+  annotation = find_annotation_map (annotations, "run.oci.delegate-cgroup");
   if (annotation)
     {
       if (annotation[0] == '\0')
@@ -99,6 +98,37 @@ find_delegate_cgroup (string_map *annotations)
     }
 
   return NULL;
+}
+
+static inline void
+cleanup_sig_contp (void *p)
+{
+  pid_t *pp = p;
+  if (*pp < 0)
+    return;
+
+  TEMP_FAILURE_RETRY (kill (*pp, SIGCONT));
+}
+
+static bool
+must_stop_proc (runtime_spec_schema_config_linux_resources *resources)
+{
+  size_t i;
+
+  if (resources == NULL)
+    return false;
+
+  if (resources->cpu && (resources->cpu->cpus || resources->cpu->mems))
+    return true;
+
+  if (resources->unified)
+    {
+      for (i = 0; i < resources->unified->len; i++)
+        if (has_prefix (resources->unified->keys[i], "cpuset."))
+          return true;
+    }
+
+  return false;
 }
 
 int
@@ -143,41 +173,7 @@ libcrun_cgroup_is_container_paused (struct libcrun_cgroup_status *status, bool *
 
   ret = read_all_file (path, &content, NULL, err);
   if (UNLIKELY (ret < 0))
-    {
-      errno = crun_error_get_errno (err);
-      /* If the file is missing and we were checking for freezer.state
-         (so either cgroup v1 or hybrid), it may be the freezer is
-         simply disabled. In such case the container cannot be paused.
-         On cgroup v2 freezer is always there.
-      */
-      if (errno != ENOENT || cgroup_mode == CGROUP_MODE_UNIFIED)
-        return ret;
-
-      /* Even with freezer disabled, its directory is still there. But
-         when it's disabled it has type tmpfs, while on systems with
-         freezer enabled, its type is cgroupfs. Use that to determine
-         whether freezer is enabled or not.
-      */
-      struct statfs freezer_stat;
-      if (statfs (CGROUP_ROOT "/freezer", &freezer_stat))
-        {
-          crun_error_release (err);
-          return crun_make_error (err, errno, "error when using statfs on `%s`", CGROUP_ROOT "/freezer");
-        }
-
-      /* If the freezer is mounted as cgroupfs type, then missing
-         freezer.state file is an error and should be handled like before.
-      */
-      if (freezer_stat.f_type == CGROUP_SUPER_MAGIC)
-        return ret;
-
-      /* When freezer dir is not mounted as cgroupfs, then it's
-         disabled, therefore container cannot be in paused state.
-      */
-      crun_error_release (err);
-      *paused = false;
-      return 0;
-    }
+    return ret;
 
   *paused = strstr (content, state) != NULL;
   return 0;
@@ -210,7 +206,6 @@ libcrun_cgroup_destroy (struct libcrun_cgroup_status *cgroup_status, libcrun_err
 
 int
 libcrun_update_cgroup_resources (struct libcrun_cgroup_status *cgroup_status,
-                                 const char *state_root,
                                  runtime_spec_schema_config_linux_resources *resources,
                                  libcrun_error_t *err)
 {
@@ -223,11 +218,11 @@ libcrun_update_cgroup_resources (struct libcrun_cgroup_status *cgroup_status,
 
   if (cgroup_manager->update_resources)
     {
-      ret = cgroup_manager->update_resources (cgroup_status, state_root, resources, err);
+      ret = cgroup_manager->update_resources (cgroup_status, resources, err);
       if (UNLIKELY (ret < 0))
         return ret;
     }
-  return update_cgroup_resources (cgroup_status->path, state_root, resources, err);
+  return update_cgroup_resources (cgroup_status->path, resources, err);
 }
 
 static int
@@ -288,6 +283,7 @@ libcrun_cgroup_preenter (struct libcrun_cgroup_args *args, int *dirfd, libcrun_e
 int
 libcrun_cgroup_enter (struct libcrun_cgroup_args *args, struct libcrun_cgroup_status **out, libcrun_error_t *err)
 {
+  __attribute__ ((unused)) pid_t sigcont_cleanup __attribute__ ((cleanup (cleanup_sig_contp))) = -1;
   /* status will be filled by the cgroup manager.  */
   cleanup_cgroup_status struct libcrun_cgroup_status *status = xmalloc0 (sizeof *status);
   struct libcrun_cgroup_manager *cgroup_manager;
@@ -299,6 +295,21 @@ libcrun_cgroup_enter (struct libcrun_cgroup_args *args, struct libcrun_cgroup_st
   cgroup_mode = libcrun_get_cgroup_mode (err);
   if (UNLIKELY (cgroup_mode < 0))
     return cgroup_mode;
+
+  /* If the cgroup configuration is limiting what CPUs/memory Nodes are available for the container,
+     then stop the container process during the cgroup configuration to avoid it being rescheduled on
+     a CPU that is not allowed.  This extra step is required for setting up the sub cgroup with the
+     systemd driver.  The alternative would be to temporarily setup the cpus/mems using d-bus.
+  */
+  if (must_stop_proc (args->resources))
+    {
+      ret = TEMP_FAILURE_RETRY (kill (args->pid, SIGSTOP));
+      if (UNLIKELY (ret < 0))
+        return crun_make_error (err, errno, "cannot stop container process `%d` with SIGSTOP", args->pid);
+
+      /* Send SIGCONT as soon as the function exits.  */
+      sigcont_cleanup = args->pid;
+    }
 
   if (cgroup_mode == CGROUP_MODE_HYBRID)
     {
@@ -364,11 +375,27 @@ libcrun_cgroup_enter (struct libcrun_cgroup_args *args, struct libcrun_cgroup_st
 
       if (args->resources)
         {
-          ret = update_cgroup_resources (status->path, args->state_root, args->resources, err);
+          ret = update_cgroup_resources (status->path, args->resources, err);
           if (UNLIKELY (ret < 0))
             return ret;
         }
     }
+  /* Reset the inherited cpu affinity. Old kernels do that automatically, but
+     new kernels remember the affinity that was set before the cgroup move.
+     This is undesirable, because it inherits the systemd affinity when the container
+     should really move to the container space cpus.
+
+     The sched_setaffinity call will always return an error (EINVAL or ENODEV)
+     when used like this. This is expected and part of the backward compatibility.
+
+     See: https://issues.redhat.com/browse/OCPBUGS-15102   */
+  ret = sched_setaffinity (args->pid, 0, NULL);
+  if (LIKELY (ret < 0))
+    {
+      if (UNLIKELY (! ((errno == EINVAL) || (errno == ENODEV))))
+        return crun_make_error (err, errno, "failed to reset affinity");
+    }
+
 success:
   *out = status;
   status = NULL;
@@ -443,18 +470,22 @@ int
 libcrun_cgroup_has_oom (struct libcrun_cgroup_status *status, libcrun_error_t *err)
 {
   cleanup_free char *content = NULL;
-  const char *path = status->path;
+  const char *path = NULL;
   const char *prefix = NULL;
   size_t content_size = 0;
   int cgroup_mode;
   char *it;
 
+  path = status->path;
   if (UNLIKELY (path == NULL || path[0] == '\0'))
     return 0;
 
   cgroup_mode = libcrun_get_cgroup_mode (err);
   if (UNLIKELY (cgroup_mode < 0))
     return cgroup_mode;
+
+  if (path == NULL || path[0] == '\0')
+    return 0;
 
   switch (cgroup_mode)
     {

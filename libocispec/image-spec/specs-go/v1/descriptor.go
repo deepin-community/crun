@@ -21,7 +21,7 @@ import digest "github.com/opencontainers/go-digest"
 // when marshalled to JSON.
 type Descriptor struct {
 	// MediaType is the media type of the object this schema refers to.
-	MediaType string `json:"mediaType"`
+	MediaType string `json:"mediaType,omitempty"`
 
 	// Digest is the digest of the targeted content.
 	Digest digest.Digest `json:"digest"`
@@ -69,12 +69,4 @@ type Platform struct {
 	// Variant is an optional field specifying a variant of the CPU, for
 	// example `v7` to specify ARMv7 when architecture is `arm`.
 	Variant string `json:"variant,omitempty"`
-}
-
-// DescriptorEmptyJSON is the descriptor of a blob with content of `{}`.
-var DescriptorEmptyJSON = Descriptor{
-	MediaType: MediaTypeEmptyJSON,
-	Digest:    `sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a`,
-	Size:      2,
-	Data:      []byte(`{}`),
 }

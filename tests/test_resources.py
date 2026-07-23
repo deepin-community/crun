@@ -81,12 +81,7 @@ def test_resources_pid_limit_userns():
             "containerID": 1,
             "hostID": 0,
             "size": 1,
-        },
-        {
-            "containerID": 2,
-            "hostID": 2,
-            "size": 2**32-3,
-        },
+        }
     ]
 
     conf['linux']['namespaces'].append({"type" : "user"})
@@ -124,10 +119,7 @@ def test_resources_unified_invalid_controller():
         # must raise an exception, fail if it doesn't.
         return -1
     except Exception as e:
-        output = e.stdout.decode("utf-8").strip()
-        if 'controller `foo` is not available under' in output:
-            return 0
-        if 'the requested cgroup controller `foo` is not available' in output:
+        if 'the requested cgroup controller `foo` is not available' in e.stdout.decode("utf-8").strip():
             return 0
         return -1
     finally:

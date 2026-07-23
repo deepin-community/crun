@@ -68,14 +68,9 @@ For Linux, the parameters are as documented in [mount(2)][mount.2] system call m
 For Solaris, the mount entry corresponds to the 'fs' resource in the [zonecfg(1M)][zonecfg.1m] man page.
 
 * **`destination`** (string, REQUIRED) Destination of mount point: path inside container.
-    * Linux: This value SHOULD be an absolute path.
-      For compatibility with old tools and configurations, it MAY be a relative path, in which case it MUST be interpreted as relative to "/".
-      Relative paths are **deprecated**.
-    * Windows: This value MUST be an absolute path.
-      One mount destination MUST NOT be nested within another mount (e.g., c:\\foo and c:\\foo\\bar).
-    * Solaris: This value MUST be an absolute path.
-      Corresponds to "dir" of the fs resource in [zonecfg(1M)][zonecfg.1m].
-    * For all other platforms: This value MUST be an absolute path.
+    This value MUST be an absolute path.
+    * Windows: one mount destination MUST NOT be nested within another mount (e.g., c:\\foo and c:\\foo\\bar).
+    * Solaris: corresponds to "dir" of the fs resource in [zonecfg(1M)][zonecfg.1m].
 * **`source`** (string, OPTIONAL) A device name, but can also be a file or directory name for bind mounts or a dummy.
     Path values for bind mounts are either absolute or relative to the bundle.
     A mount is a bind mount if it has either `bind` or `rbind` in the options.
@@ -94,7 +89,7 @@ Runtimes MUST/SHOULD/MAY implement the following option strings for Linux:
 ------------------|-------------|-----------------------------------------------------
  `async`          | MUST        | [^1]
  `atime`          | MUST        | [^1]
- `bind`           | MUST        | Bind mount [^2]
+ `bind`           | MUST        | [^2] (bind mounts)
  `defaults`       | MUST        | [^1]
  `dev`            | MUST        | [^1]
  `diratime`       | MUST        | [^1]
@@ -115,9 +110,9 @@ Runtimes MUST/SHOULD/MAY implement the following option strings for Linux:
  `nostrictatime`  | MUST        | [^1]
  `nosuid`         | MUST        | [^1]
  `nosymfollow`    | SHOULD      | [^1] (Introduced in kernel 5.10, util-linux 2.38)
- `private`        | MUST        | Bind mount propagation [^2]
+ `private`        | MUST        | [^2] (bind mounts)
  `ratime`         | SHOULD      | Recursive `atime` [^3]
- `rbind`          | MUST        | Recursive bind mount [^2]
+ `rbind`          | MUST        | [^2] (bind mounts)
  `rdev`           | SHOULD      | Recursive `dev` [^3]
  `rdiratime`      | SHOULD      | Recursive `diratime` [^3]
  `relatime`       | MUST        | [^1]
@@ -131,31 +126,29 @@ Runtimes MUST/SHOULD/MAY implement the following option strings for Linux:
  `rnosuid`        | SHOULD      | Recursive `nosuid` [^3]
  `rnosymfollow`   | SHOULD      | Recursive `nosymfollow` [^3]
  `ro`             | MUST        | [^1]
- `rprivate`       | MUST        | Bind mount propagation [^2]
+ `rprivate`       | MUST        | [^2] (bind mounts)
  `rrelatime  `    | SHOULD      | Recursive `relatime` [^3]
  `rro`            | SHOULD      | Recursive `ro` [^3]
  `rrw`            | SHOULD      | Recursive `rw` [^3]
- `rshared`        | MUST        | Bind mount propagation [^2]
- `rslave`         | MUST        | Bind mount propagation [^2]
+ `rshared`        | MUST        | [^2] (bind mounts)
+ `rslave`         | MUST        | [^2] (bind mounts)
  `rstrictatime`   | SHOULD      | Recursive `strictatime` [^3]
  `rsuid`          | SHOULD      | Recursive `suid` [^3]
  `rsymfollow`     | SHOULD      | Recursive `symfollow` [^3]
- `runbindable`    | MUST        | Bind mount propagation [^2]
+ `runbindable`    | MUST        | [^2] (bind mounts)
  `rw`             | MUST        | [^1]
  `shared`         | MUST        | [^1]
  `silent`         | MUST        | [^1]
- `slave`          | MUST        | Bind mount propagation [^2]
+ `slave`          | MUST        | [^2] (bind mounts)
  `strictatime`    | MUST        | [^1]
  `suid`           | MUST        | [^1]
  `symfollow`      | SHOULD      | Opposite of `nosymfollow`
  `sync`           | MUST        | [^1]
  `tmpcopyup`      | MAY         | copy up the contents to a tmpfs
- `unbindable`     | MUST        | Bind mount propagation [^2]
- `idmap`          | SHOULD      | Indicates that the mount MUST have an idmapping applied. This option SHOULD NOT be passed to the underlying [`mount(2)`][mount.2] call. If `uidMappings` or `gidMappings` are specified for the mount, the runtime MUST use those values for the mount's mapping. If they are not specified, the runtime MAY use the container's user namespace mapping, otherwise an [error MUST be returned](runtime.md#errors).  If there are no `uidMappings` and `gidMappings` specified and the container isn't using user namespaces, an [error MUST be returned](runtime.md#errors). This SHOULD be implemented using [`mount_setattr(MOUNT_ATTR_IDMAP)`][mount_setattr.2], available since Linux 5.12.
- `ridmap`         | SHOULD      | Indicates that the mount MUST have an idmapping applied, and the mapping is applied recursively [^3]. This option SHOULD NOT be passed to the underlying [`mount(2)`][mount.2] call. If `uidMappings` or `gidMappings` are specified for the mount, the runtime MUST use those values for the mount's mapping. If they are not specified, the runtime MAY use the container's user namespace mapping, otherwise an [error MUST be returned](runtime.md#errors).  If there are no `uidMappings` and `gidMappings` specified and the container isn't using user namespaces, an [error MUST be returned](runtime.md#errors). This SHOULD be implemented using [`mount_setattr(MOUNT_ATTR_IDMAP)`][mount_setattr.2], available since Linux 5.12.
+ `unbindable`     | MUST        | [^2] (bind mounts)
 
 [^1]: Corresponds to [`mount(8)` (filesystem-independent)][mount.8-filesystem-independent].
-[^2]: Corresponds to [bind mounts and shared subtrees][mount-bind].
+[^2]: Corresponds to [`mount(8)` (filesystem-specific)][mount.8-filesystem-specific].
 [^3]: These `AT_RECURSIVE` options need kernel 5.12 or later. See [`mount_setattr(2)`][mount_setattr.2]
 
 The "MUST" options correspond to [`mount(8)`][mount.8].
@@ -163,8 +156,7 @@ The "MUST" options correspond to [`mount(8)`][mount.8].
 Runtimes MAY also implement custom option strings that are not listed in the table above.
 If a custom option string is already recognized by [`mount(8)`][mount.8], the runtime SHOULD follow the behavior of [`mount(8)`][mount.8].
 
-Runtimes SHOULD treat unknown options as [filesystem-specific ones][mount.8-filesystem-specific])
-and pass those as a comma-separated string to the fifth (`const void *data`) argument of [`mount(2)`][mount.2].
+Runtimes SHOULD pass unknown options to [`mount(2)`][mount.2] via the fifth argument (`const void *data`).
 
 ### Example (Windows)
 
@@ -185,16 +177,10 @@ For POSIX platforms the `mounts` structure has the following fields:
 * **`type`** (string, OPTIONAL) The type of the filesystem to be mounted.
     * Linux: filesystem types supported by the kernel as listed in */proc/filesystems* (e.g., "minix", "ext2", "ext3", "jfs", "xfs", "reiserfs", "msdos", "proc", "nfs", "iso9660"). For bind mounts (when `options` include either `bind` or `rbind`), the type is a dummy, often "none" (not listed in */proc/filesystems*).
     * Solaris: corresponds to "type" of the fs resource in [zonecfg(1M)][zonecfg.1m].
-* **`uidMappings`** (array of type LinuxIDMapping, OPTIONAL) The mapping to convert UIDs from the source file system to the destination mount point.
-  This SHOULD be implemented using [`mount_setattr(MOUNT_ATTR_IDMAP)`][mount_setattr.2], available since Linux 5.12.
-  If specified, the `options` field of the `mounts` structure SHOULD contain either `idmap` or `ridmap` to specify whether the mapping should be applied recursively for `rbind` mounts, as well as to ensure that older runtimes will not silently ignore this field.
-  The format is the same as [user namespace mappings](config-linux.md#user-namespace-mappings).
-  If specified, it MUST be specified along with `gidMappings`.
+* **`uidMappings`** (array of type LinuxIDMapping, OPTIONAL) The mapping to convert UIDs from the source file system to the destination mount point.\
+The format is the same as [user namespace mappings](config-linux.md#user-namespace-mappings).
 * **`gidMappings`** (array of type LinuxIDMapping, OPTIONAL) The mapping to convert GIDs from the source file system to the destination mount point.
-  This SHOULD be implemented using [`mount_setattr(MOUNT_ATTR_IDMAP)`][mount_setattr.2], available since Linux 5.12.
-  If specified, the `options` field of the `mounts` structure SHOULD contain either `idmap` or `ridmap` to specify whether the mapping should be applied recursively for `rbind` mounts, as well as to ensure that older runtimes will not silently ignore this field.
-  For more details see `uidMappings`.
-  If specified, it MUST be specified along with `uidMappings`.
+For more details see `uidMappings`.
 
 
 ### Example (Linux)
@@ -340,18 +326,6 @@ For Linux-based systems, the `process` object supports the following process-spe
 
     * **`class`** (string, REQUIRED) specifies the I/O scheduling class. Possible values are `IOPRIO_CLASS_RT`, `IOPRIO_CLASS_BE`, and `IOPRIO_CLASS_IDLE`.
     * **`priority`** (int, REQUIRED) specifies the priority level within the class. The value should be an integer ranging from 0 (highest) to 7 (lowest).
-* **`execCPUAffinity`** (object, OPTIONAL) specifies CPU affinity used to execute the process.
-    This setting is not applicable to the container's init process.
-    The following properties are available:
-    * **`initial`** (string, OPTIONAL) is a list of CPUs a runtime parent
-      process to be run on initially, before the transition to container's
-      cgroup. This is a a comma-separated list, with dashes to represent
-      ranges. For example, `0-3,7` represents CPUs 0,1,2,3, and 7.
-    * **`final`** (string, OPTIONAL) is a list of CPUs the process will be run
-      on after the transition to container's cgroup. The format is the same as
-      for `initial`. If omitted or empty, runtime SHOULD NOT change process'
-      CPU affinity after the process is moved to container's cgroup, and the
-      final affinity is determined by the Linux kernel.
 
 ### <a name="configUser" />User
 
@@ -428,11 +402,7 @@ _Note: symbolic name for uid and gid, such as uname and gname respectively, are 
             "hard": 1024,
             "soft": 1024
         }
-    ],
-    "execCPUAffinity": {
-        "initial": "7",
-        "final": "0-3,7"
-    }
+    ]
 }
 ```
 ### Example (Solaris)
@@ -715,21 +685,7 @@ If there are no annotations then this property MAY either be absent or an empty 
 Keys MUST be strings.
 Keys MUST NOT be an empty string.
 Keys SHOULD be named using a reverse domain notation - e.g. `com.example.myKey`.
-
-The `org.opencontainers` namespace for keys is reserved for use by this specification, annotations using keys in this namespace MUST be as described in this section.
-The following keys in the `org.opencontainers` namespaces MAY be used:
-|                   Key                   | Definition                                                         |
-| --------------------------------------- | -----------------------------------------------------------------------------------------------------------------------------------|
-| `org.opencontainers.image.os`           | Indicates the operating system the container image was built to run on. The annotation value MUST have a valid value for the `os` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.os.version`   | Indicates the operating system version targeted by the container image. The annotation value MUST have a valid value for the `os.version` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.os.features`  | Indicates mandatory operating system features required by the container image. The annotation value MUST have a valid value for the `os.features` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.architecture` | Indicates the architecture that binaries in the container image are built to run on. The annotation value MUST have a valid value for the `architecture` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.variant`      | Indicates the variant of the architecture that binaries in the container image are built to run on. The annotation value MUST have a valid value for the `variant` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.author`       | Indicates the author of the container image. The annotation value MUST have a valid value for the `author` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.created`      | Indicates the date and time when the container image was created. The annotation value MUST have a valid value for the `created` property as defined in [the OCIimage specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-| `org.opencontainers.image.stopSignal`   | Indicates signal that SHOULD be sent by the container runtimes to [kill the container](runtime.md#kill). The annotation value MUST have a valid value for the `config.StopSignal` property as defined in [the OCI image specification][oci-image-config-properties]. This annotation SHOULD only be used in accordance with the [OCI image specification's runtime conversion specification][oci-image-conversion]. |
-
-All other keys in the `org.opencontainers` namespace not specified in this above table are reserved and MUST NOT be used by subsequent specifications.
+Keys using the `org.opencontainers` namespace are reserved and MUST NOT be used by subsequent specifications.
 Runtimes MUST handle unknown annotation keys like any other [unknown property](#extensibility).
 
 Values MUST be strings.
@@ -1151,26 +1107,23 @@ Here is a full example `config.json` for reference.
 
 [apparmor]: https://wiki.ubuntu.com/AppArmor
 [cgroup-v1-memory_2]: https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt
-[selinux]:https://selinuxproject.org/page/Main_Page
+[selinux]:http://selinuxproject.org/page/Main_Page
 [no-new-privs]: https://www.kernel.org/doc/Documentation/prctl/no_new_privs.txt
 [proc_2]: https://www.kernel.org/doc/Documentation/filesystems/proc.txt
-[umask.2]: https://pubs.opengroup.org/onlinepubs/009695399/functions/umask.html
-[semver-v2.0.0]: https://semver.org/spec/v2.0.0.html
-[ieee-1003.1-2008-xbd-c8.1]: https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_01
-[ieee-1003.1-2008-functions-exec]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/exec.html
-[naming-a-volume]: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-volume
-[oci-image-config-properties]: https://github.com/opencontainers/image-spec/blob/v1.1.0-rc2/config.md#properties
-[oci-image-conversion]: https://github.com/opencontainers/image-spec/blob/v1.1.0-rc2/conversion.md
+[umask.2]: http://pubs.opengroup.org/onlinepubs/009695399/functions/umask.html
+[semver-v2.0.0]: http://semver.org/spec/v2.0.0.html
+[ieee-1003.1-2008-xbd-c8.1]: http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_01
+[ieee-1003.1-2008-functions-exec]: http://pubs.opengroup.org/onlinepubs/9699919799/functions/exec.html
+[naming-a-volume]: https://aka.ms/nb3hqb
 
-[capabilities.7]: https://man7.org/linux/man-pages/man7/capabilities.7.html
-[mount.2]: https://man7.org/linux/man-pages/man2/mount.2.html
-[mount.8]: https://man7.org/linux/man-pages/man8/mount.8.html
-[mount.8-filesystem-independent]: https://man7.org/linux/man-pages/man8/mount.8.html#FILESYSTEM-INDEPENDENT_MOUNT_OPTIONS
-[mount.8-filesystem-specific]: https://man7.org/linux/man-pages/man8/mount.8.html#FILESYSTEM-SPECIFIC_MOUNT_OPTIONS
-[mount_setattr.2]: https://man7.org/linux/man-pages/man2/mount_setattr.2.html
-[mount-bind]: https://docs.kernel.org/filesystems/sharedsubtree.html
-[getrlimit.2]: https://man7.org/linux/man-pages/man2/getrlimit.2.html
-[getrlimit.3]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/getrlimit.html
-[stdin.3]: https://man7.org/linux/man-pages/man3/stdin.3.html
-[uts-namespace.7]: https://man7.org/linux/man-pages/man7/namespaces.7.html
-[zonecfg.1m]: https://docs.oracle.com/cd/E86824_01/html/E54764/zonecfg-1m.html
+[capabilities.7]: http://man7.org/linux/man-pages/man7/capabilities.7.html
+[mount.2]: http://man7.org/linux/man-pages/man2/mount.2.html
+[mount.8]: http://man7.org/linux/man-pages/man8/mount.8.html
+[mount.8-filesystem-independent]: http://man7.org/linux/man-pages/man8/mount.8.html#FILESYSTEM-INDEPENDENT_MOUNT_OPTIONS
+[mount.8-filesystem-specific]: http://man7.org/linux/man-pages/man8/mount.8.html#FILESYSTEM-SPECIFIC_MOUNT_OPTIONS
+[mount_setattr.2]: http://man7.org/linux/man-pages/man2/mount_setattr.2.html
+[getrlimit.2]: http://man7.org/linux/man-pages/man2/getrlimit.2.html
+[getrlimit.3]: http://pubs.opengroup.org/onlinepubs/9699919799/functions/getrlimit.html
+[stdin.3]: http://man7.org/linux/man-pages/man3/stdin.3.html
+[uts-namespace.7]: http://man7.org/linux/man-pages/man7/namespaces.7.html
+[zonecfg.1m]: http://docs.oracle.com/cd/E86824_01/html/E54764/zonecfg-1m.html

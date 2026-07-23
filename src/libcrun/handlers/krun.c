@@ -43,59 +43,40 @@
 /* libkrun has a hard-limit of 8 vCPUs per microVM. */
 #define LIBKRUN_MAX_VCPUS 8
 
-#define KRUN_CONFIG_FILE ".krun_config.json"
-
 struct krun_config
 {
   void *handle;
   void *handle_sev;
   bool sev;
-  int32_t ctx_id;
-  int32_t ctx_id_sev;
 };
 
 /* libkrun handler.  */
 #if HAVE_DLOPEN && HAVE_LIBKRUN
-static int32_t
-libkrun_create_context (void *handle, libcrun_error_t *err)
-{
-  int32_t (*krun_create_ctx) ();
-  int32_t ctx_id;
-
-  krun_create_ctx = dlsym (handle, "krun_create_ctx");
-  if (krun_create_ctx == NULL)
-    return crun_make_error (err, 0, "could not find symbol in the krun library");
-
-  ctx_id = krun_create_ctx ();
-  if (UNLIKELY (ctx_id < 0))
-    return crun_make_error (err, -ctx_id, "could not create krun context");
-
-  return ctx_id;
-}
-
 static int
 libkrun_exec (void *cookie, libcrun_container_t *container, const char *pathname, char *const argv[])
 {
   runtime_spec_schema_config_schema *def = container->container_def;
   int32_t (*krun_set_log_level) (uint32_t level);
+  int32_t (*krun_create_ctx) ();
   int (*krun_start_enter) (uint32_t ctx_id);
   int32_t (*krun_set_vm_config) (uint32_t ctx_id, uint8_t num_vcpus, uint32_t ram_mib);
   int32_t (*krun_set_root) (uint32_t ctx_id, const char *root_path);
   int32_t (*krun_set_root_disk) (uint32_t ctx_id, const char *disk_path);
   int32_t (*krun_set_workdir) (uint32_t ctx_id, const char *workdir_path);
+  int32_t (*krun_set_exec) (uint32_t ctx_id, const char *exec_path, char *const argv[], char *const envp[]);
   int32_t (*krun_set_tee_config_file) (uint32_t ctx_id, const char *file_path);
   struct krun_config *kconf = (struct krun_config *) cookie;
   void *handle;
   uint32_t num_vcpus, ram_mib;
   int32_t ctx_id, ret;
   cpu_set_t set;
+  char *const envp[] = { 0 };
 
   if (access ("/krun-sev.json", F_OK) == 0)
     {
       if (kconf->handle_sev == NULL)
         error (EXIT_FAILURE, 0, "the container requires libkrun-sev but it's not available");
       handle = kconf->handle_sev;
-      ctx_id = kconf->ctx_id_sev;
       kconf->sev = true;
     }
   else
@@ -103,17 +84,22 @@ libkrun_exec (void *cookie, libcrun_container_t *container, const char *pathname
       if (kconf->handle == NULL)
         error (EXIT_FAILURE, 0, "the container requires libkrun but it's not available");
       handle = kconf->handle;
-      ctx_id = kconf->ctx_id;
       kconf->sev = false;
     }
 
   krun_set_log_level = dlsym (handle, "krun_set_log_level");
+  krun_create_ctx = dlsym (handle, "krun_create_ctx");
   krun_start_enter = dlsym (handle, "krun_start_enter");
-  if (krun_set_log_level == NULL || krun_start_enter == NULL)
-    error (EXIT_FAILURE, 0, "could not find symbol in the krun library");
+  if (krun_set_log_level == NULL || krun_create_ctx == NULL
+      || krun_start_enter == NULL)
+    error (EXIT_FAILURE, 0, "could not find symbol in `libkrun.so`");
 
   /* Set log level to "error" */
   krun_set_log_level (1);
+
+  ctx_id = krun_create_ctx ();
+  if (UNLIKELY (ctx_id < 0))
+    error (EXIT_FAILURE, -ctx_id, "could not create krun context");
 
   if (kconf->sev)
     {
@@ -148,7 +134,9 @@ libkrun_exec (void *cookie, libcrun_container_t *container, const char *pathname
       krun_set_vm_config = dlsym (handle, "krun_set_vm_config");
       krun_set_root = dlsym (handle, "krun_set_root");
       krun_set_workdir = dlsym (handle, "krun_set_workdir");
-      if (krun_set_vm_config == NULL || krun_set_root == NULL)
+      krun_set_exec = dlsym (handle, "krun_set_exec");
+      if (krun_set_vm_config == NULL || krun_set_root == NULL
+          || krun_set_exec == NULL)
         error (EXIT_FAILURE, 0, "could not find symbol in `libkrun.so`");
 
       ret = krun_set_vm_config (ctx_id, num_vcpus, ram_mib);
@@ -165,9 +153,13 @@ libkrun_exec (void *cookie, libcrun_container_t *container, const char *pathname
           if (UNLIKELY (ret < 0))
             error (EXIT_FAILURE, -ret, "could not set krun working directory");
         }
+
+      ret = krun_set_exec (ctx_id, pathname, &argv[1], &envp[0]);
+      if (UNLIKELY (ret < 0))
+        error (EXIT_FAILURE, -ret, "could not set krun executable");
     }
-  ret = krun_start_enter (ctx_id);
-  return -ret;
+
+  return krun_start_enter (ctx_id);
 }
 
 /* libkrun_create_kvm_device: explicitly adds kvm device.  */
@@ -184,8 +176,8 @@ libkrun_configure_container (void *cookie, enum handler_configure_phase phase,
   cleanup_close int devfd = -1;
   cleanup_close int rootfsfd_cleanup = -1;
   runtime_spec_schema_config_schema *def = container->container_def;
-  bool create_sev = false;
   bool is_user_ns;
+  bool create_sev;
 
   if (rootfs == NULL)
     rootfsfd = AT_FDCWD;
@@ -201,12 +193,11 @@ libkrun_configure_container (void *cookie, enum handler_configure_phase phase,
       cleanup_free char *origin_config_path = NULL;
       cleanup_free char *state_dir = NULL;
       cleanup_free char *config = NULL;
-      cleanup_close int fd = -1;
       size_t config_size;
 
-      ret = libcrun_get_state_directory (&state_dir, context->state_root, context->id, err);
-      if (UNLIKELY (ret < 0))
-        return ret;
+      state_dir = libcrun_get_state_directory (context->state_root, context->id);
+      if (UNLIKELY (state_dir == NULL))
+        return crun_make_error (err, 0, "could not retrieve the state directory");
 
       ret = append_paths (&origin_config_path, err, state_dir, "config.json", NULL);
       if (UNLIKELY (ret < 0))
@@ -216,13 +207,7 @@ libkrun_configure_container (void *cookie, enum handler_configure_phase phase,
       if (UNLIKELY (ret < 0))
         return ret;
 
-      /* CVE-2025-24965: the content below rootfs cannot be trusted because it is controlled by the user.  We
-         must ensure the file is opened below the rootfs directory.  */
-      fd = safe_openat (rootfsfd, rootfs, KRUN_CONFIG_FILE, WRITE_FILE_DEFAULT_FLAGS | O_NOFOLLOW, S_IRUSR | S_IRGRP | S_IROTH, err);
-      if (UNLIKELY (fd < 0))
-        return fd;
-
-      ret = safe_write (fd, KRUN_CONFIG_FILE, config, config_size, err);
+      ret = write_file_at (rootfsfd, ".krun_config.json", config, config_size, err);
       if (UNLIKELY (ret < 0))
         return ret;
     }
@@ -247,7 +232,7 @@ libkrun_configure_container (void *cookie, enum handler_configure_phase phase,
         }
     }
 
-  devfd = openat (rootfsfd, "dev", O_PATH | O_DIRECTORY | O_CLOEXEC);
+  devfd = openat (rootfsfd, "dev", O_RDONLY | O_DIRECTORY | O_CLOEXEC);
   if (UNLIKELY (devfd < 0))
     return crun_make_error (err, errno, "open /dev directory in `%s`", rootfs);
 
@@ -273,8 +258,8 @@ libkrun_configure_container (void *cookie, enum handler_configure_phase phase,
 static int
 libkrun_load (void **cookie, libcrun_error_t *err)
 {
-  int32_t ret;
   struct krun_config *kconf;
+  void *handle;
   const char *libkrun_so = "libkrun.so.1";
   const char *libkrun_sev_so = "libkrun-sev.so.1";
 
@@ -293,32 +278,6 @@ libkrun_load (void **cookie, libcrun_error_t *err)
 
   kconf->sev = false;
 
-  /* Newer versions of libkrun no longer link against libkrunfw and
-     instead they open it when creating the context. This implies
-     we need to call "krun_create_ctx" before switching namespaces
-     or it won't be able to find the library bundling the kernel. */
-  if (kconf->handle)
-    {
-      ret = libkrun_create_context (kconf->handle, err);
-      if (UNLIKELY (ret < 0))
-        {
-          free (kconf);
-          return ret;
-        }
-      kconf->ctx_id = ret;
-    }
-
-  if (kconf->handle_sev)
-    {
-      ret = libkrun_create_context (kconf->handle_sev, err);
-      if (UNLIKELY (ret < 0))
-        {
-          free (kconf);
-          return ret;
-        }
-      kconf->ctx_id_sev = ret;
-    }
-
   *cookie = kconf;
 
   return 0;
@@ -329,21 +288,11 @@ libkrun_unload (void *cookie, libcrun_error_t *err)
 {
   int r;
 
-  struct krun_config *kconf = (struct krun_config *) cookie;
-  if (kconf != NULL)
+  if (cookie)
     {
-      if (kconf->handle != NULL)
-        {
-          r = dlclose (kconf->handle);
-          if (UNLIKELY (r != 0))
-            return crun_make_error (err, 0, "could not unload handle: `%s`", dlerror ());
-        }
-      if (kconf->handle_sev != NULL)
-        {
-          r = dlclose (kconf->handle_sev);
-          if (UNLIKELY (r != 0))
-            return crun_make_error (err, 0, "could not unload handle_sev: `%s`", dlerror ());
-        }
+      r = dlclose (cookie);
+      if (UNLIKELY (r < 0))
+        return crun_make_error (err, 0, "could not unload handle: `%s`", dlerror ());
     }
   return 0;
 }

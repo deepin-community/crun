@@ -64,7 +64,8 @@ make_runtime_spec_schema_config_solaris_capped_cpu (yajl_val tree, const struct 
 
         for (i = 0; i < tree->u.object.len; i++)
           {
-            if (strcmp (tree->u.object.keys[i], "ncpus")){
+            if (strcmp (tree->u.object.keys[i], "ncpus"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -76,12 +77,13 @@ make_runtime_spec_schema_config_solaris_capped_cpu (yajl_val tree, const struct 
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -129,23 +131,6 @@ gen_runtime_spec_schema_config_solaris_capped_cpu (yajl_gen g, const runtime_spe
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_solaris_capped_cpu *
-clone_runtime_spec_schema_config_solaris_capped_cpu (runtime_spec_schema_config_solaris_capped_cpu *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_solaris_capped_cpu) runtime_spec_schema_config_solaris_capped_cpu *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->ncpus)
-      {
-        ret->ncpus = strdup (src->ncpus);
-        if (ret->ncpus == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_solaris_capped_memory *, free_runtime_spec_schema_config_solaris_capped_memory)
@@ -216,7 +201,8 @@ make_runtime_spec_schema_config_solaris_capped_memory (yajl_val tree, const stru
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "physical")
-                && strcmp (tree->u.object.keys[i], "swap")){
+                && strcmp (tree->u.object.keys[i], "swap"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -228,12 +214,13 @@ make_runtime_spec_schema_config_solaris_capped_memory (yajl_val tree, const stru
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -295,29 +282,6 @@ gen_runtime_spec_schema_config_solaris_capped_memory (yajl_gen g, const runtime_
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_solaris_capped_memory *
-clone_runtime_spec_schema_config_solaris_capped_memory (runtime_spec_schema_config_solaris_capped_memory *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_solaris_capped_memory) runtime_spec_schema_config_solaris_capped_memory *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->physical)
-      {
-        ret->physical = strdup (src->physical);
-        if (ret->physical == NULL)
-          return NULL;
-      }
-    if (src->swap)
-      {
-        ret->swap = strdup (src->swap);
-        if (ret->swap == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_solaris_anet_element *, free_runtime_spec_schema_config_solaris_anet_element)
@@ -540,59 +504,6 @@ gen_runtime_spec_schema_config_solaris_anet_element (yajl_gen g, const runtime_s
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_solaris_anet_element *
-clone_runtime_spec_schema_config_solaris_anet_element (runtime_spec_schema_config_solaris_anet_element *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_solaris_anet_element) runtime_spec_schema_config_solaris_anet_element *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->linkname)
-      {
-        ret->linkname = strdup (src->linkname);
-        if (ret->linkname == NULL)
-          return NULL;
-      }
-    if (src->lower_link)
-      {
-        ret->lower_link = strdup (src->lower_link);
-        if (ret->lower_link == NULL)
-          return NULL;
-      }
-    if (src->allowed_address)
-      {
-        ret->allowed_address = strdup (src->allowed_address);
-        if (ret->allowed_address == NULL)
-          return NULL;
-      }
-    if (src->configure_allowed_address)
-      {
-        ret->configure_allowed_address = strdup (src->configure_allowed_address);
-        if (ret->configure_allowed_address == NULL)
-          return NULL;
-      }
-    if (src->defrouter)
-      {
-        ret->defrouter = strdup (src->defrouter);
-        if (ret->defrouter == NULL)
-          return NULL;
-      }
-    if (src->mac_address)
-      {
-        ret->mac_address = strdup (src->mac_address);
-        if (ret->mac_address == NULL)
-          return NULL;
-      }
-    if (src->link_protection)
-      {
-        ret->link_protection = strdup (src->link_protection);
-        if (ret->link_protection == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_solaris *, free_runtime_spec_schema_config_solaris)
 runtime_spec_schema_config_solaris *
 make_runtime_spec_schema_config_solaris (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -705,7 +616,8 @@ make_runtime_spec_schema_config_solaris (yajl_val tree, const struct parser_cont
                 && strcmp (tree->u.object.keys[i], "maxShmMemory")
                 && strcmp (tree->u.object.keys[i], "cappedCPU")
                 && strcmp (tree->u.object.keys[i], "cappedMemory")
-                && strcmp (tree->u.object.keys[i], "anet")){
+                && strcmp (tree->u.object.keys[i], "anet"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -717,12 +629,13 @@ make_runtime_spec_schema_config_solaris (yajl_val tree, const struct parser_cont
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -748,7 +661,8 @@ free_runtime_spec_schema_config_solaris (runtime_spec_schema_config_solaris *ptr
         free_runtime_spec_schema_config_solaris_capped_memory (ptr->capped_memory);
         ptr->capped_memory = NULL;
       }
-    if (ptr->anet != NULL)      {
+    if (ptr->anet != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->anet_len; i++)
           {
@@ -864,59 +778,5 @@ gen_runtime_spec_schema_config_solaris (yajl_gen g, const runtime_spec_schema_co
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_solaris *
-clone_runtime_spec_schema_config_solaris (runtime_spec_schema_config_solaris *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_solaris) runtime_spec_schema_config_solaris *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->milestone)
-      {
-        ret->milestone = strdup (src->milestone);
-        if (ret->milestone == NULL)
-          return NULL;
-      }
-    if (src->limitpriv)
-      {
-        ret->limitpriv = strdup (src->limitpriv);
-        if (ret->limitpriv == NULL)
-          return NULL;
-      }
-    if (src->max_shm_memory)
-      {
-        ret->max_shm_memory = strdup (src->max_shm_memory);
-        if (ret->max_shm_memory == NULL)
-          return NULL;
-      }
-    if (src->capped_cpu)
-      {
-        ret->capped_cpu = clone_runtime_spec_schema_config_solaris_capped_cpu (src->capped_cpu);
-        if (ret->capped_cpu == NULL)
-          return NULL;
-      }
-    if (src->capped_memory)
-      {
-        ret->capped_memory = clone_runtime_spec_schema_config_solaris_capped_memory (src->capped_memory);
-        if (ret->capped_memory == NULL)
-          return NULL;
-      }
-    if (src->anet)
-      {
-        ret->anet_len = src->anet_len;
-        ret->anet = calloc (src->anet_len + 1, sizeof (*ret->anet));
-        if (ret->anet == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->anet_len; i++)
-          {
-            ret->anet[i] = clone_runtime_spec_schema_config_solaris_anet_element (src->anet[i]);
-            if (ret->anet[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
 }
 

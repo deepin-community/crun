@@ -60,10 +60,10 @@ Resume the processes in the container.
 Update container resource constraints.
 
 **checkpoint**
-Checkpoint a running container using CRIU.
+Checkpoint a running container using CRIU
 
 **restore**
-Restore a container from a checkpoint.
+Restore a container from a checkpoint
 # STATE
 
 By default, when running as root user, crun saves its state under the
@@ -97,10 +97,6 @@ If no backend is specified, then *file:* is used by default.
 **--log-format**=_FORMAT_
 Define the format of the log messages.  It can either be **text**, or
 **json**.  The default is **text**.
-
-**--log-level**=_LEVEL_
-Define the log level.  It can either be **debug**, **warning** or **error**.
-The default is **error**.
 
 **--no-pivot**
 Use `chroot(2)` instead of `pivot_root(2)` when creating the container.
@@ -390,17 +386,6 @@ Where to write the PID of the container
 Specify which CRIU manage cgroup mode should be used. Permitted values are
 **soft**, **ignore**, **full** or **strict**. Default is **soft**.
 
-**--lsm-profile**=_TYPE_:_NAME_
-Specify an LSM profile to be used during restore.
-_TYPE_ can be either **apparmor** or **selinux**.
-
-**--lsm-mount-context**=_VALUE_
-Specify a new LSM mount context to be used during restore.
-This option replaces an existing mount context information
-with the specified value. This is useful when restoring
-a container into an existing Pod and selinux labels
-need to be changed during restore.
-
 # Extensions to OCI
 
 ## `run.oci.mount_context_type=context`
@@ -663,10 +648,6 @@ automatically created even if it is not specified in the config file.
 The current user is mapped to the ID 0 in the container, and any
 additional id specified in the files `/etc/subuid` and `/etc/subgid`
 is automatically added starting with ID 1.
-
-# CGROUP v1
-
-Support for cgroup v1 is deprecated and will be removed in a future release.
 
 # CGROUP v2
 

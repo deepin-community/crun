@@ -22,7 +22,6 @@ runtime_spec_schema_config_zos;
 
 void free_runtime_spec_schema_config_zos (runtime_spec_schema_config_zos *ptr);
 
-runtime_spec_schema_config_zos *clone_runtime_spec_schema_config_zos (runtime_spec_schema_config_zos *src);
 runtime_spec_schema_config_zos *make_runtime_spec_schema_config_zos (yajl_val tree, const struct parser_context *ctx, parser_error *err);
 
 yajl_gen_status gen_runtime_spec_schema_config_zos (yajl_gen g, const runtime_spec_schema_config_zos *ptr, const struct parser_context *ctx, parser_error *err);

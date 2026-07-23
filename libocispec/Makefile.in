@@ -897,8 +897,7 @@ EXTRA_DIST = autogen.sh \
 	runtime-spec \
 	image-spec \
 	src/ocispec/json_common.h \
-	src/ocispec/json_common.c \
-	src/yajl
+	src/ocispec/json_common.c
 
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

@@ -74,7 +74,8 @@ make_runtime_spec_schema_config_linux_resources_pids (yajl_val tree, const struc
 
         for (i = 0; i < tree->u.object.len; i++)
           {
-            if (strcmp (tree->u.object.keys[i], "limit")){
+            if (strcmp (tree->u.object.keys[i], "limit"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -86,12 +87,13 @@ make_runtime_spec_schema_config_linux_resources_pids (yajl_val tree, const struc
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -137,19 +139,6 @@ gen_runtime_spec_schema_config_linux_resources_pids (yajl_gen g, const runtime_s
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_resources_pids *
-clone_runtime_spec_schema_config_linux_resources_pids (runtime_spec_schema_config_linux_resources_pids *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_pids) runtime_spec_schema_config_linux_resources_pids *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->limit = src->limit;
-    ret->limit_present = src->limit_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux_resources_block_io *, free_runtime_spec_schema_config_linux_resources_block_io)
@@ -355,7 +344,8 @@ make_runtime_spec_schema_config_linux_resources_block_io (yajl_val tree, const s
                 && strcmp (tree->u.object.keys[i], "throttleWriteBpsDevice")
                 && strcmp (tree->u.object.keys[i], "throttleReadIOPSDevice")
                 && strcmp (tree->u.object.keys[i], "throttleWriteIOPSDevice")
-                && strcmp (tree->u.object.keys[i], "weightDevice")){
+                && strcmp (tree->u.object.keys[i], "weightDevice"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -367,12 +357,13 @@ make_runtime_spec_schema_config_linux_resources_block_io (yajl_val tree, const s
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -382,7 +373,8 @@ free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_co
 {
     if (ptr == NULL)
         return;
-    if (ptr->throttle_read_bps_device != NULL)      {
+    if (ptr->throttle_read_bps_device != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->throttle_read_bps_device_len; i++)
           {
@@ -395,7 +387,8 @@ free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_co
         free (ptr->throttle_read_bps_device);
         ptr->throttle_read_bps_device = NULL;
       }
-    if (ptr->throttle_write_bps_device != NULL)      {
+    if (ptr->throttle_write_bps_device != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->throttle_write_bps_device_len; i++)
           {
@@ -408,7 +401,8 @@ free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_co
         free (ptr->throttle_write_bps_device);
         ptr->throttle_write_bps_device = NULL;
       }
-    if (ptr->throttle_read_iops_device != NULL)      {
+    if (ptr->throttle_read_iops_device != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->throttle_read_iops_device_len; i++)
           {
@@ -421,7 +415,8 @@ free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_co
         free (ptr->throttle_read_iops_device);
         ptr->throttle_read_iops_device = NULL;
       }
-    if (ptr->throttle_write_iops_device != NULL)      {
+    if (ptr->throttle_write_iops_device != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->throttle_write_iops_device_len; i++)
           {
@@ -434,7 +429,8 @@ free_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_co
         free (ptr->throttle_write_iops_device);
         ptr->throttle_write_iops_device = NULL;
       }
-    if (ptr->weight_device != NULL)      {
+    if (ptr->weight_device != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->weight_device_len; i++)
           {
@@ -620,86 +616,6 @@ gen_runtime_spec_schema_config_linux_resources_block_io (yajl_gen g, const runti
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_resources_block_io *
-clone_runtime_spec_schema_config_linux_resources_block_io (runtime_spec_schema_config_linux_resources_block_io *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_block_io) runtime_spec_schema_config_linux_resources_block_io *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->weight = src->weight;
-    ret->weight_present = src->weight_present;
-    ret->leaf_weight = src->leaf_weight;
-    ret->leaf_weight_present = src->leaf_weight_present;
-    if (src->throttle_read_bps_device)
-      {
-        ret->throttle_read_bps_device_len = src->throttle_read_bps_device_len;
-        ret->throttle_read_bps_device = calloc (src->throttle_read_bps_device_len + 1, sizeof (*ret->throttle_read_bps_device));
-        if (ret->throttle_read_bps_device == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->throttle_read_bps_device_len; i++)
-          {
-            ret->throttle_read_bps_device[i] = clone_runtime_spec_schema_defs_linux_block_io_device_throttle (src->throttle_read_bps_device[i]);
-            if (ret->throttle_read_bps_device[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->throttle_write_bps_device)
-      {
-        ret->throttle_write_bps_device_len = src->throttle_write_bps_device_len;
-        ret->throttle_write_bps_device = calloc (src->throttle_write_bps_device_len + 1, sizeof (*ret->throttle_write_bps_device));
-        if (ret->throttle_write_bps_device == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->throttle_write_bps_device_len; i++)
-          {
-            ret->throttle_write_bps_device[i] = clone_runtime_spec_schema_defs_linux_block_io_device_throttle (src->throttle_write_bps_device[i]);
-            if (ret->throttle_write_bps_device[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->throttle_read_iops_device)
-      {
-        ret->throttle_read_iops_device_len = src->throttle_read_iops_device_len;
-        ret->throttle_read_iops_device = calloc (src->throttle_read_iops_device_len + 1, sizeof (*ret->throttle_read_iops_device));
-        if (ret->throttle_read_iops_device == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->throttle_read_iops_device_len; i++)
-          {
-            ret->throttle_read_iops_device[i] = clone_runtime_spec_schema_defs_linux_block_io_device_throttle (src->throttle_read_iops_device[i]);
-            if (ret->throttle_read_iops_device[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->throttle_write_iops_device)
-      {
-        ret->throttle_write_iops_device_len = src->throttle_write_iops_device_len;
-        ret->throttle_write_iops_device = calloc (src->throttle_write_iops_device_len + 1, sizeof (*ret->throttle_write_iops_device));
-        if (ret->throttle_write_iops_device == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->throttle_write_iops_device_len; i++)
-          {
-            ret->throttle_write_iops_device[i] = clone_runtime_spec_schema_defs_linux_block_io_device_throttle (src->throttle_write_iops_device[i]);
-            if (ret->throttle_write_iops_device[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->weight_device)
-      {
-        ret->weight_device_len = src->weight_device_len;
-        ret->weight_device = calloc (src->weight_device_len + 1, sizeof (*ret->weight_device));
-        if (ret->weight_device == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->weight_device_len; i++)
-          {
-            ret->weight_device[i] = clone_runtime_spec_schema_defs_linux_block_io_device_weight (src->weight_device[i]);
-            if (ret->weight_device[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux_resources_cpu *, free_runtime_spec_schema_config_linux_resources_cpu)
@@ -931,7 +847,8 @@ make_runtime_spec_schema_config_linux_resources_cpu (yajl_val tree, const struct
                 && strcmp (tree->u.object.keys[i], "realtimePeriod")
                 && strcmp (tree->u.object.keys[i], "realtimeRuntime")
                 && strcmp (tree->u.object.keys[i], "shares")
-                && strcmp (tree->u.object.keys[i], "idle")){
+                && strcmp (tree->u.object.keys[i], "idle"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -943,12 +860,13 @@ make_runtime_spec_schema_config_linux_resources_cpu (yajl_val tree, const struct
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1096,43 +1014,6 @@ gen_runtime_spec_schema_config_linux_resources_cpu (yajl_gen g, const runtime_sp
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_linux_resources_cpu *
-clone_runtime_spec_schema_config_linux_resources_cpu (runtime_spec_schema_config_linux_resources_cpu *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_cpu) runtime_spec_schema_config_linux_resources_cpu *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->cpus)
-      {
-        ret->cpus = strdup (src->cpus);
-        if (ret->cpus == NULL)
-          return NULL;
-      }
-    if (src->mems)
-      {
-        ret->mems = strdup (src->mems);
-        if (ret->mems == NULL)
-          return NULL;
-      }
-    ret->period = src->period;
-    ret->period_present = src->period_present;
-    ret->quota = src->quota;
-    ret->quota_present = src->quota_present;
-    ret->burst = src->burst;
-    ret->burst_present = src->burst_present;
-    ret->realtime_period = src->realtime_period;
-    ret->realtime_period_present = src->realtime_period_present;
-    ret->realtime_runtime = src->realtime_runtime;
-    ret->realtime_runtime_present = src->realtime_runtime_present;
-    ret->shares = src->shares;
-    ret->shares_present = src->shares_present;
-    ret->idle = src->idle;
-    ret->idle_present = src->idle_present;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_linux_resources_hugepage_limits_element *, free_runtime_spec_schema_config_linux_resources_hugepage_limits_element)
 runtime_spec_schema_config_linux_resources_hugepage_limits_element *
 make_runtime_spec_schema_config_linux_resources_hugepage_limits_element (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -1235,25 +1116,6 @@ gen_runtime_spec_schema_config_linux_resources_hugepage_limits_element (yajl_gen
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_resources_hugepage_limits_element *
-clone_runtime_spec_schema_config_linux_resources_hugepage_limits_element (runtime_spec_schema_config_linux_resources_hugepage_limits_element *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_hugepage_limits_element) runtime_spec_schema_config_linux_resources_hugepage_limits_element *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->page_size)
-      {
-        ret->page_size = strdup (src->page_size);
-        if (ret->page_size == NULL)
-          return NULL;
-      }
-    ret->limit = src->limit;
-    ret->limit_present = src->limit_present;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux_resources_memory *, free_runtime_spec_schema_config_linux_resources_memory)
@@ -1496,7 +1358,8 @@ make_runtime_spec_schema_config_linux_resources_memory (yajl_val tree, const str
                 && strcmp (tree->u.object.keys[i], "swappiness")
                 && strcmp (tree->u.object.keys[i], "disableOOMKiller")
                 && strcmp (tree->u.object.keys[i], "useHierarchy")
-                && strcmp (tree->u.object.keys[i], "checkBeforeUpdate")){
+                && strcmp (tree->u.object.keys[i], "checkBeforeUpdate"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1508,12 +1371,13 @@ make_runtime_spec_schema_config_linux_resources_memory (yajl_val tree, const str
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1660,35 +1524,6 @@ gen_runtime_spec_schema_config_linux_resources_memory (yajl_gen g, const runtime
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_linux_resources_memory *
-clone_runtime_spec_schema_config_linux_resources_memory (runtime_spec_schema_config_linux_resources_memory *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_memory) runtime_spec_schema_config_linux_resources_memory *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->kernel = src->kernel;
-    ret->kernel_present = src->kernel_present;
-    ret->kernel_tcp = src->kernel_tcp;
-    ret->kernel_tcp_present = src->kernel_tcp_present;
-    ret->limit = src->limit;
-    ret->limit_present = src->limit_present;
-    ret->reservation = src->reservation;
-    ret->reservation_present = src->reservation_present;
-    ret->swap = src->swap;
-    ret->swap_present = src->swap_present;
-    ret->swappiness = src->swappiness;
-    ret->swappiness_present = src->swappiness_present;
-    ret->disable_oom_killer = src->disable_oom_killer;
-    ret->disable_oom_killer_present = src->disable_oom_killer_present;
-    ret->use_hierarchy = src->use_hierarchy;
-    ret->use_hierarchy_present = src->use_hierarchy_present;
-    ret->check_before_update = src->check_before_update;
-    ret->check_before_update_present = src->check_before_update_present;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_linux_resources_network *, free_runtime_spec_schema_config_linux_resources_network)
 runtime_spec_schema_config_linux_resources_network *
 make_runtime_spec_schema_config_linux_resources_network (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -1777,7 +1612,8 @@ make_runtime_spec_schema_config_linux_resources_network (yajl_val tree, const st
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "classID")
-                && strcmp (tree->u.object.keys[i], "priorities")){
+                && strcmp (tree->u.object.keys[i], "priorities"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -1789,12 +1625,13 @@ make_runtime_spec_schema_config_linux_resources_network (yajl_val tree, const st
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -1804,7 +1641,8 @@ free_runtime_spec_schema_config_linux_resources_network (runtime_spec_schema_con
 {
     if (ptr == NULL)
         return;
-    if (ptr->priorities != NULL)      {
+    if (ptr->priorities != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->priorities_len; i++)
           {
@@ -1880,32 +1718,6 @@ gen_runtime_spec_schema_config_linux_resources_network (yajl_gen g, const runtim
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_linux_resources_network *
-clone_runtime_spec_schema_config_linux_resources_network (runtime_spec_schema_config_linux_resources_network *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_network) runtime_spec_schema_config_linux_resources_network *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->class_id = src->class_id;
-    ret->class_id_present = src->class_id_present;
-    if (src->priorities)
-      {
-        ret->priorities_len = src->priorities_len;
-        ret->priorities = calloc (src->priorities_len + 1, sizeof (*ret->priorities));
-        if (ret->priorities == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->priorities_len; i++)
-          {
-            ret->priorities[i] = clone_runtime_spec_schema_defs_linux_network_interface_priority (src->priorities[i]);
-            if (ret->priorities[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_linux_resources_rdma *, free_runtime_spec_schema_config_linux_resources_rdma)
 runtime_spec_schema_config_linux_resources_rdma *
 make_runtime_spec_schema_config_linux_resources_rdma (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -1946,17 +1758,6 @@ gen_runtime_spec_schema_config_linux_resources_rdma (yajl_gen g, const runtime_s
     if (!(ctx->options & OPT_GEN_SIMPLIFY))
         yajl_gen_config (g, yajl_gen_beautify, 1);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_resources_rdma *
-clone_runtime_spec_schema_config_linux_resources_rdma (runtime_spec_schema_config_linux_resources_rdma *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources_rdma) runtime_spec_schema_config_linux_resources_rdma *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux_resources *, free_runtime_spec_schema_config_linux_resources)
@@ -2090,7 +1891,8 @@ make_runtime_spec_schema_config_linux_resources (yajl_val tree, const struct par
                 && strcmp (tree->u.object.keys[i], "hugepageLimits")
                 && strcmp (tree->u.object.keys[i], "memory")
                 && strcmp (tree->u.object.keys[i], "network")
-                && strcmp (tree->u.object.keys[i], "rdma")){
+                && strcmp (tree->u.object.keys[i], "rdma"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2102,12 +1904,13 @@ make_runtime_spec_schema_config_linux_resources (yajl_val tree, const struct par
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2119,7 +1922,8 @@ free_runtime_spec_schema_config_linux_resources (runtime_spec_schema_config_linu
         return;
     free_json_map_string_string (ptr->unified);
     ptr->unified = NULL;
-    if (ptr->devices != NULL)      {
+    if (ptr->devices != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->devices_len; i++)
           {
@@ -2147,7 +1951,8 @@ free_runtime_spec_schema_config_linux_resources (runtime_spec_schema_config_linu
         free_runtime_spec_schema_config_linux_resources_cpu (ptr->cpu);
         ptr->cpu = NULL;
       }
-    if (ptr->hugepage_limits != NULL)      {
+    if (ptr->hugepage_limits != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->hugepage_limits_len; i++)
           {
@@ -2312,82 +2117,6 @@ gen_runtime_spec_schema_config_linux_resources (yajl_gen g, const runtime_spec_s
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_resources *
-clone_runtime_spec_schema_config_linux_resources (runtime_spec_schema_config_linux_resources *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_resources) runtime_spec_schema_config_linux_resources *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    ret->unified = clone_map_string_string (src->unified);
-    if (ret->unified == NULL)
-        return NULL;
-    if (src->devices)
-      {
-        ret->devices_len = src->devices_len;
-        ret->devices = calloc (src->devices_len + 1, sizeof (*ret->devices));
-        if (ret->devices == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->devices_len; i++)
-          {
-            ret->devices[i] = clone_runtime_spec_schema_defs_linux_device_cgroup (src->devices[i]);
-            if (ret->devices[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->pids)
-      {
-        ret->pids = clone_runtime_spec_schema_config_linux_resources_pids (src->pids);
-        if (ret->pids == NULL)
-          return NULL;
-      }
-    if (src->block_io)
-      {
-        ret->block_io = clone_runtime_spec_schema_config_linux_resources_block_io (src->block_io);
-        if (ret->block_io == NULL)
-          return NULL;
-      }
-    if (src->cpu)
-      {
-        ret->cpu = clone_runtime_spec_schema_config_linux_resources_cpu (src->cpu);
-        if (ret->cpu == NULL)
-          return NULL;
-      }
-    if (src->hugepage_limits)
-      {
-        ret->hugepage_limits_len = src->hugepage_limits_len;
-        ret->hugepage_limits = calloc (src->hugepage_limits_len + 1, sizeof (*ret->hugepage_limits));
-        if (ret->hugepage_limits == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->hugepage_limits_len; i++)
-          {
-            ret->hugepage_limits[i] = clone_runtime_spec_schema_config_linux_resources_hugepage_limits_element (src->hugepage_limits[i]);
-            if (ret->hugepage_limits[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->memory)
-      {
-        ret->memory = clone_runtime_spec_schema_config_linux_resources_memory (src->memory);
-        if (ret->memory == NULL)
-          return NULL;
-      }
-    if (src->network)
-      {
-        ret->network = clone_runtime_spec_schema_config_linux_resources_network (src->network);
-        if (ret->network == NULL)
-          return NULL;
-      }
-    if (src->rdma)
-      {
-        ret->rdma = clone_runtime_spec_schema_config_linux_resources_rdma (src->rdma);
-        if (ret->rdma == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux_seccomp *, free_runtime_spec_schema_config_linux_seccomp)
@@ -2577,7 +2306,8 @@ make_runtime_spec_schema_config_linux_seccomp (yajl_val tree, const struct parse
                 && strcmp (tree->u.object.keys[i], "listenerPath")
                 && strcmp (tree->u.object.keys[i], "listenerMetadata")
                 && strcmp (tree->u.object.keys[i], "architectures")
-                && strcmp (tree->u.object.keys[i], "syscalls")){
+                && strcmp (tree->u.object.keys[i], "syscalls"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -2589,12 +2319,13 @@ make_runtime_spec_schema_config_linux_seccomp (yajl_val tree, const struct parse
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -2638,7 +2369,8 @@ free_runtime_spec_schema_config_linux_seccomp (runtime_spec_schema_config_linux_
         free (ptr->architectures);
         ptr->architectures = NULL;
     }
-    if (ptr->syscalls != NULL)      {
+    if (ptr->syscalls != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->syscalls_len; i++)
           {
@@ -2800,82 +2532,6 @@ gen_runtime_spec_schema_config_linux_seccomp (yajl_gen g, const runtime_spec_sch
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_linux_seccomp *
-clone_runtime_spec_schema_config_linux_seccomp (runtime_spec_schema_config_linux_seccomp *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_seccomp) runtime_spec_schema_config_linux_seccomp *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->default_action)
-      {
-        ret->default_action = strdup (src->default_action);
-        if (ret->default_action == NULL)
-          return NULL;
-      }
-    ret->default_errno_ret = src->default_errno_ret;
-    ret->default_errno_ret_present = src->default_errno_ret_present;
-    if (src->flags)
-      {
-        ret->flags_len = src->flags_len;
-        ret->flags = calloc (src->flags_len + 1, sizeof (*ret->flags));
-        if (ret->flags == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->flags_len; i++)
-          {
-            if (src->flags[i])
-              {
-                ret->flags[i] = strdup (src->flags[i]);
-                if (ret->flags[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->listener_path)
-      {
-        ret->listener_path = strdup (src->listener_path);
-        if (ret->listener_path == NULL)
-          return NULL;
-      }
-    if (src->listener_metadata)
-      {
-        ret->listener_metadata = strdup (src->listener_metadata);
-        if (ret->listener_metadata == NULL)
-          return NULL;
-      }
-    if (src->architectures)
-      {
-        ret->architectures_len = src->architectures_len;
-        ret->architectures = calloc (src->architectures_len + 1, sizeof (*ret->architectures));
-        if (ret->architectures == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->architectures_len; i++)
-          {
-            if (src->architectures[i])
-              {
-                ret->architectures[i] = strdup (src->architectures[i]);
-                if (ret->architectures[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->syscalls)
-      {
-        ret->syscalls_len = src->syscalls_len;
-        ret->syscalls = calloc (src->syscalls_len + 1, sizeof (*ret->syscalls));
-        if (ret->syscalls == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->syscalls_len; i++)
-          {
-            ret->syscalls[i] = clone_runtime_spec_schema_defs_linux_syscall (src->syscalls[i]);
-            if (ret->syscalls[i] == NULL)
-                return NULL;
-          }
-      }
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_linux_intel_rdt *, free_runtime_spec_schema_config_linux_intel_rdt)
 runtime_spec_schema_config_linux_intel_rdt *
 make_runtime_spec_schema_config_linux_intel_rdt (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -2997,7 +2653,8 @@ make_runtime_spec_schema_config_linux_intel_rdt (yajl_val tree, const struct par
                 && strcmp (tree->u.object.keys[i], "l3CacheSchema")
                 && strcmp (tree->u.object.keys[i], "memBwSchema")
                 && strcmp (tree->u.object.keys[i], "enableCMT")
-                && strcmp (tree->u.object.keys[i], "enableMBM")){
+                && strcmp (tree->u.object.keys[i], "enableMBM"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -3009,12 +2666,13 @@ make_runtime_spec_schema_config_linux_intel_rdt (yajl_val tree, const struct par
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -3118,39 +2776,6 @@ gen_runtime_spec_schema_config_linux_intel_rdt (yajl_gen g, const runtime_spec_s
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_config_linux_intel_rdt *
-clone_runtime_spec_schema_config_linux_intel_rdt (runtime_spec_schema_config_linux_intel_rdt *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_intel_rdt) runtime_spec_schema_config_linux_intel_rdt *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->clos_id)
-      {
-        ret->clos_id = strdup (src->clos_id);
-        if (ret->clos_id == NULL)
-          return NULL;
-      }
-    if (src->l3cache_schema)
-      {
-        ret->l3cache_schema = strdup (src->l3cache_schema);
-        if (ret->l3cache_schema == NULL)
-          return NULL;
-      }
-    if (src->mem_bw_schema)
-      {
-        ret->mem_bw_schema = strdup (src->mem_bw_schema);
-        if (ret->mem_bw_schema == NULL)
-          return NULL;
-      }
-    ret->enable_cmt = src->enable_cmt;
-    ret->enable_cmt_present = src->enable_cmt_present;
-    ret->enable_mbm = src->enable_mbm;
-    ret->enable_mbm_present = src->enable_mbm_present;
-    return move_ptr (ret);
-}
-
 define_cleaner_function (runtime_spec_schema_config_linux_time_offsets *, free_runtime_spec_schema_config_linux_time_offsets)
 runtime_spec_schema_config_linux_time_offsets *
 make_runtime_spec_schema_config_linux_time_offsets (yajl_val tree, const struct parser_context *ctx, parser_error *err)
@@ -3201,7 +2826,8 @@ make_runtime_spec_schema_config_linux_time_offsets (yajl_val tree, const struct 
         for (i = 0; i < tree->u.object.len; i++)
           {
             if (strcmp (tree->u.object.keys[i], "boottime")
-                && strcmp (tree->u.object.keys[i], "monotonic")){
+                && strcmp (tree->u.object.keys[i], "monotonic"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -3213,12 +2839,13 @@ make_runtime_spec_schema_config_linux_time_offsets (yajl_val tree, const struct 
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -3280,29 +2907,6 @@ gen_runtime_spec_schema_config_linux_time_offsets (yajl_gen g, const runtime_spe
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux_time_offsets *
-clone_runtime_spec_schema_config_linux_time_offsets (runtime_spec_schema_config_linux_time_offsets *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux_time_offsets) runtime_spec_schema_config_linux_time_offsets *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->boottime)
-      {
-        ret->boottime = clone_runtime_spec_schema_defs_linux_time_offsets (src->boottime);
-        if (ret->boottime == NULL)
-          return NULL;
-      }
-    if (src->monotonic)
-      {
-        ret->monotonic = clone_runtime_spec_schema_defs_linux_time_offsets (src->monotonic);
-        if (ret->monotonic == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 
 define_cleaner_function (runtime_spec_schema_config_linux *, free_runtime_spec_schema_config_linux)
@@ -3571,7 +3175,8 @@ make_runtime_spec_schema_config_linux (yajl_val tree, const struct parser_contex
                 && strcmp (tree->u.object.keys[i], "mountLabel")
                 && strcmp (tree->u.object.keys[i], "intelRdt")
                 && strcmp (tree->u.object.keys[i], "personality")
-                && strcmp (tree->u.object.keys[i], "timeOffsets")){
+                && strcmp (tree->u.object.keys[i], "timeOffsets"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -3583,12 +3188,13 @@ make_runtime_spec_schema_config_linux (yajl_val tree, const struct parser_contex
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -3598,7 +3204,8 @@ free_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *ptr)
 {
     if (ptr == NULL)
         return;
-    if (ptr->devices != NULL)      {
+    if (ptr->devices != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->devices_len; i++)
           {
@@ -3611,7 +3218,8 @@ free_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *ptr)
         free (ptr->devices);
         ptr->devices = NULL;
       }
-    if (ptr->uid_mappings != NULL)      {
+    if (ptr->uid_mappings != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->uid_mappings_len; i++)
           {
@@ -3624,7 +3232,8 @@ free_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *ptr)
         free (ptr->uid_mappings);
         ptr->uid_mappings = NULL;
       }
-    if (ptr->gid_mappings != NULL)      {
+    if (ptr->gid_mappings != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->gid_mappings_len; i++)
           {
@@ -3637,7 +3246,8 @@ free_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *ptr)
         free (ptr->gid_mappings);
         ptr->gid_mappings = NULL;
       }
-    if (ptr->namespaces != NULL)      {
+    if (ptr->namespaces != NULL)
+      {
         size_t i;
         for (i = 0; i < ptr->namespaces_len; i++)
           {
@@ -3975,151 +3585,5 @@ gen_runtime_spec_schema_config_linux (yajl_gen g, const runtime_spec_schema_conf
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_config_linux *
-clone_runtime_spec_schema_config_linux (runtime_spec_schema_config_linux *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_config_linux) runtime_spec_schema_config_linux *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->devices)
-      {
-        ret->devices_len = src->devices_len;
-        ret->devices = calloc (src->devices_len + 1, sizeof (*ret->devices));
-        if (ret->devices == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->devices_len; i++)
-          {
-            ret->devices[i] = clone_runtime_spec_schema_defs_linux_device (src->devices[i]);
-            if (ret->devices[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->uid_mappings)
-      {
-        ret->uid_mappings_len = src->uid_mappings_len;
-        ret->uid_mappings = calloc (src->uid_mappings_len + 1, sizeof (*ret->uid_mappings));
-        if (ret->uid_mappings == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->uid_mappings_len; i++)
-          {
-            ret->uid_mappings[i] = clone_runtime_spec_schema_defs_id_mapping (src->uid_mappings[i]);
-            if (ret->uid_mappings[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->gid_mappings)
-      {
-        ret->gid_mappings_len = src->gid_mappings_len;
-        ret->gid_mappings = calloc (src->gid_mappings_len + 1, sizeof (*ret->gid_mappings));
-        if (ret->gid_mappings == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->gid_mappings_len; i++)
-          {
-            ret->gid_mappings[i] = clone_runtime_spec_schema_defs_id_mapping (src->gid_mappings[i]);
-            if (ret->gid_mappings[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->namespaces)
-      {
-        ret->namespaces_len = src->namespaces_len;
-        ret->namespaces = calloc (src->namespaces_len + 1, sizeof (*ret->namespaces));
-        if (ret->namespaces == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->namespaces_len; i++)
-          {
-            ret->namespaces[i] = clone_runtime_spec_schema_defs_linux_namespace_reference (src->namespaces[i]);
-            if (ret->namespaces[i] == NULL)
-                return NULL;
-          }
-      }
-    if (src->resources)
-      {
-        ret->resources = clone_runtime_spec_schema_config_linux_resources (src->resources);
-        if (ret->resources == NULL)
-          return NULL;
-      }
-    if (src->cgroups_path)
-      {
-        ret->cgroups_path = strdup (src->cgroups_path);
-        if (ret->cgroups_path == NULL)
-          return NULL;
-      }
-    if (src->rootfs_propagation)
-      {
-        ret->rootfs_propagation = strdup (src->rootfs_propagation);
-        if (ret->rootfs_propagation == NULL)
-          return NULL;
-      }
-    if (src->seccomp)
-      {
-        ret->seccomp = clone_runtime_spec_schema_config_linux_seccomp (src->seccomp);
-        if (ret->seccomp == NULL)
-          return NULL;
-      }
-    ret->sysctl = clone_map_string_string (src->sysctl);
-    if (ret->sysctl == NULL)
-        return NULL;
-    if (src->masked_paths)
-      {
-        ret->masked_paths_len = src->masked_paths_len;
-        ret->masked_paths = calloc (src->masked_paths_len + 1, sizeof (*ret->masked_paths));
-        if (ret->masked_paths == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->masked_paths_len; i++)
-          {
-            if (src->masked_paths[i])
-              {
-                ret->masked_paths[i] = strdup (src->masked_paths[i]);
-                if (ret->masked_paths[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->readonly_paths)
-      {
-        ret->readonly_paths_len = src->readonly_paths_len;
-        ret->readonly_paths = calloc (src->readonly_paths_len + 1, sizeof (*ret->readonly_paths));
-        if (ret->readonly_paths == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->readonly_paths_len; i++)
-          {
-            if (src->readonly_paths[i])
-              {
-                ret->readonly_paths[i] = strdup (src->readonly_paths[i]);
-                if (ret->readonly_paths[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->mount_label)
-      {
-        ret->mount_label = strdup (src->mount_label);
-        if (ret->mount_label == NULL)
-          return NULL;
-      }
-    if (src->intel_rdt)
-      {
-        ret->intel_rdt = clone_runtime_spec_schema_config_linux_intel_rdt (src->intel_rdt);
-        if (ret->intel_rdt == NULL)
-          return NULL;
-      }
-    if (src->personality)
-      {
-        ret->personality = clone_runtime_spec_schema_defs_linux_personality (src->personality);
-        if (ret->personality == NULL)
-          return NULL;
-      }
-    if (src->time_offsets)
-      {
-        ret->time_offsets = clone_runtime_spec_schema_config_linux_time_offsets (src->time_offsets);
-        if (ret->time_offsets == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
 }
 

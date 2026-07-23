@@ -115,32 +115,6 @@ make_runtime_spec_schema_features_schema (yajl_val tree, const struct parser_con
           }
       }
     while (0);
-    do
-      {
-        yajl_val tmp = get_val (tree, "potentiallyUnsafeConfigAnnotations", yajl_t_array);
-        if (tmp != NULL && YAJL_GET_ARRAY (tmp) != NULL)
-          {
-            size_t i;
-            size_t len = YAJL_GET_ARRAY_NO_CHECK (tmp)->len;
-            yajl_val *values = YAJL_GET_ARRAY_NO_CHECK (tmp)->values;
-            ret->potentially_unsafe_config_annotations_len = len;
-            ret->potentially_unsafe_config_annotations = calloc (len + 1, sizeof (*ret->potentially_unsafe_config_annotations));
-            if (ret->potentially_unsafe_config_annotations == NULL)
-              return NULL;
-            for (i = 0; i < len; i++)
-              {
-                yajl_val val = values[i];
-                if (val != NULL)
-                  {
-                    char *str = YAJL_GET_STRING (val);
-                    ret->potentially_unsafe_config_annotations[i] = strdup (str ? str : "");
-                    if (ret->potentially_unsafe_config_annotations[i] == NULL)
-                      return NULL;
-                  }
-              }
-        }
-      }
-    while (0);
     ret->linux = make_runtime_spec_schema_features_linux (get_val (tree, "linux", yajl_t_object), ctx, err);
     if (ret->linux == NULL && *err != 0)
       return NULL;
@@ -192,8 +166,8 @@ make_runtime_spec_schema_features_schema (yajl_val tree, const struct parser_con
                 && strcmp (tree->u.object.keys[i], "hooks")
                 && strcmp (tree->u.object.keys[i], "mountOptions")
                 && strcmp (tree->u.object.keys[i], "annotations")
-                && strcmp (tree->u.object.keys[i], "potentiallyUnsafeConfigAnnotations")
-                && strcmp (tree->u.object.keys[i], "linux")){
+                && strcmp (tree->u.object.keys[i], "linux"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -205,12 +179,13 @@ make_runtime_spec_schema_features_schema (yajl_val tree, const struct parser_con
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -254,20 +229,6 @@ free_runtime_spec_schema_features_schema (runtime_spec_schema_features_schema *p
     }
     free_json_map_string_string (ptr->annotations);
     ptr->annotations = NULL;
-    if (ptr->potentially_unsafe_config_annotations != NULL)
-      {
-        size_t i;
-        for (i = 0; i < ptr->potentially_unsafe_config_annotations_len; i++)
-          {
-            if (ptr->potentially_unsafe_config_annotations[i] != NULL)
-              {
-                free (ptr->potentially_unsafe_config_annotations[i]);
-                ptr->potentially_unsafe_config_annotations[i] = NULL;
-              }
-          }
-        free (ptr->potentially_unsafe_config_annotations);
-        ptr->potentially_unsafe_config_annotations = NULL;
-    }
     if (ptr->linux != NULL)
       {
         free_runtime_spec_schema_features_linux (ptr->linux);
@@ -370,31 +331,6 @@ gen_runtime_spec_schema_features_schema (yajl_gen g, const runtime_spec_schema_f
         if (stat != yajl_gen_status_ok)
             GEN_SET_ERROR_AND_RETURN (stat, err);
       }
-    if ((ctx->options & OPT_GEN_KEY_VALUE) || (ptr != NULL && ptr->potentially_unsafe_config_annotations != NULL))
-      {
-        size_t len = 0, i;
-        stat = yajl_gen_string ((yajl_gen) g, (const unsigned char *)("potentiallyUnsafeConfigAnnotations"), 34 /* strlen ("potentiallyUnsafeConfigAnnotations") */);
-        if (stat != yajl_gen_status_ok)
-            GEN_SET_ERROR_AND_RETURN (stat, err);
-        if (ptr != NULL && ptr->potentially_unsafe_config_annotations != NULL)
-          len = ptr->potentially_unsafe_config_annotations_len;
-        if (!len && !(ctx->options & OPT_GEN_SIMPLIFY))
-            yajl_gen_config (g, yajl_gen_beautify, 0);
-        stat = yajl_gen_array_open ((yajl_gen) g);
-        if (stat != yajl_gen_status_ok)
-            GEN_SET_ERROR_AND_RETURN (stat, err);
-        for (i = 0; i < len; i++)
-          {
-            stat = yajl_gen_string ((yajl_gen)g, (const unsigned char *)(ptr->potentially_unsafe_config_annotations[i]), strlen (ptr->potentially_unsafe_config_annotations[i]));
-            if (stat != yajl_gen_status_ok)
-                GEN_SET_ERROR_AND_RETURN (stat, err);
-          }
-        stat = yajl_gen_array_close ((yajl_gen) g);
-        if (stat != yajl_gen_status_ok)
-            GEN_SET_ERROR_AND_RETURN (stat, err);
-        if (!len && !(ctx->options & OPT_GEN_SIMPLIFY))
-            yajl_gen_config (g, yajl_gen_beautify, 1);
-      }
     if ((ctx->options & OPT_GEN_KEY_VALUE) || (ptr != NULL && ptr->linux != NULL))
       {
         stat = yajl_gen_string ((yajl_gen) g, (const unsigned char *)("linux"), 5 /* strlen ("linux") */);
@@ -416,91 +352,12 @@ gen_runtime_spec_schema_features_schema (yajl_gen g, const runtime_spec_schema_f
     return yajl_gen_status_ok;
 }
 
-runtime_spec_schema_features_schema *
-clone_runtime_spec_schema_features_schema (runtime_spec_schema_features_schema *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_features_schema) runtime_spec_schema_features_schema *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->oci_version_min)
-      {
-        ret->oci_version_min = strdup (src->oci_version_min);
-        if (ret->oci_version_min == NULL)
-          return NULL;
-      }
-    if (src->oci_version_max)
-      {
-        ret->oci_version_max = strdup (src->oci_version_max);
-        if (ret->oci_version_max == NULL)
-          return NULL;
-      }
-    if (src->hooks)
-      {
-        ret->hooks_len = src->hooks_len;
-        ret->hooks = calloc (src->hooks_len + 1, sizeof (*ret->hooks));
-        if (ret->hooks == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->hooks_len; i++)
-          {
-            if (src->hooks[i])
-              {
-                ret->hooks[i] = strdup (src->hooks[i]);
-                if (ret->hooks[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->mount_options)
-      {
-        ret->mount_options_len = src->mount_options_len;
-        ret->mount_options = calloc (src->mount_options_len + 1, sizeof (*ret->mount_options));
-        if (ret->mount_options == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->mount_options_len; i++)
-          {
-            if (src->mount_options[i])
-              {
-                ret->mount_options[i] = strdup (src->mount_options[i]);
-                if (ret->mount_options[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    ret->annotations = clone_map_string_string (src->annotations);
-    if (ret->annotations == NULL)
-        return NULL;
-    if (src->potentially_unsafe_config_annotations)
-      {
-        ret->potentially_unsafe_config_annotations_len = src->potentially_unsafe_config_annotations_len;
-        ret->potentially_unsafe_config_annotations = calloc (src->potentially_unsafe_config_annotations_len + 1, sizeof (*ret->potentially_unsafe_config_annotations));
-        if (ret->potentially_unsafe_config_annotations == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->potentially_unsafe_config_annotations_len; i++)
-          {
-            if (src->potentially_unsafe_config_annotations[i])
-              {
-                ret->potentially_unsafe_config_annotations[i] = strdup (src->potentially_unsafe_config_annotations[i]);
-                if (ret->potentially_unsafe_config_annotations[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->linux)
-      {
-        ret->linux = clone_runtime_spec_schema_features_linux (src->linux);
-        if (ret->linux == NULL)
-          return NULL;
-      }
-    return move_ptr (ret);
-}
-
 
 runtime_spec_schema_features_schema *
 runtime_spec_schema_features_schema_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-runtime_spec_schema_features_schema *ptr = NULL;size_t filesize;
+    runtime_spec_schema_features_schema *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -513,12 +370,16 @@ runtime_spec_schema_features_schema *ptr = NULL;size_t filesize;
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }ptr = runtime_spec_schema_features_schema_parse_data (content, ctx, err);return ptr;
+      }
+    ptr = runtime_spec_schema_features_schema_parse_data (content, ctx, err);
+    return ptr;
 }
-runtime_spec_schema_features_schema * 
+
+runtime_spec_schema_features_schema *
 runtime_spec_schema_features_schema_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{runtime_spec_schema_features_schema *ptr = NULL;
-size_t filesize;
+{
+    runtime_spec_schema_features_schema *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -531,14 +392,17 @@ size_t filesize;
         *err = strdup ("cannot read the file");
         return NULL;
       }
-ptr = runtime_spec_schema_features_schema_parse_data (content, ctx, err);return ptr;
+    ptr = runtime_spec_schema_features_schema_parse_data (content, ctx, err);
+    return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
- runtime_spec_schema_features_schema * runtime_spec_schema_features_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
- { 
-  runtime_spec_schema_features_schema *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+runtime_spec_schema_features_schema *
+runtime_spec_schema_features_schema_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+{
+    runtime_spec_schema_features_schema *ptr = NULL;
+    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -556,7 +420,8 @@ define_cleaner_function (yajl_val, yajl_tree_free)
             *err = strdup ("error allocating memory");
         return NULL;
       }
-ptr = make_runtime_spec_schema_features_schema (tree, ctx, err);return ptr; 
+    ptr = make_runtime_spec_schema_features_schema (tree, ctx, err);
+    return ptr;
 }
 
 static void
@@ -571,8 +436,9 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
- char * 
-runtime_spec_schema_features_schema_generate_json (const runtime_spec_schema_features_schema *ptr, const struct parser_context *ctx, parser_error *err){
+char *
+runtime_spec_schema_features_schema_generate_json (const runtime_spec_schema_features_schema *ptr, const struct parser_context *ctx, parser_error *err)
+{
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -590,9 +456,10 @@ runtime_spec_schema_features_schema_generate_json (const runtime_spec_schema_fea
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      } 
+      }
 
-if (yajl_gen_status_ok != gen_runtime_spec_schema_features_schema (g, ptr, ctx, err))  {
+    if (yajl_gen_status_ok != gen_runtime_spec_schema_features_schema (g, ptr, ctx, err))
+      {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

@@ -7,7 +7,7 @@ This section defines the `application/vnd.oci.image.index.v1+json` [media type](
 
 For the media type(s) that this document is compatible with, see the [matrix][matrix].
 
-## _Image Index_ Property Descriptions
+## *Image Index* Property Descriptions
 
 - **`schemaVersion`** *int*
 
@@ -21,11 +21,6 @@ For the media type(s) that this document is compatible with, see the [matrix][ma
   This property SHOULD be used and [remain compatible][matrix] with earlier versions of this specification and with other similar external formats.
   When used, this field MUST contain the media type `application/vnd.oci.image.index.v1+json`.
   This field usage differs from the [descriptor](descriptor.md#properties) use of `mediaType`.
-
-- **`artifactType`** *string*
-
-  This OPTIONAL property contains the type of an artifact when the manifest is used for an artifact.
-  If defined, the value MUST comply with [RFC 6838][rfc6838], including the [naming requirements in its section 4.2][rfc6838-s4.2], and MAY be registered with [IANA][iana].
 
 - **`manifests`** *array of objects*
 
@@ -47,7 +42,7 @@ For the media type(s) that this document is compatible with, see the [matrix][ma
 
     Image indexes concerned with portability SHOULD use one of the above media types.
     Future versions of the spec MAY use a different mediatype (i.e. a new versioned format).
-    An encountered `mediaType` that is unknown to the implementation MUST NOT generate an error.
+    An encountered `mediaType` that is unknown to the implementation MUST be ignored.
 
   - **`platform`** *object*
 
@@ -56,44 +51,39 @@ For the media type(s) that this document is compatible with, see the [matrix][ma
 
     - **`architecture`** *string*
 
-      This REQUIRED property specifies the CPU architecture.
-      Image indexes SHOULD use, and implementations SHOULD understand, values listed in the Go Language document for [`GOARCH`][go-environment2].
+        This REQUIRED property specifies the CPU architecture.
+        Image indexes SHOULD use, and implementations SHOULD understand, values listed in the Go Language document for [`GOARCH`][go-environment2].
 
     - **`os`** *string*
 
-      This REQUIRED property specifies the operating system.
-      Image indexes SHOULD use, and implementations SHOULD understand, values listed in the Go Language document for [`GOOS`][go-environment2].
+        This REQUIRED property specifies the operating system.
+        Image indexes SHOULD use, and implementations SHOULD understand, values listed in the Go Language document for [`GOOS`][go-environment2].
 
     - **`os.version`** *string*
 
-      This OPTIONAL property specifies the version of the operating system targeted by the referenced blob.
-      Implementations MAY refuse to use manifests where `os.version` is not known to work with the host OS version.
-      Valid values are implementation-defined. e.g. `10.0.14393.1066` on `windows`.
+        This OPTIONAL property specifies the version of the operating system targeted by the referenced blob.
+        Implementations MAY refuse to use manifests where `os.version` is not known to work with the host OS version.
+        Valid values are implementation-defined. e.g. `10.0.14393.1066` on `windows`.
 
     - **`os.features`** *array of strings*
 
-      This OPTIONAL property specifies an array of strings, each specifying a mandatory OS feature.
-      When `os` is `windows`, image indexes SHOULD use, and implementations SHOULD understand the following values:
+        This OPTIONAL property specifies an array of strings, each specifying a mandatory OS feature.
+        When `os` is `windows`, image indexes SHOULD use, and implementations SHOULD understand the following values:
 
-      - `win32k`: image requires `win32k.sys` on the host (Note: `win32k.sys` is missing on Nano Server)
+        - `win32k`: image requires `win32k.sys` on the host (Note: `win32k.sys` is missing on Nano Server)
 
-      When `os` is not `windows`, values are implementation-defined and SHOULD be submitted to this specification for standardization.
+        When `os` is not `windows`, values are implementation-defined and SHOULD be submitted to this specification for standardization.
 
     - **`variant`** *string*
 
-      This OPTIONAL property specifies the variant of the CPU.
-      Image indexes SHOULD use, and implementations SHOULD understand, `variant` values listed in the [Platform Variants](#platform-variants) table.
+        This OPTIONAL property specifies the variant of the CPU.
+        Image indexes SHOULD use, and implementations SHOULD understand, `variant` values listed in the [Platform Variants](#platform-variants) table.
 
     - **`features`** *array of strings*
 
         This property is RESERVED for future versions of the specification.
 
   If multiple manifests match a client or runtime's requirements, the first matching entry SHOULD be used.
-
-- **`subject`** *[descriptor](descriptor.md)*
-
-    This OPTIONAL property specifies a [descriptor](descriptor.md) of another manifest.
-    This value defines a weak association to a separate [Merkle Directed Acyclic Graph (DAG)][dag] structure, and is used by the [`referrers` API][referrers-api] to include this manifest in the list of responses for the subject digest.
 
 - **`annotations`** *string-string map*
 
@@ -105,20 +95,17 @@ For the media type(s) that this document is compatible with, see the [matrix][ma
 ## Platform Variants
 
 When the variant of the CPU is not listed in the table, values are implementation-defined and SHOULD be submitted to this specification for standardization.
-These values SHOULD match (or be similar to) their analog listed in [the Go Language document][go-environment2].
 
-| ISA/ABI    | `architecture` | `variant`             | Go analog   |
-|------------|----------------|-----------------------|-------------|
-| ARM 32-bit | `arm`          | `v6`, `v7`, `v8`      | `GOARM`     |
-| ARM 64-bit | `arm64`        | `v8`, `v8.1`, …       | `GOARM64`   |
-| POWER8+    | `ppc64le`      | `power8`, `power9`, … | `GOPPC64`   |
-| RISC-V     | `riscv64`      | `rva20u64`, …         | `GORISCV64` |
-| x86-64     | `amd64`        | `v1`, `v2`, `v3`, …   | `GOAMD64`   |
+| ISA/ABI         | `architecture` | `variant`   |
+|-----------------|----------------|-------------|
+| ARM 32-bit, v6  | `arm`          | `v6`        |
+| ARM 32-bit, v7  | `arm`          | `v7`        |
+| ARM 32-bit, v8  | `arm`          | `v8`        |
+| ARM 64-bit, v8  | `arm64`        | `v8`        |
 
 ## Example Image Index
 
 *Example showing a simple image index pointing to image manifests for two platforms:*
-
 ```json,title=Image%20Index&mediatype=application/vnd.oci.image.index.v1%2Bjson
 {
   "schemaVersion": 2,
@@ -153,7 +140,6 @@ These values SHOULD match (or be similar to) their analog listed in [the Go Lang
 ## Example Image Index with multiple media types
 
 *Example showing an image index pointing to manifests with multiple media types:*
-
 ```json,title=Image%20Index&mediatype=application/vnd.oci.image.index.v1%2Bjson
 {
   "schemaVersion": 2,
@@ -181,10 +167,5 @@ These values SHOULD match (or be similar to) their analog listed in [the Go Lang
 }
 ```
 
-[dag]:             https://en.wikipedia.org/wiki/Merkle_tree
 [go-environment2]: https://golang.org/doc/install/source#environment
-[iana]:            https://www.iana.org/assignments/media-types/media-types.xhtml
-[matrix]:          media-types.md#compatibility-matrix
-[referrers-api]:   https://github.com/opencontainers/distribution-spec/blob/main/spec.md#listing-referrers
-[rfc6838]:         https://tools.ietf.org/html/rfc6838
-[rfc6838-s4.2]:    https://tools.ietf.org/html/rfc6838#section-4.2
+[matrix]: media-types.md#compatibility-matrix

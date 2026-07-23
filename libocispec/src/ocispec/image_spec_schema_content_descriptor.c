@@ -184,7 +184,8 @@ make_image_spec_schema_content_descriptor (yajl_val tree, const struct parser_co
                 && strcmp (tree->u.object.keys[i], "urls")
                 && strcmp (tree->u.object.keys[i], "data")
                 && strcmp (tree->u.object.keys[i], "artifactType")
-                && strcmp (tree->u.object.keys[i], "annotations")){
+                && strcmp (tree->u.object.keys[i], "annotations"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -196,12 +197,13 @@ make_image_spec_schema_content_descriptor (yajl_val tree, const struct parser_co
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -355,67 +357,12 @@ gen_image_spec_schema_content_descriptor (yajl_gen g, const image_spec_schema_co
     return yajl_gen_status_ok;
 }
 
-image_spec_schema_content_descriptor *
-clone_image_spec_schema_content_descriptor (image_spec_schema_content_descriptor *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_image_spec_schema_content_descriptor) image_spec_schema_content_descriptor *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->media_type)
-      {
-        ret->media_type = strdup (src->media_type);
-        if (ret->media_type == NULL)
-          return NULL;
-      }
-    ret->size = src->size;
-    ret->size_present = src->size_present;
-    if (src->digest)
-      {
-        ret->digest = strdup (src->digest);
-        if (ret->digest == NULL)
-          return NULL;
-      }
-    if (src->urls)
-      {
-        ret->urls_len = src->urls_len;
-        ret->urls = calloc (src->urls_len + 1, sizeof (*ret->urls));
-        if (ret->urls == NULL)
-          return NULL;
-        for (size_t i = 0; i < src->urls_len; i++)
-          {
-            if (src->urls[i])
-              {
-                ret->urls[i] = strdup (src->urls[i]);
-                if (ret->urls[i] == NULL)
-                  return NULL;
-              }
-          }
-      }
-    if (src->data)
-      {
-        ret->data = strdup (src->data);
-        if (ret->data == NULL)
-          return NULL;
-      }
-    if (src->artifact_type)
-      {
-        ret->artifact_type = strdup (src->artifact_type);
-        if (ret->artifact_type == NULL)
-          return NULL;
-      }
-    ret->annotations = clone_map_string_string (src->annotations);
-    if (ret->annotations == NULL)
-        return NULL;
-    return move_ptr (ret);
-}
-
 
 image_spec_schema_content_descriptor *
 image_spec_schema_content_descriptor_parse_file (const char *filename, const struct parser_context *ctx, parser_error *err)
 {
-image_spec_schema_content_descriptor *ptr = NULL;size_t filesize;
+    image_spec_schema_content_descriptor *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (filename == NULL || err == NULL)
@@ -428,12 +375,16 @@ image_spec_schema_content_descriptor *ptr = NULL;size_t filesize;
         if (asprintf (err, "cannot read the file: %s", filename) < 0)
             *err = strdup ("error allocating memory");
         return NULL;
-      }ptr = image_spec_schema_content_descriptor_parse_data (content, ctx, err);return ptr;
+      }
+    ptr = image_spec_schema_content_descriptor_parse_data (content, ctx, err);
+    return ptr;
 }
-image_spec_schema_content_descriptor * 
+
+image_spec_schema_content_descriptor *
 image_spec_schema_content_descriptor_parse_file_stream (FILE *stream, const struct parser_context *ctx, parser_error *err)
-{image_spec_schema_content_descriptor *ptr = NULL;
-size_t filesize;
+{
+    image_spec_schema_content_descriptor *ptr = NULL;
+    size_t filesize;
     __auto_free char *content = NULL;
 
     if (stream == NULL || err == NULL)
@@ -446,14 +397,17 @@ size_t filesize;
         *err = strdup ("cannot read the file");
         return NULL;
       }
-ptr = image_spec_schema_content_descriptor_parse_data (content, ctx, err);return ptr;
+    ptr = image_spec_schema_content_descriptor_parse_data (content, ctx, err);
+    return ptr;
 }
 
 define_cleaner_function (yajl_val, yajl_tree_free)
 
- image_spec_schema_content_descriptor * image_spec_schema_content_descriptor_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
- { 
-  image_spec_schema_content_descriptor *ptr = NULL;__auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
+image_spec_schema_content_descriptor *
+image_spec_schema_content_descriptor_parse_data (const char *jsondata, const struct parser_context *ctx, parser_error *err)
+{
+    image_spec_schema_content_descriptor *ptr = NULL;
+    __auto_cleanup(yajl_tree_free) yajl_val tree = NULL;
     char errbuf[1024];
     struct parser_context tmp_ctx = { 0 };
 
@@ -471,7 +425,8 @@ define_cleaner_function (yajl_val, yajl_tree_free)
             *err = strdup ("error allocating memory");
         return NULL;
       }
-ptr = make_image_spec_schema_content_descriptor (tree, ctx, err);return ptr; 
+    ptr = make_image_spec_schema_content_descriptor (tree, ctx, err);
+    return ptr;
 }
 
 static void
@@ -486,8 +441,9 @@ cleanup_yajl_gen (yajl_gen g)
 define_cleaner_function (yajl_gen, cleanup_yajl_gen)
 
 
- char * 
-image_spec_schema_content_descriptor_generate_json (const image_spec_schema_content_descriptor *ptr, const struct parser_context *ctx, parser_error *err){
+char *
+image_spec_schema_content_descriptor_generate_json (const image_spec_schema_content_descriptor *ptr, const struct parser_context *ctx, parser_error *err)
+{
     __auto_cleanup(cleanup_yajl_gen) yajl_gen g = NULL;
     struct parser_context tmp_ctx = { 0 };
     const unsigned char *gen_buf = NULL;
@@ -505,9 +461,10 @@ image_spec_schema_content_descriptor_generate_json (const image_spec_schema_cont
       {
         *err = strdup ("Json_gen init failed");
         return json_buf;
-      } 
+      }
 
-if (yajl_gen_status_ok != gen_image_spec_schema_content_descriptor (g, ptr, ctx, err))  {
+    if (yajl_gen_status_ok != gen_image_spec_schema_content_descriptor (g, ptr, ctx, err))
+      {
         if (*err == NULL)
             *err = strdup ("Failed to generate json");
         return json_buf;

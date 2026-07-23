@@ -204,7 +204,8 @@ make_runtime_spec_schema_defs_zos_device (yajl_val tree, const struct parser_con
                 && strcmp (tree->u.object.keys[i], "minor")
                 && strcmp (tree->u.object.keys[i], "fileMode")
                 && strcmp (tree->u.object.keys[i], "uid")
-                && strcmp (tree->u.object.keys[i], "gid")){
+                && strcmp (tree->u.object.keys[i], "gid"))
+              {
                 if (ctx->options & OPT_PARSE_FULLKEY)
                   {
                     resi->u.object.keys[j] = tree->u.object.keys[i];
@@ -216,12 +217,13 @@ make_runtime_spec_schema_defs_zos_device (yajl_val tree, const struct parser_con
                 j++;
               }
           }
-
-        if ((ctx->options & OPT_PARSE_STRICT) && j > 0 && ctx->errfile != NULL)
-          (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
-
+        if (ctx->options & OPT_PARSE_STRICT)
+          {
+            if (j > 0 && ctx->errfile != NULL)
+                (void) fprintf (ctx->errfile, "WARNING: unknown key found\n");
+          }
         if (ctx->options & OPT_PARSE_FULLKEY)
-          ret->_residual = resi;
+            ret->_residual = resi;
       }
     return move_ptr (ret);
 }
@@ -343,38 +345,5 @@ gen_runtime_spec_schema_defs_zos_device (yajl_gen g, const runtime_spec_schema_d
     if (stat != yajl_gen_status_ok)
         GEN_SET_ERROR_AND_RETURN (stat, err);
     return yajl_gen_status_ok;
-}
-
-runtime_spec_schema_defs_zos_device *
-clone_runtime_spec_schema_defs_zos_device (runtime_spec_schema_defs_zos_device *src)
-{
-    (void) src;  /* Silence compiler warning.  */
-    __auto_cleanup(free_runtime_spec_schema_defs_zos_device) runtime_spec_schema_defs_zos_device *ret = NULL;
-    ret = calloc (1, sizeof (*ret));
-    if (ret == NULL)
-      return NULL;
-    if (src->path)
-      {
-        ret->path = strdup (src->path);
-        if (ret->path == NULL)
-          return NULL;
-      }
-    if (src->type)
-      {
-        ret->type = strdup (src->type);
-        if (ret->type == NULL)
-          return NULL;
-      }
-    ret->major = src->major;
-    ret->major_present = src->major_present;
-    ret->minor = src->minor;
-    ret->minor_present = src->minor_present;
-    ret->file_mode = src->file_mode;
-    ret->file_mode_present = src->file_mode_present;
-    ret->uid = src->uid;
-    ret->uid_present = src->uid_present;
-    ret->gid = src->gid;
-    ret->gid_present = src->gid_present;
-    return move_ptr (ret);
 }
 
