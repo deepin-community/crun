@@ -4,6 +4,10 @@ crun (1.14.4-1deepin1) unstable; urgency=medium
     use safe_openat to prevent rootfs-controlled /dev symlinks from
     redirecting device setup outside the container rootfs
     (upstream commit c6f338ac2e26e216ab7820b91863a0b84e608097)
+  * fix(cve): CVE-2026-88265 (medium) - linux: validate /dev/null before
+    reopening the std streams   Upstream:
+    https://github.com/containers/crun/commit/e9e661946498b8cc7c3a68ce1c
+    a507fc5b84aa53
 
  -- lichenggang <lichenggang@uniontech.com>  Thu, 23 Jul 2026 19:03:28 +0800
 
