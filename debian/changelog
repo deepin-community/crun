@@ -1,3 +1,12 @@
+crun (1.14.4-1deepin2) unstable; urgency=medium
+
+  * fix(cve): CVE-2026-88264 (medium) - utils: do not follow symlinks
+    when creating /dev/console   Upstream:
+    https://github.com/containers/crun/commit/ef32479522af883568ce4a5482
+    358069ff71dc8f
+
+ -- deepin-ci-robot <packages@deepin.org>  Mon, 23 Nov 2026 16:48:23 +0800
+
 crun (1.14.4-1deepin1) unstable; urgency=medium
 
   * Fix CVE-2026-47766: do not follow rootfs /dev symlinks,
