@@ -1,9 +1,5 @@
-crun (1.14.4-1deepin1) unstable; urgency=medium
+crun (1.14.4-1deepin2) unstable; urgency=medium
 
-  * Fix CVE-2026-47766: do not follow rootfs /dev symlinks,
-    use safe_openat to prevent rootfs-controlled /dev symlinks from
-    redirecting device setup outside the container rootfs
-    (upstream commit c6f338ac2e26e216ab7820b91863a0b84e608097)
   * fix(cve): CVE-2026-115521 (unknown) - linux: resolve the remount
     target through the pre-pivot procfs   Upstream:
     https://github.com/containers/crun/commit/5d384aa386ce0b929d8f10b0ae
@@ -12,6 +8,15 @@ crun (1.14.4-1deepin1) unstable; urgency=medium
     keys that CRIU cannot read back   Upstream:
     https://github.com/containers/crun/commit/cd4d8bcf7a6ee2370bd69a78fe
     d2fa1be9293ebb
+
+ -- deepin-ci-robot <packages@deepin.org>  Tue, 24 Nov 2026 16:28:54 +0800
+
+crun (1.14.4-1deepin1) unstable; urgency=medium
+
+  * Fix CVE-2026-47766: do not follow rootfs /dev symlinks,
+    use safe_openat to prevent rootfs-controlled /dev symlinks from
+    redirecting device setup outside the container rootfs
+    (upstream commit c6f338ac2e26e216ab7820b91863a0b84e608097)
 
  -- lichenggang <lichenggang@uniontech.com>  Thu, 23 Jul 2026 19:03:28 +0800
 
